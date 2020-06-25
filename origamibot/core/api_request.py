@@ -8,7 +8,11 @@ api_url = 'https://api.telegram.org/bot{token}/{method}'
 
 
 def request(token, method, data=dict()):
-    '''Make a raw api request. Returns results as dataclasses'''
+    """Make a raw api request.
+
+    Returns result as dataclass or list of dataclasses
+    Or dict if could not comprehend type
+    """
     url = api_url.format(token=token, method=method)
 
     responce = requests.post(url, data)

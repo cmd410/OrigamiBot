@@ -1,5 +1,6 @@
 import shlex
 
+from typing import List
 from collections import deque
 from threading import current_thread, Event
 from time import sleep
@@ -12,6 +13,7 @@ from .util import check_args
 
 
 class OrigamiBot:
+    """Telegram bot class."""
     def __init__(self, token):
         self.token = token
         self.updates = deque()
@@ -37,12 +39,12 @@ class OrigamiBot:
         pass
 
     def start(self):
-        '''Start listening for updates. Non-blocking!'''
+        """Start listening for updates. Non-blocking!"""
         self._listen_thread.start()
         self._process_thread.start()
 
     def stop(self):
-        '''Terminate listening thread'''
+        """Terminate all bot's threads."""
         if self._listen_thread.is_alive():
             self._listen_thread.stop()
             self._listen_thread.join()
@@ -50,14 +52,20 @@ class OrigamiBot:
             self._process_thread.join()
 
     def process_update(self, update: Update):
+        """Process a single update."""
         if update.message is not None:
             self._handle_message(update.message)
 
     def add_commands(self, obj):
+        """Add an object to bot's commands container.
+
+        Object's methods, not preceded with underscore
+        will be considered bot's commands.
+        """
         self.command_container.add_command(obj)
 
-    def get_updates(self):
-        '''Return list of updates'''
+    def get_updates(self) -> List[Update]:
+        """Make getUpdate request to telegram API. Return list of updates"""
         updates = request(
             self.token,
             'getUpdates',
@@ -68,6 +76,11 @@ class OrigamiBot:
         return updates
 
     def _process_updates_loop(self):
+        """The main processing thread.
+
+        Is notified when updates arrive from listening thread
+        and processes them one by one.
+        """
         while True:
             self.has_updates.wait()
             while self.updates:
@@ -75,6 +88,10 @@ class OrigamiBot:
             self.has_updates.clear()
 
     def _listen_loop(self):
+        """Loop that repeatedly checks for updates.
+
+        In main thread does nothing. And does not need to.
+        """
         if current_thread().__class__.__name__ != '_MainThread':
             while True:
                 if current_thread().stopped:
@@ -86,12 +103,22 @@ class OrigamiBot:
                 sleep(self.interval)
 
     def _handle_commands(self, message: Message, first_only=False) -> bool:
+        """Check message for commands in it.
+
+        If there are commands, returns True and tries execute them
+        Else returns False
+
+        first_only bool when True will only consider first command in a message.
+        """
         text = message.text or message.caption
 
         if not text:
             return False
 
         entities = message.entities or message.caption_entities
+
+        if entities is None:
+            return False
 
         # Collect commands from message
         commands = deque([
@@ -119,9 +146,14 @@ class OrigamiBot:
                 bound_args = check_args(method, args)
                 if bound_args is None:
                     continue
-                method(*bound_args.args, **bound_args.kwargs)
+                try:
+                    method(*bound_args.args, **bound_args.kwargs)
+                except Exception as err:
+                    print(err)   # TODO actual logging on failures with user defined commands
+
         return True
 
     def _handle_message(self, message: Message):
+        """Process a single message"""
         if self._handle_commands(message):
             return

@@ -1,3 +1,5 @@
+"""All Telegram API types here"""
+
 from dataclasses import dataclass, fields, is_dataclass
 from inspect import getmembers
 from sys import modules
@@ -562,7 +564,7 @@ __all__ = api_types
 
 
 def native_type(dic: dict):
-    '''Recursively converts given dict into suitable dataclass'''
+    """Recursively converts given dict into suitable dataclass"""
 
     if 'from' in dic.keys():
         dic['from_user'] = dic.pop('from')

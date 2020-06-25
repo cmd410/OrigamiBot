@@ -1,15 +1,24 @@
+from typing import List, Callable
+
+
 class CommandContainer:
+    """Class that contains objects that contain bot's commands as methods"""
     def __init__(self):
         self.command_holders = []
 
     def add_command(self, obj):
+        """Add object to command container."""
         self.command_holders.append(obj)
 
-    def find_command(self, command: str) -> list:
+    def find_command(self, command: str) -> List[Callable]:
+        """Find a method for given command.
+
+        Returns a list of all matched methods.
+        """
         if command.startswith('/'):
             command = command[1:]
 
-        # Do not look for protected/private methods 
+        # Do not look for protected/private methods
         if command.startswith('_'):
             return []
 
