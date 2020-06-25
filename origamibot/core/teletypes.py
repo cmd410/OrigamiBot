@@ -1,7 +1,6 @@
 from dataclasses import dataclass, fields, is_dataclass
 from inspect import getmembers
 from sys import modules
-from pprint import pprint
 
 
 @dataclass
@@ -62,9 +61,25 @@ class Document:
 
 
 @dataclass
+class MaskPosition:
+    point: str
+    x_shift: float
+    y_shift: float
+    scale: float
+
+
+@dataclass
 class Sticker:
-    # TODO Sticker class
-    pass
+    file_id: str
+    file_unique_id: str
+    width: int
+    height: int
+    is_animated: bool
+    thumb: PhotoSize = None
+    emoji: str = None
+    set_name: str = None
+    mask_position: MaskPosition = None
+    file_size: int = None
 
 
 @dataclass
@@ -106,8 +121,12 @@ class Dice:
 
 @dataclass
 class Game:
-    # TODO Game class
-    pass
+    title: str
+    description: str
+    photo: list
+    text: str = None
+    text_entities: list = None
+    animation: Animation = None
 
 
 @dataclass
@@ -216,27 +235,82 @@ class ReplyKeyboardMarkup:
 
 
 @dataclass
-class CallbackQuery:
-    # TODO CallbackQuery
-    pass
+class Invoice:
+    title: str
+    description: str
+    start_parameter: str
+    currency: str
+    total_amount: int
 
 
 @dataclass
-class Invoice:
-    # TODO Invoice class
-    pass
+class ShippingAddress:
+    country_code: str
+    state: str
+    city: str
+    street_line1: str
+    street_line2: str
+    post_code: str
+
+
+@dataclass
+class OrderInfo:
+    name: str = None
+    phone_number: str = None
+    email: str = None
+    shipping_address: ShippingAddress = None
 
 
 @dataclass
 class SuccessfulPayment:
-    # TODO SuccessfulPayment class
-    pass
+    currency: str
+    total_amount: int
+    invoice_payload: str
+    telegram_payment_charge_id: str
+    provider_payment_charge_id: str
+    shipping_option_id: str = None
+    order_info: OrderInfo = None
+
+
+@dataclass
+class EncryptedCredentials:
+    data: str
+    hash: str
+    secret: str
+
+
+@dataclass
+class PassportFile:
+    file_id: str
+    file_unique_id: str
+    file_size: int
+    file_date: int
+
+
+@dataclass
+class ForceReply:
+    selective: bool
+    force_reply: bool = True
+
+
+@dataclass
+class EncryptedPassportElement:
+    type: str
+    data: str
+    hash: str
+    phone_number: str = None
+    email: str = None
+    files: list = None
+    front_side: PassportFile = None
+    reverse_side: PassportFile = None
+    selfie: PassportFile = None
+    translation: PassportFile = None
 
 
 @dataclass
 class PassportData:
-    # TODO PassportData class
-    pass
+    data: EncryptedPassportElement
+    credentials: EncryptedCredentials
 
 
 @dataclass
@@ -249,7 +323,7 @@ class LoginUrl:
 
 @dataclass
 class CallbackGame:
-    # TODO CallbackGame class
+    # Placeholder class, does not contain info
     pass
 
 
@@ -268,6 +342,96 @@ class InlineKeyboardButton:
 @dataclass
 class InlineKeyboardMarkup:
     inline_keyboard: list
+
+
+@dataclass
+class InputMediaPhoto:
+    type: str
+    media: str
+    caption: str = None
+    parse_mode: str = None
+
+
+@dataclass
+class InputMediaVideo:
+    type: str
+    media: str
+    thumb: str = None
+    caption: str = None
+    parse_mode: str = None
+    width: int = None
+    height: int = None
+    duration: int = None
+    supports_streaming: bool = None
+
+
+@dataclass
+class InputMediaAnimation:
+    type: str
+    media: str
+    thumb: str = None
+    caption: str = None
+    parse_mode: str = None
+    width: int = None
+    height: int = None
+    duration: int = None
+
+
+@dataclass
+class InputMediaAudio:
+    type: str
+    media: str
+    thumb: str = None
+    caption: str = None
+    parse_mode: str = None
+    width: int = None
+    height: int = None
+    duration: int = None
+    title: str = None
+
+
+@dataclass
+class InputMediaDocument:
+    type: str
+    media: str
+    thumb: str = None
+    caption: str = None
+    parse_mode: str = None
+
+
+@dataclass
+class ResponseParameters:
+    migrate_to_chat_id: int = None
+    retry_after: int = None
+
+
+@dataclass
+class BotCommand:
+    command: str
+    description: str
+
+
+@dataclass
+class ChatMember:
+    user: User
+    status: str
+    custom_title: str = None
+    until_date: int = None
+    can_be_edited: bool = None
+    can_post_messages: bool = None
+    can_edit_messages: bool = None
+    can_delete_messages: bool = None
+    can_restrict_members: bool = None
+    can_promote_members: bool = None
+    can_change_info: bool = None
+    can_invite_users: bool = None
+    can_pin_messages: bool = None
+    is_member: bool = None
+    can_send_messages: bool = None
+    can_send_media_messages: bool = None
+    can_send_polls: bool = None
+    can_send_other_messages: bool = None
+    can_add_web_page_previews: bool = None
 
 
 @dataclass
@@ -344,6 +508,17 @@ class Message:
 
 
 @dataclass
+class CallbackQuery:
+    id: str
+    from_user: User
+    chat_instance: str
+    message: Message = None
+    inline_message_id: str = None
+    data: str = None
+    game_short_name: str = None
+
+
+@dataclass
 class Chat:
     id: int
     type: str
@@ -391,7 +566,7 @@ def native_type(dic: dict):
 
     if 'from' in dic.keys():
         dic['from_user'] = dic.pop('from')
-    
+
     data_fields = set(dic.keys())
     for key, value in dic.items():
         if isinstance(value, dict):
@@ -399,6 +574,7 @@ def native_type(dic: dict):
         elif isinstance(value, list):
             for i, d in enumerate(value):
                 value[i] = native_type(d)
+     
     for cls in api_types:
         type_fields = set([i.name for i in fields(cls)])
         if data_fields.issubset(type_fields):
