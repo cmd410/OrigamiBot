@@ -85,7 +85,7 @@ class OrigamiBot:
                     self.has_updates.set()
                 sleep(self.interval)
 
-    def _handle_commands(self, message: Message) -> bool:
+    def _handle_commands(self, message: Message, first_only=False) -> bool:
         text = message.text or message.caption
 
         if not text:
@@ -93,9 +93,12 @@ class OrigamiBot:
 
         entities = message.entities or message.caption_entities
 
+        # Collect commands from message
         commands = deque([
             (text[e.offset:e.offset+e.length], e.offset, e.offset+e.length)
-            for e in entities if e.type == 'bot_command'
+            for e in entities
+            if e.type == 'bot_command'
+            and (e.offset == 0 or not first_only)
             ])
 
         if not commands:
@@ -104,6 +107,7 @@ class OrigamiBot:
         while commands:
             command, start, end = commands.popleft()
 
+            # Parse arguments for each command
             if commands:
                 _, nxt_c, _ = commands[0]
                 args = [message] + shlex.split(text[end:nxt_c])
@@ -119,4 +123,5 @@ class OrigamiBot:
         return True
 
     def _handle_message(self, message: Message):
-        has_commands = self._handle_commands(message)
+        if self._handle_commands(message):
+            return
