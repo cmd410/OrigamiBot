@@ -1,9 +1,12 @@
 import requests
 import json
 
-from typing import List
+from typing import List, Union, Optional
 
-from .teletypes import native_type, Update
+from .teletypes import (native_type,
+                        Update,
+                        User,
+                        Message)
 
 
 api_url = 'https://api.telegram.org/bot{token}/{method}'
@@ -47,3 +50,44 @@ def get_updates(token: str,
             'allowed_updates': allowed_updates}
         )
     return updates
+
+
+def get_me(token: str) -> User:
+    """A simple method for testing your bot's auth token.
+
+    Returns basic information about the bot in form of a User object.
+    """
+    return request(
+        token,
+        'getMe'
+        )
+
+
+def send_message(token: str,
+                 chat_id: Union[int, str],
+                 text: str,
+                 parse_mode: Optional[str] = None,
+                 disable_web_page_preview: Optional[bool] = None,
+                 disable_notification: Optional[bool] = None,
+                 reply_to_message_id: Optional[int] = None) -> Message:
+    """Use this method to send text messages.
+    
+    On success, the sent Message is returned.
+    """
+    data = {
+        key: value
+        for key, value in {
+            'chat_id': chat_id,
+            'text': text,
+            'parse_mode': parse_mode,
+            'disable_web_page_preview': disable_web_page_preview,
+            'disable_notification': disable_notification,
+            'reply_to_message_id': reply_to_message_id
+        }.items()
+        if value is not None
+    }
+    return request(
+        token,
+        'sendMessage',
+        data
+    )

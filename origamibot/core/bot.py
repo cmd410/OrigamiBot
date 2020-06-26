@@ -1,6 +1,6 @@
 import shlex
 
-from typing import List
+from typing import List, Optional, Union
 from collections import deque
 from threading import current_thread, Event
 from time import sleep
@@ -9,7 +9,10 @@ from .sthread import StoppableThread
 from .teletypes import Update, Message
 from .commands import CommandContainer
 from .util import check_args
-from .api_request import get_updates
+from .api_request import (get_updates,
+                          get_me,
+                          send_message
+                          )
 
 
 class OrigamiBot:
@@ -34,9 +37,6 @@ class OrigamiBot:
         self._last_update_id = 0
 
         self.command_container = CommandContainer()
-
-    def send_message():
-        pass
 
     def start(self):
         """Start listening for updates. Non-blocking!"""
@@ -73,6 +73,28 @@ class OrigamiBot:
         if updates:
             self._last_update_id = updates[-1].update_id
         return updates
+
+    def get_me(self):
+        return get_me(self.token)
+
+    def send_message(self,
+                     chat_id: Union[int, str],
+                     text: str,
+                     parse_mode: Optional[str] = None,
+                     disable_web_page_preview: Optional[bool] = None,
+                     disable_notification: Optional[bool] = None,
+                     reply_to_message_id: Optional[int] = None) -> Message:
+        """Use this method to send text messages.
+
+        On success, the sent Message is returned.
+        """
+        return send_message(self.token,
+                            chat_id,
+                            text,
+                            parse_mode,
+                            disable_web_page_preview,
+                            disable_notification,
+                            reply_to_message_id)
 
     def _process_updates_loop(self):
         """The main processing thread.
