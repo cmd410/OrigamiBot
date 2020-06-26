@@ -4,11 +4,12 @@ import json
 from dataclasses import asdict
 from typing import List, Union, Optional, IO
 
-from .teletypes import (native_type,
-                        Update,
-                        User,
-                        Message,
-                        ReplyMarkup)
+from .teletypes import (
+    native_type,
+    Update,
+    User,
+    Message,
+    ReplyMarkup)
 
 
 api_url = 'https://api.telegram.org/bot{token}/{method}'
@@ -205,3 +206,4 @@ def send_audio(token: str,
         data,
         files
     )    
+

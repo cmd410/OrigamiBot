@@ -12,12 +12,13 @@ from .teletypes import (
     ReplyMarkup)
 from .commands import CommandContainer
 from .util import check_args
-from .api_request import (get_updates,
-                          get_me,
-                          send_message,
-                          forward_message,
-                          send_photo,
-                          send_audio)
+from .api_request import (
+    get_updates,
+    get_me,
+    send_message,
+    forward_message,
+    send_photo,
+    send_audio)
 
 
 class OrigamiBot:
