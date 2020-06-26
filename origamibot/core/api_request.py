@@ -8,10 +8,7 @@ from .teletypes import (native_type,
                         Update,
                         User,
                         Message,
-                        ReplyKeyboardMarkup,
-                        ReplyKeyboardRemove,
-                        ForceReply,
-                        InlineKeyboardMarkup)
+                        ReplyMarkup)
 
 
 api_url = 'https://api.telegram.org/bot{token}/{method}'
@@ -24,6 +21,12 @@ def request(token, method, data=dict(), files=dict()):
     Or dict if could not comprehend type
     """
     url = api_url.format(token=token, method=method)
+
+    data = {
+        key: value
+        for key, value in data.items()
+        if value is not None
+    }
 
     responce = requests.post(url, data, files=files)
 
@@ -74,23 +77,22 @@ def send_message(token: str,
                  parse_mode: Optional[str] = None,
                  disable_web_page_preview: Optional[bool] = None,
                  disable_notification: Optional[bool] = None,
-                 reply_to_message_id: Optional[int] = None) -> Message:
+                 reply_to_message_id: Optional[int] = None,
+                 reply_markup: Optional[ReplyMarkup] = None) -> Message:
     """Use this method to send text messages.
     
     On success, the sent Message is returned.
     """
     data = {
-        key: value
-        for key, value in {
             'chat_id': chat_id,
             'text': text,
             'parse_mode': parse_mode,
             'disable_web_page_preview': disable_web_page_preview,
             'disable_notification': disable_notification,
-            'reply_to_message_id': reply_to_message_id
-        }.items()
-        if value is not None
-    }
+            'reply_to_message_id': reply_to_message_id,
+            'reply_markup': (asdict(reply_markup)
+                             if reply_markup is not None else None)
+        }
     return request(
         token,
         'sendMessage',
@@ -111,9 +113,8 @@ def forward_message(token: str,
         'chat_id': chat_id,
         'from_chat_id': from_chat_id,
         'message_id': message_id,
+        'disable_notification': disable_notification
     }
-    if disable_notification is not None:
-        data['disable_notification'] = disable_notification
 
     return request(
         token,
@@ -129,20 +130,13 @@ def send_photo(token: str,
                parse_mode: Optional[str] = None,
                disable_notification: Optional[bool] = None,
                reply_to_message_id: Optional[int] = None,
-               reply_markup: Optional[Union[
-                   InlineKeyboardMarkup,
-                   ReplyKeyboardMarkup,
-                   ReplyKeyboardRemove,
-                   ForceReply
-               ]] = None
+               reply_markup: Optional[ReplyMarkup] = None
                ) -> Message:
     """Use this method to send photos.
 
     On success, the sent Message is returned.
     """
     data = {
-        key: value
-        for key, value in {
             'chat_id': chat_id,
             'caption': caption,
             'parse_mode': parse_mode,
@@ -150,9 +144,7 @@ def send_photo(token: str,
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': (asdict(reply_markup)
                              if reply_markup is not None else None)
-        }.items()
-        if value is not None
-    }
+        }
     if not isinstance(photo, str):
         return request(token,
                        'sendPhoto',
@@ -165,3 +157,51 @@ def send_photo(token: str,
         return request(token,
                        'sendPhoto',
                        data)
+
+
+def send_audio(token: str,
+               chat_id: Union[int, str],
+               audio: Union[str, IO],
+               caption: Optional[str] = None,
+               parse_mode: Optional[str] = None,
+               duration: Optional[int] = None,
+               performer: Optional[str] = None,
+               title: Optional[str] = None,
+               thumb: Optional[Union[str, IO]] = None,
+               disable_notification: Optional[bool] = None,
+               reply_to_message_id: Optional[int] = None,
+               reply_markup: Optional[ReplyMarkup] = None
+               ) -> Message:
+    """Use this method to send audio files.
+        
+    Your audio must be in the .MP3 or .M4A format. 
+    On success, the sent Message is returned.
+    """
+    data = {
+            'chat_id': chat_id,
+            'caption': caption,
+            'parse_mode': parse_mode,
+            'disable_notification': disable_notification,
+            'reply_to_message_id': reply_to_message_id,
+            'title': title,
+            'performer': performer,
+            'reply_markup': (asdict(reply_markup)
+                             if reply_markup is not None else None)
+        }
+    files = dict()
+    if isinstance(audio, str):
+        data['audio'] = audio
+    else:
+        files['audio'] = audio
+
+    if isinstance(thumb, str):
+        data['thumb'] = thumb
+    else:
+        files['thumb'] = thumb
+
+    return request(
+        token,
+        'sendAudio',
+        data,
+        files
+    )    

@@ -3,7 +3,7 @@
 from dataclasses import dataclass, fields, is_dataclass
 from inspect import getmembers
 from sys import modules
-from pprint import pprint
+from typing import Union
 
 
 @dataclass
@@ -560,8 +560,12 @@ api_types = sorted(
     key=lambda cls: len(fields(cls)),
     reverse=True)
 
+ReplyMarkup = Union[InlineKeyboardMarkup,
+                    ReplyKeyboardMarkup,
+                    ReplyKeyboardRemove,
+                    ForceReply]
 
-__all__ = api_types
+__all__ = api_types + [ReplyMarkup]
 
 
 def native_type(dic: dict):

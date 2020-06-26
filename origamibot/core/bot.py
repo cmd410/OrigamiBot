@@ -9,17 +9,15 @@ from .sthread import StoppableThread
 from .teletypes import (
     Update,
     Message,
-    InlineKeyboardMarkup,
-    ReplyKeyboardMarkup,
-    ReplyKeyboardRemove,
-    ForceReply)
+    ReplyMarkup)
 from .commands import CommandContainer
 from .util import check_args
 from .api_request import (get_updates,
                           get_me,
                           send_message,
                           forward_message,
-                          send_photo)
+                          send_photo,
+                          send_audio)
 
 
 class OrigamiBot:
@@ -90,7 +88,8 @@ class OrigamiBot:
                      parse_mode: Optional[str] = None,
                      disable_web_page_preview: Optional[bool] = None,
                      disable_notification: Optional[bool] = None,
-                     reply_to_message_id: Optional[int] = None) -> Message:
+                     reply_to_message_id: Optional[int] = None,
+                     reply_markup: Optional[ReplyMarkup] = None) -> Message:
         """Use this method to send text messages.
 
         On success, the sent Message is returned.
@@ -107,7 +106,8 @@ class OrigamiBot:
                         chat_id: Union[int, str],
                         from_chat_id: Union[int, str],
                         message_id: int,
-                        disable_notification: Optional[bool] = None) -> Message:
+                        disable_notification: Optional[bool] = None
+                        ) -> Message:
         """Use this method to forward messages of any kind.
 
         On success, the sent Message is returned."""
@@ -126,12 +126,7 @@ class OrigamiBot:
                    parse_mode: Optional[str] = None,
                    disable_notification: Optional[bool] = None,
                    reply_to_message_id: Optional[int] = None,
-                   reply_markup: Optional[Union[
-                        InlineKeyboardMarkup,
-                        ReplyKeyboardMarkup,
-                        ReplyKeyboardRemove,
-                        ForceReply
-                    ]] = None) -> Message:
+                   reply_markup: Optional[ReplyMarkup] = None) -> Message:
         """Use this method to send photos.
 
         On success, the sent Message is returned.
@@ -142,6 +137,39 @@ class OrigamiBot:
             photo,
             caption,
             parse_mode,
+            disable_notification,
+            reply_to_message_id,
+            reply_markup
+        )
+
+    def send_audio(self,
+                   chat_id: Union[int, str],
+                   audio: Union[str, IO],
+                   caption: Optional[str] = None,
+                   parse_mode: Optional[str] = None,
+                   duration: Optional[int] = None,
+                   performer: Optional[str] = None,
+                   title: Optional[str] = None,
+                   thumb: Optional[Union[str, IO]] = None,
+                   disable_notification: Optional[bool] = None,
+                   reply_to_message_id: Optional[int] = None,
+                   reply_markup: Optional[ReplyMarkup] = None
+                   ) -> Message:
+        """Use this method to send audio files.
+
+        Your audio must be in the .MP3 or .M4A format. 
+        On success, the sent Message is returned.
+        """
+        return send_audio(
+            self.token,
+            chat_id,
+            audio,
+            caption,
+            parse_mode,
+            duration,
+            performer,
+            title,
+            thumb,
             disable_notification,
             reply_to_message_id,
             reply_markup
