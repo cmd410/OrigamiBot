@@ -3,6 +3,7 @@
 from dataclasses import dataclass, fields, is_dataclass
 from inspect import getmembers
 from sys import modules
+from pprint import pprint
 
 
 @dataclass
@@ -580,5 +581,8 @@ def native_type(dic: dict):
     for cls in api_types:
         type_fields = set([i.name for i in fields(cls)])
         if data_fields.issubset(type_fields):
-            return cls(**dic)
+            try:
+                return cls(**dic)
+            except TypeError:   # On missing required arguments
+                continue
     return dic
