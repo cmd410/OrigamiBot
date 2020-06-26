@@ -205,5 +205,47 @@ def send_audio(token: str,
         'sendAudio',
         data,
         files
-    )    
+    )
 
+
+def send_document(token: str,
+                  chat_id: Union[int, str],
+                  document: Union[str, IO],
+                  thumb: Optional[Union[str, IO]] = None,
+                  caption: Optional[str] = None,
+                  parse_mode: Optional[str] = None,
+                  disable_notification: Optional[bool] = None,
+                  reply_to_message_id: Optional[int] = None,
+                  reply_markup: Optional[ReplyMarkup] = None
+                  ) -> Message:
+    """Use this method to send general files. 
+        
+    On success, the sent Message is returned.
+    """
+    data = {
+            'chat_id': chat_id,
+            'caption': caption,
+            'parse_mode': parse_mode,
+            'disable_notification': disable_notification,
+            'reply_to_message_id': reply_to_message_id,
+            'reply_markup': (asdict(reply_markup)
+                             if reply_markup is not None else None)
+        }
+
+    files = dict()
+    if isinstance(document, str):
+        data['document'] = document
+    else:
+        files['document'] = document
+
+    if isinstance(thumb, str):
+        data['thumb'] = thumb
+    else:
+        files['thumb'] = thumb
+
+    return request(
+        token,
+        'sendDocument',
+        data,
+        files
+    )

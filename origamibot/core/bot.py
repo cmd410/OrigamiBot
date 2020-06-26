@@ -18,7 +18,8 @@ from .api_request import (
     send_message,
     forward_message,
     send_photo,
-    send_audio)
+    send_audio,
+    send_document)
 
 
 class OrigamiBot:
@@ -171,6 +172,32 @@ class OrigamiBot:
             performer,
             title,
             thumb,
+            disable_notification,
+            reply_to_message_id,
+            reply_markup
+        )
+    
+    def send_document(self,
+                      chat_id: Union[int, str],
+                      document: Union[str, IO],
+                      thumb: Optional[Union[str, IO]] = None,
+                      caption: Optional[str] = None,
+                      parse_mode: Optional[str] = None,
+                      disable_notification: Optional[bool] = None,
+                      reply_to_message_id: Optional[int] = None,
+                      reply_markup: Optional[ReplyMarkup] = None
+                      ) -> Message:
+        """Use this method to send general files. 
+        
+        On success, the sent Message is returned.
+        """
+        return send_document(
+            self.token,
+            chat_id,
+            document,
+            thumb,
+            caption,
+            parse_mode,
             disable_notification,
             reply_to_message_id,
             reply_markup
