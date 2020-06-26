@@ -91,3 +91,26 @@ def send_message(token: str,
         'sendMessage',
         data
     )
+
+
+def forward_message(token: str,
+                    chat_id: Union[int, str],
+                    from_chat_id: Union[int, str],
+                    message_id: int,
+                    disable_notification: Optional[bool] = None) -> Message:
+    """Use this method to forward messages of any kind.
+
+    On success, the sent Message is returned."""
+    data = {
+        'chat_id': chat_id,
+        'from_chat_id': from_chat_id,
+        'message_id': message_id,
+    }
+    if disable_notification is not None:
+        data['disable_notification'] = disable_notification
+
+    return request(
+        token,
+        'forwardMessage',
+        data
+    )

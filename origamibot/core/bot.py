@@ -11,7 +11,8 @@ from .commands import CommandContainer
 from .util import check_args
 from .api_request import (get_updates,
                           get_me,
-                          send_message
+                          send_message,
+                          forward_message
                           )
 
 
@@ -95,6 +96,22 @@ class OrigamiBot:
                             disable_web_page_preview,
                             disable_notification,
                             reply_to_message_id)
+
+    def forward_message(self,
+                        chat_id: Union[int, str],
+                        from_chat_id: Union[int, str],
+                        message_id: int,
+                        disable_notification: Optional[bool] = None) -> Message:
+        """Use this method to forward messages of any kind.
+
+        On success, the sent Message is returned."""
+        return forward_message(
+            self.token,
+            chat_id,
+            from_chat_id,
+            message_id,
+            disable_notification
+        )
 
     def _process_updates_loop(self):
         """The main processing thread.
