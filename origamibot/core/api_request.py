@@ -1,7 +1,9 @@
 import requests
 import json
 
-from .teletypes import native_type
+from typing import List
+
+from .teletypes import native_type, Update
 
 
 api_url = 'https://api.telegram.org/bot{token}/{method}'
@@ -28,3 +30,20 @@ def request(token, method, data=dict()):
         for i, item in enumerate(data):
             data[i] = native_type(item)
     return data
+
+
+def get_updates(token: str,
+                offset: int = 0,
+                limit: int = 100,
+                allowed_updates: list = []) -> List[Update]:
+    """Make getUpdate request to telegram API. Return list of updates"""
+
+    updates = request(
+        token,
+        'getUpdates',
+        data={
+            'offset': offset + 1,
+            'limit': limit,
+            'allowed_updates': allowed_updates}
+        )
+    return updates

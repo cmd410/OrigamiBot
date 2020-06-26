@@ -6,10 +6,10 @@ from threading import current_thread, Event
 from time import sleep
 
 from .sthread import StoppableThread
-from .api_request import request
 from .teletypes import Update, Message
 from .commands import CommandContainer
 from .util import check_args
+from .api_request import get_updates
 
 
 class OrigamiBot:
@@ -66,11 +66,10 @@ class OrigamiBot:
 
     def get_updates(self) -> List[Update]:
         """Make getUpdate request to telegram API. Return list of updates"""
-        updates = request(
+        updates = get_updates(
             self.token,
-            'getUpdates',
-            data={'offset': self._last_update_id + 1}
-            )
+            self._last_update_id,
+        )
         if updates:
             self._last_update_id = updates[-1].update_id
         return updates
