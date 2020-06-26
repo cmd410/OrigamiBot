@@ -153,9 +153,15 @@ def send_photo(token: str,
         }.items()
         if value is not None
     }
-    return request(token,
-                   'sendPhoto',
-                   data,
-                   files={
-                       'photo': photo
-                   })
+    if not isinstance(photo, str):
+        return request(token,
+                       'sendPhoto',
+                       data,
+                       files={
+                           'photo': photo
+                       })
+    else:
+        data['photo'] = photo
+        return request(token,
+                       'sendPhoto',
+                       data)
