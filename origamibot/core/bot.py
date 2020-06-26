@@ -19,7 +19,8 @@ from .api_request import (
     forward_message,
     send_photo,
     send_audio,
-    send_document)
+    send_document,
+    send_video)
 
 
 class OrigamiBot:
@@ -176,7 +177,7 @@ class OrigamiBot:
             reply_to_message_id,
             reply_markup
         )
-    
+
     def send_document(self,
                       chat_id: Union[int, str],
                       document: Union[str, IO],
@@ -188,7 +189,7 @@ class OrigamiBot:
                       reply_markup: Optional[ReplyMarkup] = None
                       ) -> Message:
         """Use this method to send general files. 
-        
+
         On success, the sent Message is returned.
         """
         return send_document(
@@ -198,6 +199,41 @@ class OrigamiBot:
             thumb,
             caption,
             parse_mode,
+            disable_notification,
+            reply_to_message_id,
+            reply_markup
+        )
+
+    def send_video(self,
+                   chat_id: Union[int, str],
+                   video: Union[str, IO],
+                   duration: Optional[int] = None,
+                   width: Optional[int] = None,
+                   height: Optional[int] = None,
+                   thumb: Optional[Union[str, IO]] = None,
+                   caption: Optional[str] = None,
+                   parse_mode: Optional[str] = None,
+                   supports_streaming: Optional[bool] = None,
+                   disable_notification: Optional[bool] = None,
+                   reply_to_message_id: Optional[int] = None,
+                   reply_markup: Optional[ReplyMarkup] = None
+                   ) -> Message:
+        """Use this method to send video files.
+
+        Telegram clients support mp4 videos (other formats may be sent as Document).
+        On success, the sent Message is returned.
+        """
+        return send_video(
+            self.token,
+            chat_id,
+            video,
+            duration,
+            width,
+            height,
+            thumb,
+            caption,
+            parse_mode,
+            supports_streaming,
             disable_notification,
             reply_to_message_id,
             reply_markup

@@ -249,3 +249,55 @@ def send_document(token: str,
         data,
         files
     )
+
+
+def send_video(token: str,
+               chat_id: Union[int, str],
+               video: Union[str, IO],
+               duration: Optional[int] = None,
+               width: Optional[int] = None,
+               height: Optional[int] = None,
+               thumb: Optional[Union[str, IO]] = None,
+               caption: Optional[str] = None,
+               parse_mode: Optional[str] = None,
+               supports_streaming: Optional[bool] = None,
+               disable_notification: Optional[bool] = None,
+               reply_to_message_id: Optional[int] = None,
+               reply_markup: Optional[ReplyMarkup] = None
+               ) -> Message:
+    """Use this method to send video files.
+
+    Telegram clients support mp4 videos (other formats may be sent as Document).
+    On success, the sent Message is returned.
+    """
+    data = {
+            'chat_id': chat_id,
+            'caption': caption,
+            'height': height,
+            'width': width,
+            'duration': duration,
+            'parse_mode': parse_mode,
+            'supports_streaming': supports_streaming,
+            'disable_notification': disable_notification,
+            'reply_to_message_id': reply_to_message_id,
+            'reply_markup': (asdict(reply_markup)
+                             if reply_markup is not None else None)
+        }
+
+    files = dict()
+    if isinstance(video, str):
+        data['video'] = video
+    else:
+        files['video'] = video
+
+    if isinstance(thumb, str):
+        data['thumb'] = thumb
+    else:
+        files['thumb'] = thumb
+
+    return request(
+        token,
+        'sendVideo',
+        data,
+        files
+    )
