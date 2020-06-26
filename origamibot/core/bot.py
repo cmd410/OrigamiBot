@@ -1,19 +1,25 @@
 import shlex
 
-from typing import List, Optional, Union
+from typing import List, Optional, Union, IO
 from collections import deque
 from threading import current_thread, Event
 from time import sleep
 
 from .sthread import StoppableThread
-from .teletypes import Update, Message
+from .teletypes import (
+    Update,
+    Message,
+    InlineKeyboardMarkup,
+    ReplyKeyboardMarkup,
+    ReplyKeyboardRemove,
+    ForceReply)
 from .commands import CommandContainer
 from .util import check_args
 from .api_request import (get_updates,
                           get_me,
                           send_message,
-                          forward_message
-                          )
+                          forward_message,
+                          send_photo)
 
 
 class OrigamiBot:
@@ -111,6 +117,34 @@ class OrigamiBot:
             from_chat_id,
             message_id,
             disable_notification
+        )
+
+    def send_photo(self,
+                   chat_id: Union[int, str],
+                   photo: Union[str, IO],
+                   caption: Optional[str] = None,
+                   parse_mode: Optional[str] = None,
+                   disable_notification: Optional[bool] = None,
+                   reply_to_message_id: Optional[int] = None,
+                   reply_markup: Optional[Union[
+                        InlineKeyboardMarkup,
+                        ReplyKeyboardMarkup,
+                        ReplyKeyboardRemove,
+                        ForceReply
+                    ]] = None) -> Message:
+        """Use this method to send photos.
+
+        On success, the sent Message is returned.
+        """
+        return send_photo(
+            self.token,
+            chat_id,
+            photo,
+            caption,
+            parse_mode,
+            disable_notification,
+            reply_to_message_id,
+            reply_markup
         )
 
     def _process_updates_loop(self):

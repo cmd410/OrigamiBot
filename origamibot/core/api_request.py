@@ -1,18 +1,23 @@
 import requests
 import json
 
-from typing import List, Union, Optional
+from dataclasses import asdict
+from typing import List, Union, Optional, IO
 
 from .teletypes import (native_type,
                         Update,
                         User,
-                        Message)
+                        Message,
+                        ReplyKeyboardMarkup,
+                        ReplyKeyboardRemove,
+                        ForceReply,
+                        InlineKeyboardMarkup)
 
 
 api_url = 'https://api.telegram.org/bot{token}/{method}'
 
 
-def request(token, method, data=dict()):
+def request(token, method, data=dict(), files=dict()):
     """Make a raw api request.
 
     Returns result as dataclass or list of dataclasses
@@ -20,7 +25,7 @@ def request(token, method, data=dict()):
     """
     url = api_url.format(token=token, method=method)
 
-    responce = requests.post(url, data)
+    responce = requests.post(url, data, files=files)
 
     if responce.status_code != 200:
         raise Exception(f'Server returned error: {responce.status_code}')
@@ -100,7 +105,8 @@ def forward_message(token: str,
                     disable_notification: Optional[bool] = None) -> Message:
     """Use this method to forward messages of any kind.
 
-    On success, the sent Message is returned."""
+    On success, the sent Message is returned.
+    """
     data = {
         'chat_id': chat_id,
         'from_chat_id': from_chat_id,
@@ -114,3 +120,42 @@ def forward_message(token: str,
         'forwardMessage',
         data
     )
+
+
+def send_photo(token: str,
+               chat_id: Union[int, str],
+               photo: Union[str, IO],
+               caption: Optional[str] = None,
+               parse_mode: Optional[str] = None,
+               disable_notification: Optional[bool] = None,
+               reply_to_message_id: Optional[int] = None,
+               reply_markup: Optional[Union[
+                   InlineKeyboardMarkup,
+                   ReplyKeyboardMarkup,
+                   ReplyKeyboardRemove,
+                   ForceReply
+               ]] = None
+               ) -> Message:
+    """Use this method to send photos.
+
+    On success, the sent Message is returned.
+    """
+    data = {
+        key: value
+        for key, value in {
+            'chat_id': chat_id,
+            'caption': caption,
+            'parse_mode': parse_mode,
+            'disable_notification': disable_notification,
+            'reply_to_message_id': reply_to_message_id,
+            'reply_markup': (asdict(reply_markup)
+                             if reply_markup is not None else None)
+        }.items()
+        if value is not None
+    }
+    return request(token,
+                   'sendPhoto',
+                   data,
+                   files={
+                       'photo': photo
+                   })
