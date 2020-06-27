@@ -29,6 +29,12 @@ def request(token, method, data=dict(), files=dict()):
         if value is not None
     }
 
+    files = {
+        key: value
+        for key, value in files.items()
+        if value is not None
+    }
+
     responce = requests.post(url, data, files=files)
 
     if responce.status_code != 200:
