@@ -9,9 +9,11 @@ from .sthread import StoppableThread
 from .teletypes import (
     Update,
     Message,
-    ReplyMarkup)
+    ReplyMarkup,
+    InlineKeyboardMarkup)
 from .commands import CommandContainer
 from .util import check_args
+
 from .api_request import (
     get_updates,
     get_me,
@@ -24,7 +26,8 @@ from .api_request import (
     send_animation,
     send_voice,
     send_video_note,
-    send_location)
+    send_location,
+    edit_message_live_location)
 
 
 class OrigamiBot:
@@ -224,7 +227,8 @@ class OrigamiBot:
                    ) -> Message:
         """Use this method to send video files.
 
-        Telegram clients support mp4 videos (other formats may be sent as Document).
+        Telegram clients support mp4 videos 
+        (other formats may be sent as Document).
         On success, the sent Message is returned.
         """
         return send_video(
@@ -327,7 +331,6 @@ class OrigamiBot:
             reply_markup
         )
 
-    
     def send_location(self,
                       chat_id: Union[int, str],
                       latitude: float,
@@ -349,6 +352,33 @@ class OrigamiBot:
             live_period,
             disable_notification,
             reply_to_message_id,
+            reply_markup
+        )
+
+    def edit_message_live_location(self,
+                                   latitude: float,
+                                   longitude: float,
+                                   chat_id: Optional[Union[int, str]] = None,
+                                   message_id: Optional[int] = None,
+                                   inline_message_id: Optional[str] = None,
+                                   reply_markup:
+                                   Optional[InlineKeyboardMarkup] = None
+                                   ) -> Union[Message, bool]:
+        """Use this method to edit live location messages.
+
+        A location can be edited until its live_period expires
+        or editing is explicitly disabled by a call to stopMessageLiveLocation.
+
+        On success, if the edited message was sent by the bot,
+        the edited Message is returned, otherwise True is returned.
+        """
+        return edit_message_live_location(
+            self.token,
+            latitude,
+            longitude,
+            chat_id,
+            message_id,
+            inline_message_id,
             reply_markup
         )
 

@@ -9,7 +9,8 @@ from .teletypes import (
     Update,
     User,
     Message,
-    ReplyMarkup)
+    ReplyMarkup,
+    InlineKeyboardMarkup)
 
 
 api_url = 'https://api.telegram.org/bot{token}/{method}'
@@ -468,5 +469,37 @@ def send_location(token: str,
     return request(
         token,
         'sendLocation',
+        data
+    )
+
+
+def edit_message_live_location(token: str,
+                               latitude: float,
+                               longitude: float,
+                               chat_id: Optional[Union[int, str]] = None,
+                               message_id: Optional[int] = None,
+                               inline_message_id: Optional[str] = None,
+                               reply_markup: 
+                               Optional[InlineKeyboardMarkup] = None
+                               ) -> Union[Message, bool]:
+    """Use this method to edit live location messages.
+
+    A location can be edited until its live_period expires
+    or editing is explicitly disabled by a call to stopMessageLiveLocation.
+
+    On success, if the edited message was sent by the bot,
+    the edited Message is returned, otherwise True is returned.
+    """
+    data = {
+        'chat_id': chat_id,
+        'latitude': latitude,
+        'longitude': longitude,
+        'message_id': message_id,
+        'inline_message_id': inline_message_id,
+        'reply_markup': reply_markup
+    }
+
+    return request(
+        token,
         data
     )
