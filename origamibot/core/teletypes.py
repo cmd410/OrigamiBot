@@ -413,12 +413,14 @@ class InputMedia:
 
 @dataclass
 class InputMediaPhoto(InputMedia):
+    type: str = 'photo'
     caption: str = None
     parse_mode: str = None
 
 
 @dataclass
 class InputMediaVideo(InputMedia):
+    type: str = 'video'
     thumb: Union[str, IO] = None
     caption: str = None
     parse_mode: str = None
@@ -430,6 +432,7 @@ class InputMediaVideo(InputMedia):
 
 @dataclass
 class InputMediaAnimation(InputMedia):
+    type: str = 'animation'
     thumb: Union[str, IO] = None
     caption: str = None
     parse_mode: str = None
@@ -440,6 +443,7 @@ class InputMediaAnimation(InputMedia):
 
 @dataclass
 class InputMediaAudio(InputMedia):
+    type: str = 'audio'
     thumb: Union[str, IO] = None
     caption: str = None
     parse_mode: str = None
@@ -451,6 +455,7 @@ class InputMediaAudio(InputMedia):
 
 @dataclass
 class InputMediaDocument(InputMedia):
+    type: str = 'document'
     thumb: Union[str, IO] = None
     caption: str = None
     parse_mode: str = None
