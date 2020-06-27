@@ -21,7 +21,8 @@ from .api_request import (
     send_audio,
     send_document,
     send_video,
-    send_animation)
+    send_animation,
+    send_voice)
 
 
 class OrigamiBot:
@@ -267,6 +268,33 @@ class OrigamiBot:
             thumb,
             caption,
             parse_mode,
+            disable_notification,
+            reply_to_message_id,
+            reply_markup
+        )
+
+    def send_voice(self,
+                   chat_id: Union[int, str],
+                   voice: Union[str, IO],
+                   caption: Optional[str] = None,
+                   parse_mode: Optional[str] = None,
+                   duration: Optional[int] = None,
+                   disable_notification: Optional[bool] = None,
+                   reply_to_message_id: Optional[int] = None,
+                   reply_markup: Optional[ReplyMarkup] = None
+                   ) -> Message:
+        """Use this method to send audio files to display the file as a voice message.
+
+        For this to work, your audio must be in an .OGG file encoded with OPUS.
+        On success, the sent Message is returned.
+        """
+        return send_voice(
+            self.token,
+            chat_id,
+            voice,
+            caption,
+            parse_mode,
+            duration,
             disable_notification,
             reply_to_message_id,
             reply_markup

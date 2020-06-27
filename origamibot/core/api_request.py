@@ -337,7 +337,7 @@ def send_animation(token: str,
         'disable_notification': disable_notification,
         'reply_to_message_id': disable_notification,
         'reply_markup': (asdict(reply_markup)
-                        if reply_markup is not None else None)
+                         if reply_markup is not None else None)
     }
 
     files = dict()
@@ -354,6 +354,46 @@ def send_animation(token: str,
     return request(
         token,
         'sendAnimation',
+        data,
+        files
+    )
+
+
+def send_voice(token: str,
+               chat_id: Union[int, str],
+               voice: Union[str, IO],
+               caption: Optional[str] = None,
+               parse_mode: Optional[str] = None,
+               duration: Optional[int] = None,
+               disable_notification: Optional[bool] = None,
+               reply_to_message_id: Optional[int] = None,
+               reply_markup: Optional[ReplyMarkup] = None
+               ) -> Message:
+    """Use this method to send audio files to display the file as a voice message.
+
+    For this to work, your audio must be in an .OGG file encoded with OPUS.
+    On success, the sent Message is returned.
+    """
+    data = {
+        'chat_id': chat_id,
+        'duration': duration,
+        'caption': caption,
+        'parse_mode': parse_mode,
+        'disable_notification': disable_notification,
+        'reply_to_message_id': disable_notification,
+        'reply_markup': (asdict(reply_markup)
+                         if reply_markup is not None else None)
+    }
+
+    files = dict()
+    if isinstance(voice, str):
+        data['voice'] = voice
+    else:
+        files['voice'] = voice
+
+    return request(
+        token,
+        'sendVoice',
         data,
         files
     )
