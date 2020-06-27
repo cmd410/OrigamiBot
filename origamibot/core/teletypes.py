@@ -3,7 +3,8 @@
 from dataclasses import dataclass, fields, is_dataclass
 from inspect import getmembers
 from sys import modules
-from typing import Union
+from typing import Union, IO
+from os.path import split, splitext
 
 
 @dataclass
@@ -348,18 +349,79 @@ class InlineKeyboardMarkup:
 
 
 @dataclass
-class InputMediaPhoto:
-    type: str
+class InputMedia:
     media: str
+    type: str
+
+    def __post_init__(self):
+        self._file = None
+
+    @property
+    def file(self):
+        """Returns local file attach://[name], and [file path]
+
+        if no local file returns None, None 
+        """
+        if not self._file:
+            return None, None
+        return self.media.replace('attach://', '', 1), self._file
+
+    @staticmethod
+    def infer_type(file_path):
+        ext = splitext(file_path)[1].lower()[1:]
+        if ext in {'png', 'jpg', 'jpeg'}:
+            return 'photo'
+        elif ext in {'mp4'}:
+            return 'video'
+        elif ext in {'gif'}:
+            return 'animation'
+        elif ext in {'mp3', 'ogg', 'wav'}:
+            return 'audio'
+        else:
+            return 'document'
+
+    @classmethod
+    def from_local_file(cls, file_path: str, **kwargs) -> 'InputMedia':
+        """Creates InputMedia from local file"""
+        cls_fields = {i.name for i in fields(cls)}
+
+        keyword_args = {
+            key: value
+            for key, value in kwargs
+            if key in cls_fields
+        }
+
+        if 'type' not in keyword_args.keys():
+            keyword_args['type'] = cls.infer_type(file_path)
+
+        dclasses = {
+            'photo': InputMediaPhoto,
+            'video': InputMediaVideo,
+            'animation': InputMediaAnimation,
+            'audio': InputMediaAudio,
+            'document': InputMediaDocument,
+        }
+
+        cls = dclasses.get(
+            keyword_args['type'],
+            InputMedia)
+
+        obj = cls("attach://" + split(file_path)[1], **keyword_args)
+        obj._file = file_path
+        return obj
+
+
+@dataclass
+class InputMediaPhoto(InputMedia):
+    type: str = 'photo'
     caption: str = None
     parse_mode: str = None
 
 
 @dataclass
-class InputMediaVideo:
-    type: str
-    media: str
-    thumb: str = None
+class InputMediaVideo(InputMedia):
+    type: str = 'video'
+    thumb: Union[str, IO] = None
     caption: str = None
     parse_mode: str = None
     width: int = None
@@ -369,10 +431,9 @@ class InputMediaVideo:
 
 
 @dataclass
-class InputMediaAnimation:
-    type: str
-    media: str
-    thumb: str = None
+class InputMediaAnimation(InputMedia):
+    type: str = 'animation'
+    thumb: Union[str, IO] = None
     caption: str = None
     parse_mode: str = None
     width: int = None
@@ -381,10 +442,9 @@ class InputMediaAnimation:
 
 
 @dataclass
-class InputMediaAudio:
-    type: str
-    media: str
-    thumb: str = None
+class InputMediaAudio(InputMedia):
+    type: str = 'audio'
+    thumb: Union[str, IO] = None
     caption: str = None
     parse_mode: str = None
     width: int = None
@@ -394,10 +454,9 @@ class InputMediaAudio:
 
 
 @dataclass
-class InputMediaDocument:
-    type: str
-    media: str
-    thumb: str = None
+class InputMediaDocument(InputMedia):
+    type: str = 'document'
+    thumb: Union[str, IO] = None
     caption: str = None
     parse_mode: str = None
 
@@ -566,6 +625,12 @@ ReplyMarkup = Union[InlineKeyboardMarkup,
                     ForceReply]
 
 __all__ = api_types + [ReplyMarkup]
+
+
+def asdict(o):
+    return {k: v
+            for k, v in o.__dict__.items()
+            if v is not None and not k.startswith('_')}
 
 
 def native_type(dic: dict):

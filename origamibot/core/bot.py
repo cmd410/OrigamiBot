@@ -9,9 +9,11 @@ from .sthread import StoppableThread
 from .teletypes import (
     Update,
     Message,
-    ReplyMarkup)
+    ReplyMarkup,
+    InlineKeyboardMarkup)
 from .commands import CommandContainer
 from .util import check_args
+
 from .api_request import (
     get_updates,
     get_me,
@@ -20,7 +22,14 @@ from .api_request import (
     send_photo,
     send_audio,
     send_document,
-    send_video)
+    send_video,
+    send_animation,
+    send_voice,
+    send_video_note,
+    send_location,
+    edit_message_live_location,
+    stop_message_live_location,
+    send_venue)
 
 
 class OrigamiBot:
@@ -34,7 +43,7 @@ class OrigamiBot:
             name='Listen thread',
             target=self._listen_loop,
             daemon=True)
-        
+
         self._process_thread = StoppableThread(
             name='Update process thread',
             target=self._process_updates_loop,
@@ -160,7 +169,7 @@ class OrigamiBot:
                    ) -> Message:
         """Use this method to send audio files.
 
-        Your audio must be in the .MP3 or .M4A format. 
+        Your audio must be in the .MP3 or .M4A format.
         On success, the sent Message is returned.
         """
         return send_audio(
@@ -188,7 +197,7 @@ class OrigamiBot:
                       reply_to_message_id: Optional[int] = None,
                       reply_markup: Optional[ReplyMarkup] = None
                       ) -> Message:
-        """Use this method to send general files. 
+        """Use this method to send general files.
 
         On success, the sent Message is returned.
         """
@@ -220,7 +229,8 @@ class OrigamiBot:
                    ) -> Message:
         """Use this method to send video files.
 
-        Telegram clients support mp4 videos (other formats may be sent as Document).
+        Telegram clients support mp4 videos
+        (other formats may be sent as Document).
         On success, the sent Message is returned.
         """
         return send_video(
@@ -234,6 +244,196 @@ class OrigamiBot:
             caption,
             parse_mode,
             supports_streaming,
+            disable_notification,
+            reply_to_message_id,
+            reply_markup
+        )
+
+    def send_animation(self,
+                       chat_id: Union[int, str],
+                       animation: Union[str, IO],
+                       duration: Optional[int] = None,
+                       width: Optional[int] = None,
+                       height: Optional[int] = None,
+                       thumb: Optional[Union[str, IO]] = None,
+                       caption: Optional[Union[str, IO]] = None,
+                       parse_mode: Optional[str] = None,
+                       disable_notification: Optional[bool] = None,
+                       reply_to_message_id: Optional[int] = None,
+                       reply_markup: Optional[ReplyMarkup] = None
+                       ) -> Message:
+        """Use this method to send animation files (GIF or video without sound).
+
+        On success, the sent Message is returned.
+        """
+        return send_animation(
+            self.token,
+            chat_id,
+            animation,
+            duration,
+            width,
+            height,
+            thumb,
+            caption,
+            parse_mode,
+            disable_notification,
+            reply_to_message_id,
+            reply_markup
+        )
+
+    def send_voice(self,
+                   chat_id: Union[int, str],
+                   voice: Union[str, IO],
+                   caption: Optional[str] = None,
+                   parse_mode: Optional[str] = None,
+                   duration: Optional[int] = None,
+                   disable_notification: Optional[bool] = None,
+                   reply_to_message_id: Optional[int] = None,
+                   reply_markup: Optional[ReplyMarkup] = None
+                   ) -> Message:
+        """Use this method to send audio files to display the file as a voice message.
+
+        For this to work, your audio must be in an .OGG file encoded with OPUS.
+        On success, the sent Message is returned.
+        """
+        return send_voice(
+            self.token,
+            chat_id,
+            voice,
+            caption,
+            parse_mode,
+            duration,
+            disable_notification,
+            reply_to_message_id,
+            reply_markup
+        )
+
+    def send_video_note(self,
+                        chat_id: Union[int, str],
+                        video_note: Union[str, IO],
+                        duration: Optional[int] = None,
+                        length: Optional[int] = None,
+                        thumb: Optional[Union[str, IO]] = None,
+                        disable_notification: Optional[bool] = None,
+                        reply_to_message_id: Optional[int] = None,
+                        reply_markup: Optional[ReplyMarkup] = None
+                        ) -> Message:
+        """Use this method to send rounded square mp4 videos of up to 1 minute long.
+
+        On success, the sent Message is returned."""
+        return send_video_note(
+            self.token,
+            chat_id,
+            video_note,
+            duration,
+            length,
+            thumb,
+            disable_notification,
+            reply_to_message_id,
+            reply_markup
+        )
+
+    def send_location(self,
+                      chat_id: Union[int, str],
+                      latitude: float,
+                      longitude: float,
+                      live_period: Optional[int] = None,
+                      disable_notification: Optional[bool] = None,
+                      reply_to_message_id: Optional[int] = None,
+                      reply_markup: Optional[ReplyMarkup] = None
+                      ) -> Message:
+        """Use this method to send point on the map.
+
+        On success, the sent Message is returned.
+        """
+        return send_location(
+            self.token,
+            chat_id,
+            latitude,
+            longitude,
+            live_period,
+            disable_notification,
+            reply_to_message_id,
+            reply_markup
+        )
+
+    def edit_message_live_location(self,
+                                   latitude: float,
+                                   longitude: float,
+                                   chat_id: Optional[Union[int, str]] = None,
+                                   message_id: Optional[int] = None,
+                                   inline_message_id: Optional[str] = None,
+                                   reply_markup:
+                                   Optional[InlineKeyboardMarkup] = None
+                                   ) -> Union[Message, bool]:
+        """Use this method to edit live location messages.
+
+        A location can be edited until its live_period expires
+        or editing is explicitly disabled by a call to stopMessageLiveLocation.
+
+        On success, if the edited message was sent by the bot,
+        the edited Message is returned, otherwise True is returned.
+        """
+        return edit_message_live_location(
+            self.token,
+            latitude,
+            longitude,
+            chat_id,
+            message_id,
+            inline_message_id,
+            reply_markup
+        )
+
+    def stop_message_live_location(self,
+                                   chat_id:
+                                   Optional[Union[int, str]] = None,
+                                   message_id:
+                                   Optional[int] = None,
+                                   inline_message_id:
+                                   Optional[str] = None,
+                                   reply_markup:
+                                   Optional[ReplyMarkup] = None,
+                                   ) -> Union[Message, bool]:
+        """Use this method to stop updating a live location message.
+
+        On success, if the message was sent by the bot,
+        the sent Message is returned,
+        otherwise True is returned
+        """
+
+        return stop_message_live_location(
+            self.token,
+            chat_id,
+            message_id,
+            inline_message_id,
+            reply_markup
+        )
+
+    def send_venue(self,
+                   chat_id: Union[int, str],
+                   latitude: float,
+                   longitude: float,
+                   title: str,
+                   address: str,
+                   foursquare_id: Optional[str] = None,
+                   foursquare_type: Optional[str] = None,
+                   disable_notification: Optional[bool] = None,
+                   reply_to_message_id: Optional[int] = None,
+                   reply_markup: Optional[ReplyMarkup] = None
+                   ) -> Message:
+        """Use this method to send information about a venue.
+
+        On success, the sent Message is returned.
+        """
+        return send_venue(
+            self.token,
+            chat_id,
+            latitude,
+            longitude,
+            title,
+            address,
+            foursquare_id,
+            foursquare_type,
             disable_notification,
             reply_to_message_id,
             reply_markup
@@ -272,7 +472,8 @@ class OrigamiBot:
         If there are commands, returns True and tries execute them
         Else returns False
 
-        first_only bool when True will only consider first command in a message.
+        first_only bool
+        when True will only consider first command in a message.
         """
         text = message.text or message.caption
 
@@ -313,7 +514,8 @@ class OrigamiBot:
                 try:
                     method(*bound_args.args, **bound_args.kwargs)
                 except Exception as err:
-                    print(err)   # TODO actual logging on failures with user defined commands
+                    print(err)
+                    # TODO actual logging on failures
 
         return True
 
