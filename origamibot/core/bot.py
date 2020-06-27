@@ -20,7 +20,8 @@ from .api_request import (
     send_photo,
     send_audio,
     send_document,
-    send_video)
+    send_video,
+    send_animation)
 
 
 class OrigamiBot:
@@ -234,6 +235,38 @@ class OrigamiBot:
             caption,
             parse_mode,
             supports_streaming,
+            disable_notification,
+            reply_to_message_id,
+            reply_markup
+        )
+
+    def send_animation(self,
+                       chat_id: Union[int, str],
+                       animation: Union[str, IO],
+                       duration: Optional[int] = None,
+                       width: Optional[int] = None,
+                       height: Optional[int] = None,
+                       thumb: Optional[Union[str, IO]] = None,
+                       caption: Optional[Union[str, IO]] = None,
+                       parse_mode: Optional[str] = None,
+                       disable_notification: Optional[bool] = None,
+                       reply_to_message_id: Optional[int] = None,
+                       reply_markup: Optional[ReplyMarkup] = None
+                       ) -> Message:
+        """Use this method to send animation files (GIF or video without sound).
+
+        On success, the sent Message is returned.
+        """
+        return send_animation(
+            self.token,
+            chat_id,
+            animation,
+            duration,
+            width,
+            height,
+            thumb,
+            caption,
+            parse_mode,
             disable_notification,
             reply_to_message_id,
             reply_markup

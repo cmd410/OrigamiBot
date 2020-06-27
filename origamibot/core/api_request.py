@@ -180,7 +180,7 @@ def send_audio(token: str,
                reply_markup: Optional[ReplyMarkup] = None
                ) -> Message:
     """Use this method to send audio files.
-        
+
     Your audio must be in the .MP3 or .M4A format. 
     On success, the sent Message is returned.
     """
@@ -304,6 +304,56 @@ def send_video(token: str,
     return request(
         token,
         'sendVideo',
+        data,
+        files
+    )
+
+
+def send_animation(token: str,
+                   chat_id: Union[int, str],
+                   animation: Union[str, IO],
+                   duration: Optional[int] = None,
+                   width: Optional[int] = None,
+                   height: Optional[int] = None,
+                   thumb: Optional[Union[str, IO]] = None,
+                   caption: Optional[Union[str, IO]] = None,
+                   parse_mode: Optional[str] = None,
+                   disable_notification: Optional[bool] = None,
+                   reply_to_message_id: Optional[int] = None,
+                   reply_markup: Optional[ReplyMarkup] = None
+                   ) -> Message:
+    """Use this method to send animation files (GIF or video without sound).
+
+    On success, the sent Message is returned.
+    """
+
+    data = {
+        'chat_id': chat_id,
+        'duration': duration,
+        'width': width,
+        'height': height,
+        'caption': caption,
+        'parse_mode': parse_mode,
+        'disable_notification': disable_notification,
+        'reply_to_message_id': disable_notification,
+        'reply_markup': (asdict(reply_markup)
+                        if reply_markup is not None else None)
+    }
+
+    files = dict()
+    if isinstance(animation, str):
+        data['animation'] = animation
+    else:
+        files['animation'] = animation
+
+    if isinstance(thumb, str):
+        data['animation'] = thumb
+    else:
+        files['animation'] = thumb
+
+    return request(
+        token,
+        'sendAnimation',
         data,
         files
     )
