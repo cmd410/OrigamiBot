@@ -347,9 +347,9 @@ def send_animation(token: str,
         files['animation'] = animation
 
     if isinstance(thumb, str):
-        data['animation'] = thumb
+        data['thumb'] = thumb
     else:
-        files['animation'] = thumb
+        files['thumb'] = thumb
 
     return request(
         token,
