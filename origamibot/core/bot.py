@@ -28,7 +28,8 @@ from .api_request import (
     send_video_note,
     send_location,
     edit_message_live_location,
-    stop_message_live_location)
+    stop_message_live_location,
+    send_venue)
 
 
 class OrigamiBot:
@@ -405,6 +406,36 @@ class OrigamiBot:
             chat_id,
             message_id,
             inline_message_id,
+            reply_markup
+        )
+
+    def send_venue(self,
+                   chat_id: Union[int, str],
+                   latitude: float,
+                   longitude: float,
+                   title: str,
+                   address: str,
+                   foursquare_id: Optional[str] = None,
+                   foursquare_type: Optional[str] = None,
+                   disable_notification: Optional[bool] = None,
+                   reply_to_message_id: Optional[int] = None,
+                   reply_markup: Optional[ReplyMarkup] = None
+                   ) -> Message:
+        """Use this method to send information about a venue.
+
+        On success, the sent Message is returned.
+        """
+        return send_venue(
+            self.token,
+            chat_id,
+            latitude,
+            longitude,
+            title,
+            address,
+            foursquare_id,
+            foursquare_type,
+            disable_notification,
+            reply_to_message_id,
             reply_markup
         )
 

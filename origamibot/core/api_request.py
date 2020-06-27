@@ -535,3 +535,40 @@ def stop_message_live_location(token: str,
         'stopMessageLiveLocation',
         data
     )
+
+
+def send_venue(token: str,
+               chat_id: Union[int, str],
+               latitude: float,
+               longitude: float,
+               title: str,
+               address: str,
+               foursquare_id: Optional[str] = None,
+               foursquare_type: Optional[str] = None,
+               disable_notification: Optional[bool] = None,
+               reply_to_message_id: Optional[int] = None,
+               reply_markup: Optional[ReplyMarkup] = None
+               ) -> Message:
+    """Use this method to send information about a venue.
+
+    On success, the sent Message is returned.
+    """
+
+    data = {
+        'chat_id': chat_id,
+        'latitude': latitude,
+        'longitude': longitude,
+        'title': title,
+        'address': address,
+        'foursquare_id': foursquare_id,
+        'foursquare_type': foursquare_type,
+        'disable_notification': disable_notification,
+        'reply_to_message_id': reply_to_message_id,
+        'reply_markup': reply_markup
+    }
+
+    return request(
+        token,
+        'sendVenue',
+        data
+    )
