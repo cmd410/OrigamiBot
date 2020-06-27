@@ -22,7 +22,8 @@ from .api_request import (
     send_document,
     send_video,
     send_animation,
-    send_voice)
+    send_voice,
+    send_video_note)
 
 
 class OrigamiBot:
@@ -295,6 +296,31 @@ class OrigamiBot:
             caption,
             parse_mode,
             duration,
+            disable_notification,
+            reply_to_message_id,
+            reply_markup
+        )
+
+    def send_video_note(self,
+                        chat_id: Union[int, str],
+                        video_note: Union[str, IO],
+                        duration: Optional[int] = None,
+                        length: Optional[int] = None,
+                        thumb: Optional[Union[str, IO]] = None,
+                        disable_notification: Optional[bool] = None,
+                        reply_to_message_id: Optional[int] = None,
+                        reply_markup: Optional[ReplyMarkup] = None
+                        ) -> Message:
+        """Use this method to send rounded square mp4 videos of up to 1 minute long.
+
+        On success, the sent Message is returned."""
+        return send_video_note(
+            self.token,
+            chat_id,
+            video_note,
+            duration,
+            length,
+            thumb,
             disable_notification,
             reply_to_message_id,
             reply_markup

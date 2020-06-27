@@ -273,7 +273,7 @@ def send_video(token: str,
                ) -> Message:
     """Use this method to send video files.
 
-    Telegram clients support mp4 videos (other formats may be sent as Document).
+    Telegram clients support mp4 videos (other formats may be sent as Document)
     On success, the sent Message is returned.
     """
     data = {
@@ -394,6 +394,48 @@ def send_voice(token: str,
     return request(
         token,
         'sendVoice',
+        data,
+        files
+    )
+
+
+def send_video_note(token: str,
+                    chat_id: Union[int, str],
+                    video_note: Union[str, IO],
+                    duration: Optional[int] = None,
+                    length: Optional[int] = None,
+                    thumb: Optional[Union[str, IO]] = None,
+                    disable_notification: Optional[bool] = None,
+                    reply_to_message_id: Optional[int] = None,
+                    reply_markup: Optional[ReplyMarkup] = None
+                    ) -> Message:
+    """Use this method to send rounded square mp4 videos of up to 1 minute long.
+
+    On success, the sent Message is returned."""
+    data = {
+            'chat_id': chat_id,
+            'duration': duration,
+            'length': length,
+            'disable_notification': disable_notification,
+            'reply_to_message_id': reply_to_message_id,
+            'reply_markup': (asdict(reply_markup)
+                             if reply_markup is not None else None)
+        }
+
+    files = dict()
+    if isinstance(video_note, str):
+        data['video_note'] = video_note
+    else:
+        files['video_note'] = video_note
+
+    if isinstance(thumb, str):
+        data['thumb'] = thumb
+    else:
+        files['thumb'] = thumb
+
+    return request(
+        token,
+        'sendVideoNote',
         data,
         files
     )
