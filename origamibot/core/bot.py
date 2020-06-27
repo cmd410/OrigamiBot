@@ -23,7 +23,8 @@ from .api_request import (
     send_video,
     send_animation,
     send_voice,
-    send_video_note)
+    send_video_note,
+    send_location)
 
 
 class OrigamiBot:
@@ -321,6 +322,31 @@ class OrigamiBot:
             duration,
             length,
             thumb,
+            disable_notification,
+            reply_to_message_id,
+            reply_markup
+        )
+
+    
+    def send_location(self,
+                      chat_id: Union[int, str],
+                      latitude: float,
+                      longitude: float,
+                      live_period: Optional[int] = None,
+                      disable_notification: Optional[bool] = None,
+                      reply_to_message_id: Optional[int] = None,
+                      reply_markup: Optional[ReplyMarkup] = None
+                      ) -> Message:
+        """Use this method to send point on the map.
+
+        On success, the sent Message is returned.
+        """
+        return send_location(
+            self.token,
+            chat_id,
+            latitude,
+            longitude,
+            live_period,
             disable_notification,
             reply_to_message_id,
             reply_markup
