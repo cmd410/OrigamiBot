@@ -88,7 +88,7 @@ def send_message(token: str,
                  reply_to_message_id: Optional[int] = None,
                  reply_markup: Optional[ReplyMarkup] = None) -> Message:
     """Use this method to send text messages.
-    
+
     On success, the sent Message is returned.
     """
     data = {
@@ -182,7 +182,7 @@ def send_audio(token: str,
                ) -> Message:
     """Use this method to send audio files.
 
-    Your audio must be in the .MP3 or .M4A format. 
+    Your audio must be in the .MP3 or .M4A format.
     On success, the sent Message is returned.
     """
     data = {
@@ -225,8 +225,8 @@ def send_document(token: str,
                   reply_to_message_id: Optional[int] = None,
                   reply_markup: Optional[ReplyMarkup] = None
                   ) -> Message:
-    """Use this method to send general files. 
-        
+    """Use this method to send general files.
+
     On success, the sent Message is returned.
     """
     data = {
@@ -479,7 +479,7 @@ def edit_message_live_location(token: str,
                                chat_id: Optional[Union[int, str]] = None,
                                message_id: Optional[int] = None,
                                inline_message_id: Optional[str] = None,
-                               reply_markup: 
+                               reply_markup:
                                Optional[InlineKeyboardMarkup] = None
                                ) -> Union[Message, bool]:
     """Use this method to edit live location messages.
@@ -501,5 +501,37 @@ def edit_message_live_location(token: str,
 
     return request(
         token,
+        'editMessageLiveLocation',
+        data
+    )
+
+
+def stop_message_live_location(token: str,
+                               chat_id:
+                               Optional[Union[int, str]] = None,
+                               message_id:
+                               Optional[int] = None,
+                               inline_message_id:
+                               Optional[str] = None,
+                               reply_markup:
+                               Optional[ReplyMarkup] = None,
+                               ) -> Union[Message, bool]:
+    """Use this method to stop updating a live location message.
+
+    On success, if the message was sent by the bot,
+    the sent Message is returned,
+    otherwise True is returned
+    """
+
+    data = {
+        'chat_id': chat_id,
+        'message_id': message_id,
+        'inline_message_id': inline_message_id,
+        'reply_markup': reply_markup
+    }
+
+    return request(
+        token,
+        'stopMessageLiveLocation',
         data
     )

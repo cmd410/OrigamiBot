@@ -27,7 +27,8 @@ from .api_request import (
     send_voice,
     send_video_note,
     send_location,
-    edit_message_live_location)
+    edit_message_live_location,
+    stop_message_live_location)
 
 
 class OrigamiBot:
@@ -41,7 +42,7 @@ class OrigamiBot:
             name='Listen thread',
             target=self._listen_loop,
             daemon=True)
-        
+
         self._process_thread = StoppableThread(
             name='Update process thread',
             target=self._process_updates_loop,
@@ -167,7 +168,7 @@ class OrigamiBot:
                    ) -> Message:
         """Use this method to send audio files.
 
-        Your audio must be in the .MP3 or .M4A format. 
+        Your audio must be in the .MP3 or .M4A format.
         On success, the sent Message is returned.
         """
         return send_audio(
@@ -195,7 +196,7 @@ class OrigamiBot:
                       reply_to_message_id: Optional[int] = None,
                       reply_markup: Optional[ReplyMarkup] = None
                       ) -> Message:
-        """Use this method to send general files. 
+        """Use this method to send general files.
 
         On success, the sent Message is returned.
         """
@@ -227,7 +228,7 @@ class OrigamiBot:
                    ) -> Message:
         """Use this method to send video files.
 
-        Telegram clients support mp4 videos 
+        Telegram clients support mp4 videos
         (other formats may be sent as Document).
         On success, the sent Message is returned.
         """
@@ -382,6 +383,31 @@ class OrigamiBot:
             reply_markup
         )
 
+    def stop_message_live_location(self,
+                                   chat_id:
+                                   Optional[Union[int, str]] = None,
+                                   message_id:
+                                   Optional[int] = None,
+                                   inline_message_id:
+                                   Optional[str] = None,
+                                   reply_markup:
+                                   Optional[ReplyMarkup] = None,
+                                   ) -> Union[Message, bool]:
+        """Use this method to stop updating a live location message.
+
+        On success, if the message was sent by the bot,
+        the sent Message is returned,
+        otherwise True is returned
+        """
+
+        return stop_message_live_location(
+            self.token,
+            chat_id,
+            message_id,
+            inline_message_id,
+            reply_markup
+        )
+
     def _process_updates_loop(self):
         """The main processing thread.
 
@@ -415,7 +441,8 @@ class OrigamiBot:
         If there are commands, returns True and tries execute them
         Else returns False
 
-        first_only bool when True will only consider first command in a message.
+        first_only bool
+        when True will only consider first command in a message.
         """
         text = message.text or message.caption
 
@@ -456,7 +483,8 @@ class OrigamiBot:
                 try:
                     method(*bound_args.args, **bound_args.kwargs)
                 except Exception as err:
-                    print(err)   # TODO actual logging on failures with user defined commands
+                    print(err)
+                    # TODO actual logging on failures
 
         return True
 
