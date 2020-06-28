@@ -30,7 +30,8 @@ from .api_request import (
     edit_message_live_location,
     stop_message_live_location,
     send_venue,
-    send_contact)
+    send_contact,
+    send_poll)
 
 
 class OrigamiBot:
@@ -461,6 +462,46 @@ class OrigamiBot:
             first_name,
             last_name,
             vcard,
+            disable_notification,
+            reply_to_message_id,
+            reply_markup
+        )
+
+    def send_poll(self,
+                  chat_id: Union[int, str],
+                  question: str,
+                  options: List[str],
+                  is_anonymous: Optional[bool] = None,
+                  type: Optional[str] = None,
+                  allows_multiple_answers: Optional[bool] = None,
+                  correct_option_id: Optional[int] = None,
+                  explanation: Optional[str] = None,
+                  explanation_parse_mode: Optional[str] = None,
+                  open_period: Optional[int] = None,
+                  close_date: Optional[int] = None,
+                  is_closed: Optional[bool] = None,
+                  disable_notification: Optional[bool] = None,
+                  reply_to_message_id: Optional[int] = None,
+                  reply_markup: Optional[ReplyMarkup] = None
+                  ) -> Message:
+        """Use this method to send a native poll.
+
+        On success, the sent Message is returned.
+        """
+        return send_poll(
+            self.token,
+            chat_id,
+            question,
+            options,
+            is_anonymous,
+            type,
+            allows_multiple_answers,
+            correct_option_id,
+            explanation,
+            explanation_parse_mode,
+            open_period,
+            close_date,
+            is_closed,
             disable_notification,
             reply_to_message_id,
             reply_markup

@@ -604,3 +604,50 @@ def send_contact(token: str,
         'sendContact',
         data
     )
+
+
+def send_poll(token: str,
+              chat_id: Union[int, str],
+              question: str,
+              options: List[str],
+              is_anonymous: Optional[bool] = None,
+              type: Optional[str] = None,
+              allows_multiple_answers: Optional[bool] = None,
+              correct_option_id: Optional[int] = None,
+              explanation: Optional[str] = None,
+              explanation_parse_mode: Optional[str] = None,
+              open_period: Optional[int] = None,
+              close_date: Optional[int] = None,
+              is_closed: Optional[bool] = None,
+              disable_notification: Optional[bool] = None,
+              reply_to_message_id: Optional[int] = None,
+              reply_markup: Optional[ReplyMarkup] = None
+              ) -> Message:
+    """Use this method to send a native poll.
+
+    On success, the sent Message is returned.
+    """
+
+    data = {
+        'chat_id': chat_id,
+        'question': question,
+        'options': options,
+        'is_anonymous': is_anonymous,
+        'type': type,
+        'allows_multiple_answers': allows_multiple_answers,
+        'correct_option_id': correct_option_id,
+        'explanation': explanation,
+        'explanation_parse_mode': explanation_parse_mode,
+        'open_period': open_period,
+        'close_date': close_date,
+        'is_closed': is_closed,
+        'disable_notification': disable_notification,
+        'reply_to_message_id': reply_to_message_id,
+        'reply_markup': reply_markup
+    }
+
+    return request(
+        token,
+        'sendPoll',
+        data
+    )
