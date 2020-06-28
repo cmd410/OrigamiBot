@@ -681,7 +681,7 @@ def map_dict(d: dict, name=None):
         d['from_user'] = d.pop('from')
 
     d_fields = set(d.keys())
-    quess_que = deque()
+    guess_que = deque()
 
     def do_recursion():
         for key, value in d.items():
@@ -692,53 +692,56 @@ def map_dict(d: dict, name=None):
 
     def match_fields():
         datatype = None
-        while quess_que:
-            quess = quess_que.popleft()
-            type_req_fields = {
+        while guess_que:
+            guess = guess_que.popleft()
+            type_fields = fields(guess)
+            required = {
                 f.name
-                for f in fields(quess)
-                if f.init
-                }
-            if all([
-                # Check if required fields are here
-                type_req_fields.issubset(d_fields),
-                # Check if no odd fields are present
-                d_fields.issubset({f.name
-                                   for f in fields(quess)})]):
-                datatype = quess
-                break
+                for f in type_fields
+                if f.default is not None
+            }
+            if not required.issubset(d_fields):
+                continue
+
+            all_fields = {
+                f.name
+                for f in type_fields
+            }
+            if not d_fields.issubset(all_fields):
+                continue
+            datatype = guess
         return datatype
 
-    quess_types = []
+    guess_types = []
     if name is not None:
         # Try to infer type from dict name
         guess = name_type_map.get(name)
         if guess is not None:
             if isinstance(guess, list):
-                quess_types = guess
-                quess_que.extend(sorted(
+                guess_types = guess
+                guess_que.extend(sorted(
                     guess,
                     key=lambda item: len(fields(item)),
                     reverse=True))
             else:
-                quess_types.append(guess)
-                quess_que.append(guess)
+                guess_types.append(guess)
+                guess_que.append(guess)
 
     if 'update_id' in d.keys():
         datatype = Update
     else:
         datatype = None
-        if quess_que:
+        if guess_que:
             datatype = match_fields()
 
     # If guess from name failed not usually supposed to happen
     # as a fallback we check all other types for match
     if datatype is None:
-        quess_que.extend(
+        guess_que.extend(
             [
                 t
                 for t in api_types
-                if t not in quess_types
+                if t not in guess_types
             ]
         )
     else:
