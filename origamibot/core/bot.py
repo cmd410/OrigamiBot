@@ -31,7 +31,8 @@ from .api_request import (
     stop_message_live_location,
     send_venue,
     send_contact,
-    send_poll)
+    send_poll,
+    send_dice)
 
 
 class OrigamiBot:
@@ -502,6 +503,26 @@ class OrigamiBot:
             open_period,
             close_date,
             is_closed,
+            disable_notification,
+            reply_to_message_id,
+            reply_markup
+        )
+
+    def send_dice(self,
+                  chat_id: Union[int, str],
+                  emoji: Optional[str] = None,
+                  disable_notification: Optional[bool] = None,
+                  reply_to_message_id: Optional[int] = None,
+                  reply_markup: Optional[ReplyMarkup] = None
+                  ) -> Message:
+        """Use this method to send an animated emoji that will display a random value.
+
+        On success, the sent Message is returned.
+        """
+        return send_dice(
+            self.token,
+            chat_id,
+            emoji,
             disable_notification,
             reply_to_message_id,
             reply_markup

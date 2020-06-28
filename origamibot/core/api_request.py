@@ -651,3 +651,30 @@ def send_poll(token: str,
         'sendPoll',
         data
     )
+
+
+def send_dice(token: str,
+              chat_id: Union[int, str],
+              emoji: Optional[str] = None,
+              disable_notification: Optional[bool] = None,
+              reply_to_message_id: Optional[int] = None,
+              reply_markup: Optional[ReplyMarkup] = None
+              ) -> Message:
+    """Use this method to send an animated emoji that will display a random value.
+
+    On success, the sent Message is returned.
+    """
+
+    data = {
+        'chat_id': chat_id,
+        'emoji': emoji,
+        'disable_notification': disable_notification,
+        'reply_to_message_id': reply_to_message_id,
+        'reply_markup': reply_markup
+    }
+
+    return request(
+        token,
+        'sendDice',
+        data
+    )
