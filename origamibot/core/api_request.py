@@ -792,3 +792,41 @@ def restrict_chat_member(token: str,
         'restrictChatMember',
         data
     )
+
+
+def promote_chat_member(token: str,
+                        chat_id: Union[int, str],
+                        user_id: int,
+                        can_change_info: Optional[bool] = None,
+                        can_post_messages: Optional[bool] = None,
+                        can_edit_messages: Optional[bool] = None,
+                        can_delete_messages: Optional[bool] = None,
+                        can_invite_users: Optional[bool] = None,
+                        can_restrict_members: Optional[bool] = None,
+                        can_pin_messages: Optional[bool] = None,
+                        can_promote_members: Optional[bool] = None
+                        ) -> bool:
+    """Use this method to promote
+    or demote a user in a supergroup or a channel.
+
+    Returns True on success.
+    """
+
+    data = {
+        'chat_id': chat_id,
+        'user_id': user_id,
+        'can_change_info': can_change_info,
+        'can_post_messges': can_post_messages,
+        'can_edit_messages': can_edit_messages,
+        'can_delete_messages': can_delete_messages,
+        'can_invite_users': can_invite_users,
+        'can_restrict_users': can_restrict_members,
+        'can_pin_messages': can_pin_messages,
+        'can_promote_members': can_promote_members
+    }
+
+    return request(
+        token,
+        'promoteChatMember',
+        data
+    )

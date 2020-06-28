@@ -40,7 +40,8 @@ from .api_request import (
     get_user_profile_photos,
     kick_chat_member,
     unban_chat_member,
-    restrict_chat_member)
+    restrict_chat_member,
+    promote_chat_member)
 
 
 class OrigamiBot:
@@ -626,6 +627,36 @@ class OrigamiBot:
             until_date
         )
 
+    def promote_chat_member(self,
+                            chat_id: Union[int, str],
+                            user_id: int,
+                            can_change_info: Optional[bool] = None,
+                            can_post_messages: Optional[bool] = None,
+                            can_edit_messages: Optional[bool] = None,
+                            can_delete_messages: Optional[bool] = None,
+                            can_invite_users: Optional[bool] = None,
+                            can_restrict_members: Optional[bool] = None,
+                            can_pin_messages: Optional[bool] = None,
+                            can_promote_members: Optional[bool] = None
+                            ) -> bool:
+        """Use this method to promote
+        or demote a user in a supergroup or a channel.
+
+        Returns True on success.
+        """
+        return promote_chat_member(
+            self.token,
+            chat_id,
+            user_id,
+            can_change_info,
+            can_post_messages,
+            can_edit_messages,
+            can_delete_messages,
+            can_invite_users,
+            can_restrict_members,
+            can_pin_messages,
+            can_promote_members
+        )
 
     def _process_updates_loop(self):
         """The main processing thread.
