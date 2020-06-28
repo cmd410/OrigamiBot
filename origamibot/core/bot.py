@@ -29,7 +29,8 @@ from .api_request import (
     send_location,
     edit_message_live_location,
     stop_message_live_location,
-    send_venue)
+    send_venue,
+    send_contact)
 
 
 class OrigamiBot:
@@ -434,6 +435,32 @@ class OrigamiBot:
             address,
             foursquare_id,
             foursquare_type,
+            disable_notification,
+            reply_to_message_id,
+            reply_markup
+        )
+
+    def send_contact(self,
+                     chat_id: Union[int, str],
+                     phone_number: str,
+                     first_name: str,
+                     last_name: Optional[str] = None,
+                     vcard: Optional[str] = None,
+                     disable_notification: Optional[bool] = None,
+                     reply_to_message_id: Optional[int] = None,
+                     reply_markup: Optional[ReplyMarkup] = None
+                     ) -> Message:
+        """Use this method to send phone contacts.
+
+        On success, the sent Message is returned.
+        """
+        return send_contact(
+            self.token,
+            chat_id,
+            phone_number,
+            first_name,
+            last_name,
+            vcard,
             disable_notification,
             reply_to_message_id,
             reply_markup

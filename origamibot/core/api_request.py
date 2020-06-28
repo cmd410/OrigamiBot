@@ -572,3 +572,35 @@ def send_venue(token: str,
         'sendVenue',
         data
     )
+
+
+def send_contact(token: str,
+                 chat_id: Union[int, str],
+                 phone_number: str,
+                 first_name: str,
+                 last_name: Optional[str] = None,
+                 vcard: Optional[str] = None,
+                 disable_notification: Optional[bool] = None,
+                 reply_to_message_id: Optional[int] = None,
+                 reply_markup: Optional[ReplyMarkup] = None
+                 ) -> Message:
+    """Use this method to send phone contacts.
+
+    On success, the sent Message is returned.
+    """
+    data = {
+        'chat_id': chat_id,
+        'phone_number': phone_number,
+        'first_name': first_name,
+        'last_name': last_name,
+        'vcard': vcard,
+        'disable_notification': disable_notification,
+        'reply_to_message_id': reply_to_message_id,
+        'reply_markup': reply_markup
+    }
+
+    return request(
+        token,
+        'sendContact',
+        data
+    )
