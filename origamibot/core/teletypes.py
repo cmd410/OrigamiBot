@@ -699,7 +699,12 @@ def map_dict(d: dict, name=None):
                 for f in fields(quess)
                 if f.init
                 }
-            if type_req_fields.issubset(d_fields):
+            if all([
+                # Check if required fields are here
+                type_req_fields.issubset(d_fields),
+                # Check if no odd fields are present
+                d_fields.issubset({f.name
+                                   for f in fields(quess)})]):
                 datatype = quess
                 break
         return datatype
