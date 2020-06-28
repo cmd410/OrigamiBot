@@ -11,7 +11,8 @@ from .teletypes import (
     Message,
     ReplyMarkup,
     InlineKeyboardMarkup,
-    UserProfilePhotos)
+    UserProfilePhotos,
+    ChatPermissions)
 
 from .commands import CommandContainer
 from .util import check_args
@@ -38,7 +39,8 @@ from .api_request import (
     send_chat_action,
     get_user_profile_photos,
     kick_chat_member,
-    unban_chat_member)
+    unban_chat_member,
+    restrict_chat_member)
 
 
 class OrigamiBot:
@@ -600,6 +602,30 @@ class OrigamiBot:
             chat_id,
             user_id
         )
+
+    def restrict_chat_member(self,
+                             chat_id: Union[int, str],
+                             user_id: int,
+                             permissions: ChatPermissions,
+                             until_date: Optional[int] = None
+                             ) -> bool:
+        """Use this method to restrict a user in a supergroup.
+
+        The bot must be an administrator in the supergroup
+        for this to work and must have the appropriate admin rights.
+
+        Pass True for all permissions to lift restrictions from a user.
+
+        Returns True on success.
+        """
+        return restrict_chat_member(
+            self.token,
+            chat_id,
+            user_id,
+            permissions,
+            until_date
+        )
+
 
     def _process_updates_loop(self):
         """The main processing thread.

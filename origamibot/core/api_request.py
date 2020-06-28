@@ -11,7 +11,8 @@ from .teletypes import (
     Message,
     ReplyMarkup,
     InlineKeyboardMarkup,
-    UserProfilePhotos)
+    UserProfilePhotos,
+    ChatPermissions)
 
 
 api_url = 'https://api.telegram.org/bot{token}/{method}'
@@ -761,4 +762,33 @@ def unban_chat_member(token: str,
             'chat_id': chat_id,
             'user_id': user_id
         }
+    )
+
+
+def restrict_chat_member(token: str,
+                         chat_id: Union[int, str],
+                         user_id: int,
+                         permissions: ChatPermissions,
+                         until_date: Optional[int] = None
+                         ) -> bool:
+    """Use this method to restrict a user in a supergroup.
+
+    The bot must be an administrator in the supergroup
+    for this to work and must have the appropriate admin rights.
+
+    Pass True for all permissions to lift restrictions from a user.
+
+    Returns True on success.
+    """
+    data = {
+        'chat_id': chat_id,
+        'user_id': user_id,
+        'permissions': asdict(permissions),
+        'until_date': until_date
+    }
+
+    return request(
+        token,
+        'restrictChatMember',
+        data
     )
