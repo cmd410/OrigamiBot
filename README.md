@@ -4,10 +4,6 @@
 
 Library for creating bots for telegram with [Python](https://www.python.org/). 
 
-## TODO
-
-- implement methods for sending messages, media, etc.
-
 ## Usage example
 
 Here goes a simple example of a bot:
@@ -24,19 +20,14 @@ class BotsCommands:
         self.bot = bot
         
     def start(self, message):   # /start command
-        self.bot.send_message(
-            message.chat.id,
+        self.bot.send_message(message.chat.id,
             'Hello user!\nThis is an example bot.')
     
     def echo(self, message, value: str):  # /echo [value: str] command
-        self.bot.send_message(
-            message.chat.id,
-        	value)
+        self.bot.send_message(message.chat.id, value)
      
     def add(self, message, a: float, b: float):   # /add [a: float] [b: float] command
-        self.bot.send_message(
-        	message.chat.id,
-            str(a + b))
+        self.bot.send_message(message.chat.id, str(a + b))
 
 
 if __name__ == '__main__':
@@ -64,3 +55,30 @@ Method signature supports any number of arguments with simple typing(`str`, `int
 
 > **Boolean** values are considered True if their string representation is in `{'True', 'true', '1'}`, and False if in `{'False', 'false', '0'}`
 
+## TODO
+
+1. implement API methods:
+
+   -  setChatAdministratorCustomTitle
+   -  setChatPermissions
+   -  exportChatInviteLink
+   -  setChatPhoto
+   -  deleteChatPhoto
+   -  setChatTitle
+   -  setChatDescription
+   -  pinChatMessage
+   -  unpinChatMessage
+   -  leaveChat
+   -  getChat
+   -  getChatAdministrators
+   -  getChatMembersCount
+   -  getChatMember
+   -  setChatStickerSet
+   -  deleteChatStickerSet
+   -  answerCallbackQuery
+   -  setMyCommands
+   - getMyCommands
+
+2. Add support for inline mode
+3. Process general messages without commands too
+4. Process events like chat member join/leave, etc
