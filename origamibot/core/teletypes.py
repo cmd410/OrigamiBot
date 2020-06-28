@@ -694,8 +694,12 @@ def map_dict(d: dict, name=None):
         datatype = None
         while quess_que:
             quess = quess_que.popleft()
-            type_fields = {f.name for f in fields(quess)}
-            if d_fields.issubset(type_fields):
+            type_req_fields = {
+                f.name
+                for f in fields(quess)
+                if f.init
+                }
+            if type_req_fields.issubset(d_fields):
                 datatype = quess
                 break
         return datatype
