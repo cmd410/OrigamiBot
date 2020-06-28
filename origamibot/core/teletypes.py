@@ -361,7 +361,7 @@ class InputMedia:
     def file(self):
         """Returns local file attach://[name], and [file path]
 
-        if no local file returns None, None 
+        if no local file returns None, None
         """
         if not self._file:
             return None, None
