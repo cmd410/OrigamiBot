@@ -32,7 +32,8 @@ from .api_request import (
     send_venue,
     send_contact,
     send_poll,
-    send_dice)
+    send_dice,
+    send_chat_action)
 
 
 class OrigamiBot:
@@ -526,6 +527,23 @@ class OrigamiBot:
             disable_notification,
             reply_to_message_id,
             reply_markup
+        )
+
+    def send_chat_action(self,
+                         chat_id: Union[int, str],
+                         action: str
+                         ) -> bool:
+        """Use this method to tell that something is happening on the bot's side.
+
+        The status is set for 5 seconds or less,
+        when a message arrives from your bot, clients clear its typing status
+
+        Returns True on success.
+        """
+        return send_chat_action(
+            self.token,
+            chat_id,
+            action
         )
 
     def _process_updates_loop(self):

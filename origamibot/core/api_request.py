@@ -678,3 +678,24 @@ def send_dice(token: str,
         'sendDice',
         data
     )
+
+
+def send_chat_action(token: str,
+                     chat_id: Union[int, str],
+                     action: str
+                     ) -> bool:
+    """Use this method to tell that something is happening on the bot's side.
+
+    The status is set for 5 seconds or less,
+    when a message arrives from your bot, clients clear its typing status
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'sendChatAction',
+        {
+            'chat_id': chat_id,
+            'action': action
+        }
+    )
