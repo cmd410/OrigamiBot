@@ -37,7 +37,8 @@ from .api_request import (
     send_dice,
     send_chat_action,
     get_user_profile_photos,
-    kick_chat_member)
+    kick_chat_member,
+    unban_chat_member)
 
 
 class OrigamiBot:
@@ -583,6 +584,21 @@ class OrigamiBot:
             chat_id,
             user_id,
             until_date
+        )
+
+    def unban_chat_member(self,
+                          chat_id: Union[int, str],
+                          user_id: int
+                          ) -> bool:
+        """Use this method to unban
+        a previously kicked user in a supergroup or channel.
+
+        Returns True on success.
+        """
+        return unban_chat_member(
+            self.token,
+            chat_id,
+            user_id
         )
 
     def _process_updates_loop(self):

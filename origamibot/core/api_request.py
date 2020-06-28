@@ -743,3 +743,22 @@ def kick_chat_member(token: str,
             'until_date': until_date
         }
     )
+
+
+def unban_chat_member(token: str,
+                      chat_id: Union[int, str],
+                      user_id: int
+                      ) -> bool:
+    """Use this method to unban
+    a previously kicked user in a supergroup or channel.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'unbanChatMember',
+        {
+            'chat_id': chat_id,
+            'user_id': user_id
+        }
+    )
