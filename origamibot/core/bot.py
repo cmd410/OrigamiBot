@@ -10,7 +10,10 @@ from .teletypes import (
     Update,
     Message,
     ReplyMarkup,
-    InlineKeyboardMarkup)
+    InlineKeyboardMarkup,
+    UserProfilePhotos,
+    ChatPermissions)
+
 from .commands import CommandContainer
 from .util import check_args
 
@@ -29,7 +32,16 @@ from .api_request import (
     send_location,
     edit_message_live_location,
     stop_message_live_location,
-    send_venue)
+    send_venue,
+    send_contact,
+    send_poll,
+    send_dice,
+    send_chat_action,
+    get_user_profile_photos,
+    kick_chat_member,
+    unban_chat_member,
+    restrict_chat_member,
+    promote_chat_member)
 
 
 class OrigamiBot:
@@ -437,6 +449,213 @@ class OrigamiBot:
             disable_notification,
             reply_to_message_id,
             reply_markup
+        )
+
+    def send_contact(self,
+                     chat_id: Union[int, str],
+                     phone_number: str,
+                     first_name: str,
+                     last_name: Optional[str] = None,
+                     vcard: Optional[str] = None,
+                     disable_notification: Optional[bool] = None,
+                     reply_to_message_id: Optional[int] = None,
+                     reply_markup: Optional[ReplyMarkup] = None
+                     ) -> Message:
+        """Use this method to send phone contacts.
+
+        On success, the sent Message is returned.
+        """
+        return send_contact(
+            self.token,
+            chat_id,
+            phone_number,
+            first_name,
+            last_name,
+            vcard,
+            disable_notification,
+            reply_to_message_id,
+            reply_markup
+        )
+
+    def send_poll(self,
+                  chat_id: Union[int, str],
+                  question: str,
+                  options: List[str],
+                  is_anonymous: Optional[bool] = None,
+                  type: Optional[str] = None,
+                  allows_multiple_answers: Optional[bool] = None,
+                  correct_option_id: Optional[int] = None,
+                  explanation: Optional[str] = None,
+                  explanation_parse_mode: Optional[str] = None,
+                  open_period: Optional[int] = None,
+                  close_date: Optional[int] = None,
+                  is_closed: Optional[bool] = None,
+                  disable_notification: Optional[bool] = None,
+                  reply_to_message_id: Optional[int] = None,
+                  reply_markup: Optional[ReplyMarkup] = None
+                  ) -> Message:
+        """Use this method to send a native poll.
+
+        On success, the sent Message is returned.
+        """
+        return send_poll(
+            self.token,
+            chat_id,
+            question,
+            options,
+            is_anonymous,
+            type,
+            allows_multiple_answers,
+            correct_option_id,
+            explanation,
+            explanation_parse_mode,
+            open_period,
+            close_date,
+            is_closed,
+            disable_notification,
+            reply_to_message_id,
+            reply_markup
+        )
+
+    def send_dice(self,
+                  chat_id: Union[int, str],
+                  emoji: Optional[str] = None,
+                  disable_notification: Optional[bool] = None,
+                  reply_to_message_id: Optional[int] = None,
+                  reply_markup: Optional[ReplyMarkup] = None
+                  ) -> Message:
+        """Use this method to send an animated emoji that will display a random value.
+
+        On success, the sent Message is returned.
+        """
+        return send_dice(
+            self.token,
+            chat_id,
+            emoji,
+            disable_notification,
+            reply_to_message_id,
+            reply_markup
+        )
+
+    def send_chat_action(self,
+                         chat_id: Union[int, str],
+                         action: str
+                         ) -> bool:
+        """Use this method to tell that something is happening on the bot's side.
+
+        The status is set for 5 seconds or less,
+        when a message arrives from your bot, clients clear its typing status
+
+        Returns True on success.
+        """
+        return send_chat_action(
+            self.token,
+            chat_id,
+            action
+        )
+
+    def get_user_profile_photos(self,
+                                user_id: int,
+                                offset: Optional[int] = None,
+                                limit: Optional[int] = None
+                                ) -> UserProfilePhotos:
+        """Use this method to get a list of profile pictures for a user.
+
+        Returns a UserProfilePhotos object.
+        """
+        return get_user_profile_photos(
+            self.token,
+            user_id,
+            offset,
+            limit
+        )
+
+    def kick_chat_member(self,
+                         chat_id: Union[int, str],
+                         user_id: int,
+                         until_date: Optional[int] = None
+                         ) -> bool:
+        """Use this method to kick a user from a group, a supergroup or a channel.
+
+        The bot must be an administrator in the chat for this to work
+        and must have the appropriate admin rights.
+
+        Returns True on success.
+        """
+        return kick_chat_member(
+            self.token,
+            chat_id,
+            user_id,
+            until_date
+        )
+
+    def unban_chat_member(self,
+                          chat_id: Union[int, str],
+                          user_id: int
+                          ) -> bool:
+        """Use this method to unban
+        a previously kicked user in a supergroup or channel.
+
+        Returns True on success.
+        """
+        return unban_chat_member(
+            self.token,
+            chat_id,
+            user_id
+        )
+
+    def restrict_chat_member(self,
+                             chat_id: Union[int, str],
+                             user_id: int,
+                             permissions: ChatPermissions,
+                             until_date: Optional[int] = None
+                             ) -> bool:
+        """Use this method to restrict a user in a supergroup.
+
+        The bot must be an administrator in the supergroup
+        for this to work and must have the appropriate admin rights.
+
+        Pass True for all permissions to lift restrictions from a user.
+
+        Returns True on success.
+        """
+        return restrict_chat_member(
+            self.token,
+            chat_id,
+            user_id,
+            permissions,
+            until_date
+        )
+
+    def promote_chat_member(self,
+                            chat_id: Union[int, str],
+                            user_id: int,
+                            can_change_info: Optional[bool] = None,
+                            can_post_messages: Optional[bool] = None,
+                            can_edit_messages: Optional[bool] = None,
+                            can_delete_messages: Optional[bool] = None,
+                            can_invite_users: Optional[bool] = None,
+                            can_restrict_members: Optional[bool] = None,
+                            can_pin_messages: Optional[bool] = None,
+                            can_promote_members: Optional[bool] = None
+                            ) -> bool:
+        """Use this method to promote
+        or demote a user in a supergroup or a channel.
+
+        Returns True on success.
+        """
+        return promote_chat_member(
+            self.token,
+            chat_id,
+            user_id,
+            can_change_info,
+            can_post_messages,
+            can_edit_messages,
+            can_delete_messages,
+            can_invite_users,
+            can_restrict_members,
+            can_pin_messages,
+            can_promote_members
         )
 
     def _process_updates_loop(self):

@@ -10,7 +10,9 @@ from .teletypes import (
     User,
     Message,
     ReplyMarkup,
-    InlineKeyboardMarkup)
+    InlineKeyboardMarkup,
+    UserProfilePhotos,
+    ChatPermissions)
 
 
 api_url = 'https://api.telegram.org/bot{token}/{method}'
@@ -570,5 +572,261 @@ def send_venue(token: str,
     return request(
         token,
         'sendVenue',
+        data
+    )
+
+
+def send_contact(token: str,
+                 chat_id: Union[int, str],
+                 phone_number: str,
+                 first_name: str,
+                 last_name: Optional[str] = None,
+                 vcard: Optional[str] = None,
+                 disable_notification: Optional[bool] = None,
+                 reply_to_message_id: Optional[int] = None,
+                 reply_markup: Optional[ReplyMarkup] = None
+                 ) -> Message:
+    """Use this method to send phone contacts.
+
+    On success, the sent Message is returned.
+    """
+    data = {
+        'chat_id': chat_id,
+        'phone_number': phone_number,
+        'first_name': first_name,
+        'last_name': last_name,
+        'vcard': vcard,
+        'disable_notification': disable_notification,
+        'reply_to_message_id': reply_to_message_id,
+        'reply_markup': reply_markup
+    }
+
+    return request(
+        token,
+        'sendContact',
+        data
+    )
+
+
+def send_poll(token: str,
+              chat_id: Union[int, str],
+              question: str,
+              options: List[str],
+              is_anonymous: Optional[bool] = None,
+              type: Optional[str] = None,
+              allows_multiple_answers: Optional[bool] = None,
+              correct_option_id: Optional[int] = None,
+              explanation: Optional[str] = None,
+              explanation_parse_mode: Optional[str] = None,
+              open_period: Optional[int] = None,
+              close_date: Optional[int] = None,
+              is_closed: Optional[bool] = None,
+              disable_notification: Optional[bool] = None,
+              reply_to_message_id: Optional[int] = None,
+              reply_markup: Optional[ReplyMarkup] = None
+              ) -> Message:
+    """Use this method to send a native poll.
+
+    On success, the sent Message is returned.
+    """
+
+    data = {
+        'chat_id': chat_id,
+        'question': question,
+        'options': options,
+        'is_anonymous': is_anonymous,
+        'type': type,
+        'allows_multiple_answers': allows_multiple_answers,
+        'correct_option_id': correct_option_id,
+        'explanation': explanation,
+        'explanation_parse_mode': explanation_parse_mode,
+        'open_period': open_period,
+        'close_date': close_date,
+        'is_closed': is_closed,
+        'disable_notification': disable_notification,
+        'reply_to_message_id': reply_to_message_id,
+        'reply_markup': reply_markup
+    }
+
+    return request(
+        token,
+        'sendPoll',
+        data
+    )
+
+
+def send_dice(token: str,
+              chat_id: Union[int, str],
+              emoji: Optional[str] = None,
+              disable_notification: Optional[bool] = None,
+              reply_to_message_id: Optional[int] = None,
+              reply_markup: Optional[ReplyMarkup] = None
+              ) -> Message:
+    """Use this method to send an animated emoji that will display a random value.
+
+    On success, the sent Message is returned.
+    """
+
+    data = {
+        'chat_id': chat_id,
+        'emoji': emoji,
+        'disable_notification': disable_notification,
+        'reply_to_message_id': reply_to_message_id,
+        'reply_markup': reply_markup
+    }
+
+    return request(
+        token,
+        'sendDice',
+        data
+    )
+
+
+def send_chat_action(token: str,
+                     chat_id: Union[int, str],
+                     action: str
+                     ) -> bool:
+    """Use this method to tell that something is happening on the bot's side.
+
+    The status is set for 5 seconds or less,
+    when a message arrives from your bot, clients clear its typing status
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'sendChatAction',
+        {
+            'chat_id': chat_id,
+            'action': action
+        }
+    )
+
+
+def get_user_profile_photos(token: str,
+                            user_id: int,
+                            offset: Optional[int] = None,
+                            limit: Optional[int] = None
+                            ) -> UserProfilePhotos:
+    """Use this method to get a list of profile pictures for a user.
+
+    Returns a UserProfilePhotos object.
+    """
+    return request(
+        token,
+        'getUserProfilePhotos',
+        {
+            'user_id': user_id,
+            'offset': offset,
+            'limit': limit
+        }
+    )
+
+
+def kick_chat_member(token: str,
+                     chat_id: Union[int, str],
+                     user_id: int,
+                     until_date: Optional[int] = None
+                     ) -> bool:
+    """Use this method to kick a user from a group, a supergroup or a channel.
+
+    The bot must be an administrator in the chat for this to work
+    and must have the appropriate admin rights.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'kickChatmember',
+        {
+            'chat_id': chat_id,
+            'user_id': user_id,
+            'until_date': until_date
+        }
+    )
+
+
+def unban_chat_member(token: str,
+                      chat_id: Union[int, str],
+                      user_id: int
+                      ) -> bool:
+    """Use this method to unban
+    a previously kicked user in a supergroup or channel.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'unbanChatMember',
+        {
+            'chat_id': chat_id,
+            'user_id': user_id
+        }
+    )
+
+
+def restrict_chat_member(token: str,
+                         chat_id: Union[int, str],
+                         user_id: int,
+                         permissions: ChatPermissions,
+                         until_date: Optional[int] = None
+                         ) -> bool:
+    """Use this method to restrict a user in a supergroup.
+
+    The bot must be an administrator in the supergroup
+    for this to work and must have the appropriate admin rights.
+
+    Pass True for all permissions to lift restrictions from a user.
+
+    Returns True on success.
+    """
+    data = {
+        'chat_id': chat_id,
+        'user_id': user_id,
+        'permissions': asdict(permissions),
+        'until_date': until_date
+    }
+
+    return request(
+        token,
+        'restrictChatMember',
+        data
+    )
+
+
+def promote_chat_member(token: str,
+                        chat_id: Union[int, str],
+                        user_id: int,
+                        can_change_info: Optional[bool] = None,
+                        can_post_messages: Optional[bool] = None,
+                        can_edit_messages: Optional[bool] = None,
+                        can_delete_messages: Optional[bool] = None,
+                        can_invite_users: Optional[bool] = None,
+                        can_restrict_members: Optional[bool] = None,
+                        can_pin_messages: Optional[bool] = None,
+                        can_promote_members: Optional[bool] = None
+                        ) -> bool:
+    """Use this method to promote
+    or demote a user in a supergroup or a channel.
+
+    Returns True on success.
+    """
+
+    data = {
+        'chat_id': chat_id,
+        'user_id': user_id,
+        'can_change_info': can_change_info,
+        'can_post_messges': can_post_messages,
+        'can_edit_messages': can_edit_messages,
+        'can_delete_messages': can_delete_messages,
+        'can_invite_users': can_invite_users,
+        'can_restrict_users': can_restrict_members,
+        'can_pin_messages': can_pin_messages,
+        'can_promote_members': can_promote_members
+    }
+
+    return request(
+        token,
+        'promoteChatMember',
         data
     )

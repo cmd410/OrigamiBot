@@ -1,1 +1,1 @@
-from .core.bot import OrigamiBot
+from .core.bot import OrigamiBot  # NOQA

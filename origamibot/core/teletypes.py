@@ -1,6 +1,7 @@
 """All Telegram API types here"""
 
 from dataclasses import dataclass, fields, is_dataclass
+from collections import deque
 from inspect import getmembers
 from sys import modules
 from typing import Union, IO
@@ -360,7 +361,7 @@ class InputMedia:
     def file(self):
         """Returns local file attach://[name], and [file path]
 
-        if no local file returns None, None 
+        if no local file returns None, None
         """
         if not self._file:
             return None, None
@@ -619,12 +620,50 @@ api_types = sorted(
     key=lambda cls: len(fields(cls)),
     reverse=True)
 
+
 ReplyMarkup = Union[InlineKeyboardMarkup,
                     ReplyKeyboardMarkup,
                     ReplyKeyboardRemove,
                     ForceReply]
 
+
 __all__ = api_types + [ReplyMarkup]
+
+
+name_type_map = {
+            'message': Message,
+            'from_user': User,
+            'chat': Chat,
+            'reply_markup': [
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply
+            ],
+            'user': User,
+            'login_url': LoginUrl,
+            'location': Location,
+            'thumb': PhotoSize,
+            'passport_data': PassportData,
+            'successful_payment': SuccessfulPayment,
+            'invoice': Invoice,
+            'pinned_message': Message,
+            'left_chat_member': User,
+            'venue': Venue,
+            'poll': Poll,
+            'dice': Dice,
+            'contact': Contact,
+            'voice': Voice,
+            'sticker': Sticker,
+            'document': Document,
+            'audio': Audio,
+            'animation': Animation,
+            'forward_from': User,
+            'forward_from_chat': Chat,
+            'permissions': ChatPermissions,
+            'photo': ChatPhoto,
+            'entities': MessageEntity
+        }
 
 
 def asdict(o):
@@ -633,25 +672,103 @@ def asdict(o):
             if v is not None and not k.startswith('_')}
 
 
-def native_type(dic: dict):
-    """Recursively converts given dict into suitable dataclass"""
+def map_dict(d: dict, name=None):
+    """Tries to convert dict into dataclass considering name for perfomance
 
-    if 'from' in dic.keys():
-        dic['from_user'] = dic.pop('from')
+    returns dataclass on success, and dict on failure.
+    """
+    if 'from' in d.keys():
+        d['from_user'] = d.pop('from')
 
-    data_fields = set(dic.keys())
-    for key, value in dic.items():
-        if isinstance(value, dict):
-            dic[key] = native_type(value)
-        elif isinstance(value, list):
-            for i, d in enumerate(value):
-                value[i] = native_type(d)
-     
-    for cls in api_types:
-        type_fields = set([i.name for i in fields(cls)])
-        if data_fields.issubset(type_fields):
-            try:
-                return cls(**dic)
-            except TypeError:   # On missing required arguments
-                continue
-    return dic
+    d_fields = set(d.keys())
+    quess_que = deque()
+
+    def do_recursion():
+        for key, value in d.items():
+            if isinstance(value, dict):
+                d[key] = map_dict(value, key)
+            elif isinstance(value, list):
+                d[key] = map_list(value)
+
+    def match_fields():
+        datatype = None
+        while quess_que:
+            quess = quess_que.popleft()
+            type_req_fields = {
+                f.name
+                for f in fields(quess)
+                if f.init
+                }
+            if type_req_fields.issubset(d_fields):
+                datatype = quess
+                break
+        return datatype
+
+    quess_types = []
+    if name is not None:
+        # Try to infer type from dict name
+        guess = name_type_map.get(name)
+        if guess is not None:
+            if isinstance(guess, list):
+                quess_types = guess
+                quess_que.extend(sorted(
+                    guess,
+                    key=lambda item: len(fields(item)),
+                    reverse=True))
+            else:
+                quess_types.append(guess)
+                quess_que.append(guess)
+
+    if 'update_id' in d.keys():
+        datatype = Update
+    else:
+        datatype = None
+        if quess_que:
+            datatype = match_fields()
+
+    # If guess from name failed not usually supposed to happen
+    # as a fallback we check all other types for match
+    if datatype is None:
+        quess_que.extend(
+            [
+                t
+                for t in api_types
+                if t not in quess_types
+            ]
+        )
+    else:
+        do_recursion()
+        return datatype(**d)
+
+    datatype = match_fields()
+
+    if datatype is None:
+        return d
+
+    do_recursion()
+
+    return datatype(**d)
+
+
+def map_list(arr: list, name=None):
+    if not arr:
+        return arr
+    raw_type = type(arr[0])
+    if raw_type not in {dict, list}:
+        return arr
+    elif raw_type == list:
+        return [map_list(i, name) for i in arr]
+    elif raw_type == dict:
+        return [map_dict(i, name) for i in arr]
+
+
+def native_type(d):
+    """Recursively converts given dict/list into suitable dataclass"""
+    t = type(d)
+    if t not in {dict, list}:
+        return d
+    if t == dict:
+        return map_dict(d)
+    if t == list:
+        return map_list(d)
+    return d
