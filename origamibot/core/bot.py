@@ -10,7 +10,9 @@ from .teletypes import (
     Update,
     Message,
     ReplyMarkup,
-    InlineKeyboardMarkup)
+    InlineKeyboardMarkup,
+    UserProfilePhotos)
+
 from .commands import CommandContainer
 from .util import check_args
 
@@ -33,7 +35,8 @@ from .api_request import (
     send_contact,
     send_poll,
     send_dice,
-    send_chat_action)
+    send_chat_action,
+    get_user_profile_photos)
 
 
 class OrigamiBot:
@@ -544,6 +547,22 @@ class OrigamiBot:
             self.token,
             chat_id,
             action
+        )
+
+    def get_user_profile_photos(self,
+                                user_id: int,
+                                offset: Optional[int] = None,
+                                limit: Optional[int] = None
+                                ) -> UserProfilePhotos:
+        """Use this method to get a list of profile pictures for a user.
+
+        Returns a UserProfilePhotos object.
+        """
+        return get_user_profile_photos(
+            self.token,
+            user_id,
+            offset,
+            limit
         )
 
     def _process_updates_loop(self):

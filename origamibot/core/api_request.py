@@ -10,7 +10,8 @@ from .teletypes import (
     User,
     Message,
     ReplyMarkup,
-    InlineKeyboardMarkup)
+    InlineKeyboardMarkup,
+    UserProfilePhotos)
 
 
 api_url = 'https://api.telegram.org/bot{token}/{method}'
@@ -697,5 +698,25 @@ def send_chat_action(token: str,
         {
             'chat_id': chat_id,
             'action': action
+        }
+    )
+
+
+def get_user_profile_photos(token: str,
+                            user_id: int,
+                            offset: Optional[int] = None,
+                            limit: Optional[int] = None
+                            ) -> UserProfilePhotos:
+    """Use this method to get a list of profile pictures for a user.
+
+    Returns a UserProfilePhotos object.
+    """
+    return request(
+        token,
+        'getUserProfilePhotos',
+        {
+            'user_id': user_id,
+            'offset': offset,
+            'limit': limit
         }
     )
