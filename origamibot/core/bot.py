@@ -36,7 +36,8 @@ from .api_request import (
     send_poll,
     send_dice,
     send_chat_action,
-    get_user_profile_photos)
+    get_user_profile_photos,
+    kick_chat_member)
 
 
 class OrigamiBot:
@@ -563,6 +564,25 @@ class OrigamiBot:
             user_id,
             offset,
             limit
+        )
+
+    def kick_chat_member(self,
+                         chat_id: Union[int, str],
+                         user_id: int,
+                         until_date: Optional[int] = None
+                         ) -> bool:
+        """Use this method to kick a user from a group, a supergroup or a channel.
+
+        The bot must be an administrator in the chat for this to work
+        and must have the appropriate admin rights.
+
+        Returns True on success.
+        """
+        return kick_chat_member(
+            self.token,
+            chat_id,
+            user_id,
+            until_date
         )
 
     def _process_updates_loop(self):

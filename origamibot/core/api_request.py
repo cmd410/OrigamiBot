@@ -720,3 +720,26 @@ def get_user_profile_photos(token: str,
             'limit': limit
         }
     )
+
+
+def kick_chat_member(token: str,
+                     chat_id: Union[int, str],
+                     user_id: int,
+                     until_date: Optional[int] = None
+                     ) -> bool:
+    """Use this method to kick a user from a group, a supergroup or a channel.
+
+    The bot must be an administrator in the chat for this to work
+    and must have the appropriate admin rights.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'kickChatmember',
+        {
+            'chat_id': chat_id,
+            'user_id': user_id,
+            'until_date': until_date
+        }
+    )
