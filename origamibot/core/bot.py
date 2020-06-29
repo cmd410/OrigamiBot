@@ -41,7 +41,8 @@ from .api_request import (
     kick_chat_member,
     unban_chat_member,
     restrict_chat_member,
-    promote_chat_member)
+    promote_chat_member,
+    set_chat_administrator_custom_title)
 
 
 class OrigamiBot:
@@ -656,6 +657,23 @@ class OrigamiBot:
             can_restrict_members,
             can_pin_messages,
             can_promote_members
+        )
+
+    def set_chat_administrator_custom_title(self,
+                                            chat_id: Union[int, str],
+                                            user_id: int,
+                                            custom_title: int
+                                            ) -> bool:
+        """Use this method to set a custom title for an administrator
+        in a supergroup promoted by the bot.
+
+        Returns True on success."""
+
+        return set_chat_administrator_custom_title(
+            self.token,
+            chat_id,
+            user_id,
+            custom_title
         )
 
     def _process_updates_loop(self):

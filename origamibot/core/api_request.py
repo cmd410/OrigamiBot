@@ -830,3 +830,24 @@ def promote_chat_member(token: str,
         'promoteChatMember',
         data
     )
+
+
+def set_chat_administrator_custom_title(token: str,
+                                        chat_id: Union[int, str],
+                                        user_id: int,
+                                        custom_title: int
+                                        ) -> bool:
+    """Use this method to set a custom title for an administrator
+    in a supergroup promoted by the bot.
+
+    Returns True on success."""
+
+    return request(
+        token,
+        'setChatAdministratorCustomTitle',
+        {
+            'chat_id': chat_id,
+            'user_id': user_id,
+            'custom_title': custom_title
+        }
+    )
