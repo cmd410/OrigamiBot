@@ -59,7 +59,8 @@ from .api_request import (
     get_chat_members_count,
     get_chat_member,
     set_chat_sticker_set,
-    delete_chat_sticker_set)
+    delete_chat_sticker_set,
+    answer_callback_query)
 
 
 class OrigamiBot:
@@ -894,6 +895,27 @@ class OrigamiBot:
         return delete_chat_sticker_set(
             self.token,
             chat_id
+        )
+
+    def answer_callback_query(self,
+                              callback_query_id: str,
+                              text: Optional[str] = None,
+                              show_alert: Optional[bool] = None,
+                              url: Optional[str] = None,
+                              cache_time: Optional[int] = None
+                              ) -> bool:
+        """Use this method to send answers to callback queries
+        sent from inline keyboards
+
+        On success, True is returned.
+        """
+        return answer_callback_query(
+            self.token,
+            callback_query_id,
+            text,
+            show_alert,
+            url,
+            cache_time
         )
 
     def _process_updates_loop(self):

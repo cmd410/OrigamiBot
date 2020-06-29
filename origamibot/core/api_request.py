@@ -1119,3 +1119,28 @@ def delete_chat_sticker_set(token: str,
             'chat_id': chat_id
         }
     )
+
+
+def answer_callback_query(token: str,
+                          callback_query_id: str,
+                          text: Optional[str] = None,
+                          show_alert: Optional[bool] = None,
+                          url: Optional[str] = None,
+                          cache_time: Optional[int] = None
+                          ) -> bool:
+    """Use this method to send answers to callback queries
+    sent from inline keyboards
+
+    On success, True is returned.
+    """
+    return request(
+        token,
+        'answerCallbackQuery',
+        {
+            'callback_query_id': callback_query_id,
+            'text': text,
+            'show_alert': show_alert,
+            'url': url,
+            'cache_time': cache_time
+        }
+    )
