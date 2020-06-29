@@ -1067,3 +1067,21 @@ def get_chat_members_count(token: str,
             'chat_id': chat_id
         }
     )
+
+
+def get_chat_member(token: str,
+                    chat_id: Union[int, str],
+                    user_id: int
+                    ) -> ChatMember:
+    """Use this method to get information about a member of a chat.
+
+    Returns a ChatMember object on success.
+    """
+    return request(
+        token,
+        'getChatMember',
+        {
+            'chat_id': chat_id,
+            'user_id': user_id
+        }
+    )

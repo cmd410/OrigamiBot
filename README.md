@@ -59,8 +59,6 @@ Method signature supports any number of arguments with simple typing(`str`, `int
 
 1. implement API methods:
 
-   -  getChatMembersCount
-   -  getChatMember
    -  setChatStickerSet
    -  deleteChatStickerSet
    -  answerCallbackQuery

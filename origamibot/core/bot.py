@@ -56,7 +56,8 @@ from .api_request import (
     leave_chat,
     get_chat,
     get_chat_administrators,
-    get_chat_members_count)
+    get_chat_members_count,
+    get_chat_member)
 
 
 class OrigamiBot:
@@ -851,6 +852,20 @@ class OrigamiBot:
         return get_chat_members_count(
             self.token,
             chat_id
+        )
+
+    def get_chat_member(self,
+                        chat_id: Union[int, str],
+                        user_id: int
+                        ) -> ChatMember:
+        """Use this method to get information about a member of a chat.
+
+        Returns a ChatMember object on success.
+        """
+        return get_chat_member(
+            self.token,
+            chat_id,
+            user_id
         )
 
     def _process_updates_loop(self):
