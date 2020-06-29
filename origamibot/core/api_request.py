@@ -872,3 +872,20 @@ def set_chat_permissions(token: str,
             'permissions': asdict(permissions)
         }
     )
+
+
+def export_chat_invite_link(token: str,
+                            chat_id: Union[int, str]
+                            ) -> str:
+    """Use this method to generate a new invite link for a chat;
+    any previously generated link is revoked.
+
+    Returns the new invite link as String on success.
+    """
+    return request(
+        token,
+        'exportChatInviteLink',
+        {
+            'chat_id': chat_id
+        }
+    )

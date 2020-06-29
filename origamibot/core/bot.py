@@ -43,7 +43,8 @@ from .api_request import (
     restrict_chat_member,
     promote_chat_member,
     set_chat_administrator_custom_title,
-    set_chat_permissions)
+    set_chat_permissions,
+    export_chat_invite_link)
 
 
 class OrigamiBot:
@@ -692,6 +693,19 @@ class OrigamiBot:
             self.token,
             chat_id,
             permissions
+        )
+
+    def export_chat_invite_link(self,
+                                chat_id: Union[int, str]
+                                ) -> str:
+        """Use this method to generate a new invite link for a chat;
+        any previously generated link is revoked.
+
+        Returns the new invite link as String on success.
+        """
+        return export_chat_invite_link(
+            self.token,
+            chat_id
         )
 
     def _process_updates_loop(self):
