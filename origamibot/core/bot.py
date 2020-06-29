@@ -46,7 +46,8 @@ from .api_request import (
     set_chat_permissions,
     export_chat_invite_link,
     set_chat_photo,
-    delete_chat_photo)
+    delete_chat_photo,
+    set_chat_title)
 
 
 class OrigamiBot:
@@ -734,6 +735,20 @@ class OrigamiBot:
         return delete_chat_photo(
             self.token,
             chat_id
+        )
+
+    def set_chat_title(self,
+                       chat_id: Union[int, str],
+                       title: str
+                       ) -> bool:
+        """Use this method to change the title of a chat.
+
+        Returns True on success.
+        """
+        return set_chat_title(
+            self.token,
+            chat_id,
+            title
         )
 
     def _process_updates_loop(self):

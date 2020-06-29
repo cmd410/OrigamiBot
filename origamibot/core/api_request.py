@@ -925,3 +925,21 @@ def delete_chat_photo(token: str,
             'chat_id': chat_id
         }
     )
+
+
+def set_chat_title(token: str,
+                   chat_id: Union[int, str],
+                   title: str
+                   ) -> bool:
+    """Use this method to change the title of a chat.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'setChatTitle',
+        {
+            'chat_id': chat_id,
+            'title': title
+        }
+    )
