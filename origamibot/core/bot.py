@@ -45,7 +45,8 @@ from .api_request import (
     set_chat_administrator_custom_title,
     set_chat_permissions,
     export_chat_invite_link,
-    set_chat_photo)
+    set_chat_photo,
+    delete_chat_photo)
 
 
 class OrigamiBot:
@@ -721,6 +722,18 @@ class OrigamiBot:
             self.token,
             chat_id,
             photo
+        )
+
+    def delete_chat_photo(self,
+                          chat_id: Union[int, str]
+                          ) -> bool:
+        """Use this method to delete a chat photo.
+
+        Returns True on success.
+        """
+        return delete_chat_photo(
+            self.token,
+            chat_id
         )
 
     def _process_updates_loop(self):

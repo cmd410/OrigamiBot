@@ -909,3 +909,19 @@ def set_chat_photo(token: str,
             'photo': photo
         }
     )
+
+
+def delete_chat_photo(token: str,
+                      chat_id: Union[int, str]
+                      ) -> bool:
+    """Use this method to delete a chat photo.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'deleteChatPhoto',
+        {
+            'chat_id': chat_id
+        }
+    )
