@@ -851,3 +851,24 @@ def set_chat_administrator_custom_title(token: str,
             'custom_title': custom_title
         }
     )
+
+
+def set_chat_permissions(token: str,
+                         chat_id: Union[int, str],
+                         permissions: ChatPermissions
+                         ) -> bool:
+    """Use this method to set default chat permissions for all members.
+
+    The bot must be an administrator in the group or a supergroup
+    for this to work and must have the can_restrict_members admin rights.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'setChatPermissions',
+        {
+            'chat_id': chat_id,
+            'permissions': asdict(permissions)
+        }
+    )

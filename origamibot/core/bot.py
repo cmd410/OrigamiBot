@@ -42,7 +42,8 @@ from .api_request import (
     unban_chat_member,
     restrict_chat_member,
     promote_chat_member,
-    set_chat_administrator_custom_title)
+    set_chat_administrator_custom_title,
+    set_chat_permissions)
 
 
 class OrigamiBot:
@@ -674,6 +675,23 @@ class OrigamiBot:
             chat_id,
             user_id,
             custom_title
+        )
+
+    def set_chat_permissions(self,
+                             chat_id: Union[int, str],
+                             permissions: ChatPermissions
+                             ) -> bool:
+        """Use this method to set default chat permissions for all members.
+
+        The bot must be an administrator in the group or a supergroup
+        for this to work and must have the can_restrict_members admin rights.
+
+        Returns True on success.
+        """
+        return set_chat_permissions(
+            self.token,
+            chat_id,
+            permissions
         )
 
     def _process_updates_loop(self):
