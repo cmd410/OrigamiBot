@@ -963,3 +963,23 @@ def set_chat_description(token: str,
             'description': description
         }
     )
+
+
+def pin_chat_message(token: str,
+                     chat_id: Union[int, str],
+                     message_id: int,
+                     disable_notification: Optional[bool] = None
+                     ) -> bool:
+    """Use this method to pin a message in a group, a supergroup, or a channel.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'pinChatMessage',
+        {
+            'chat_id': chat_id,
+            'message_id': message_id,
+            'disable_notification': disable_notification
+        }
+    )

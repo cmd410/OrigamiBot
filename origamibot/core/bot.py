@@ -48,7 +48,8 @@ from .api_request import (
     set_chat_photo,
     delete_chat_photo,
     set_chat_title,
-    set_chat_description)
+    set_chat_description,
+    pin_chat_message)
 
 
 class OrigamiBot:
@@ -765,6 +766,22 @@ class OrigamiBot:
             self.token,
             chat_id,
             description
+        )
+
+    def pin_chat_message(self,
+                         chat_id: Union[int, str],
+                         message_id: int,
+                         disable_notification: Optional[bool] = None
+                         ) -> bool:
+        """Use this method to pin a message in a group, a supergroup, or a channel.
+
+        Returns True on success.
+        """
+        return pin_chat_message(
+            self.token,
+            chat_id,
+            message_id,
+            disable_notification
         )
 
     def _process_updates_loop(self):
