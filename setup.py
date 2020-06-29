@@ -8,6 +8,7 @@ setuptools.setup(
     version='0.1.0',
     author='Crystal Melting Dot',
     author_email='stresspassing@gmail.com',
+    description='Library for creating bots for telegram with Python.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/cmd410/OrigamiBot',
