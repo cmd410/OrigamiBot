@@ -12,7 +12,10 @@ from .teletypes import (
     ReplyMarkup,
     InlineKeyboardMarkup,
     UserProfilePhotos,
-    ChatPermissions)
+    ChatPermissions,
+    Chat,
+    ChatMember,
+    BotCommand)
 
 
 api_url = 'https://api.telegram.org/bot{token}/{method}'
@@ -829,4 +832,342 @@ def promote_chat_member(token: str,
         token,
         'promoteChatMember',
         data
+    )
+
+
+def set_chat_administrator_custom_title(token: str,
+                                        chat_id: Union[int, str],
+                                        user_id: int,
+                                        custom_title: int
+                                        ) -> bool:
+    """Use this method to set a custom title for an administrator
+    in a supergroup promoted by the bot.
+
+    Returns True on success."""
+
+    return request(
+        token,
+        'setChatAdministratorCustomTitle',
+        {
+            'chat_id': chat_id,
+            'user_id': user_id,
+            'custom_title': custom_title
+        }
+    )
+
+
+def set_chat_permissions(token: str,
+                         chat_id: Union[int, str],
+                         permissions: ChatPermissions
+                         ) -> bool:
+    """Use this method to set default chat permissions for all members.
+
+    The bot must be an administrator in the group or a supergroup
+    for this to work and must have the can_restrict_members admin rights.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'setChatPermissions',
+        {
+            'chat_id': chat_id,
+            'permissions': asdict(permissions)
+        }
+    )
+
+
+def export_chat_invite_link(token: str,
+                            chat_id: Union[int, str]
+                            ) -> str:
+    """Use this method to generate a new invite link for a chat;
+    any previously generated link is revoked.
+
+    Returns the new invite link as String on success.
+    """
+    return request(
+        token,
+        'exportChatInviteLink',
+        {
+            'chat_id': chat_id
+        }
+    )
+
+
+def set_chat_photo(token: str,
+                   chat_id: Union[int, str],
+                   photo: IO
+                   ) -> bool:
+    """Use this method to set a new profile photo for the chat.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'setChatPhoto',
+        {
+            'chat_id': chat_id
+        },
+        {
+            'photo': photo
+        }
+    )
+
+
+def delete_chat_photo(token: str,
+                      chat_id: Union[int, str]
+                      ) -> bool:
+    """Use this method to delete a chat photo.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'deleteChatPhoto',
+        {
+            'chat_id': chat_id
+        }
+    )
+
+
+def set_chat_title(token: str,
+                   chat_id: Union[int, str],
+                   title: str
+                   ) -> bool:
+    """Use this method to change the title of a chat.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'setChatTitle',
+        {
+            'chat_id': chat_id,
+            'title': title
+        }
+    )
+
+
+def set_chat_description(token: str,
+                         chat_id: Union[int, str],
+                         description: Optional[str] = None
+                         ) -> bool:
+    """Use this method to change the description of a group,
+    a supergroup or a channel.
+
+    Returns True on success.
+    """
+
+    return request(
+        token,
+        'setChatDescription',
+        {
+            'chat_id': chat_id,
+            'description': description
+        }
+    )
+
+
+def pin_chat_message(token: str,
+                     chat_id: Union[int, str],
+                     message_id: int,
+                     disable_notification: Optional[bool] = None
+                     ) -> bool:
+    """Use this method to pin a message in a group, a supergroup, or a channel.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'pinChatMessage',
+        {
+            'chat_id': chat_id,
+            'message_id': message_id,
+            'disable_notification': disable_notification
+        }
+    )
+
+
+def unpin_chat_message(token: str,
+                       chat_id: Union[int, str]
+                       ) -> bool:
+    """Use this method to unpin a message in a group, a supergroup, or a channel.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'unpinChatMessage',
+        {
+            'chat_id': chat_id
+        }
+    )
+
+
+def leave_chat(token: str,
+               chat_id: Union[int, str]
+               ) -> bool:
+    """Use this method for your bot to leave a group, supergroup or channel.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'leaveChat',
+        {
+            'chat_id': chat_id
+        }
+    )
+
+
+def get_chat(token: str,
+             chat_id: Union[int, str]
+             ) -> Chat:
+    """Use this method to get up to date information about the chat.
+
+    Returns a Chat object on success.
+    """
+    return request(
+        token,
+        'getChat',
+        {
+            'chat_id': chat_id
+        }
+    )
+
+
+def get_chat_administrators(token: str,
+                            chat_id: Union[int, str],
+                            ) -> List[ChatMember]:
+    """Use this method to get a list of administrators in a chat.
+
+    On success, returns an Array of ChatMember objects
+    that contains information about all chat administrators
+    except other bots.
+    """
+    return request(
+        token,
+        'getChatAdministrators',
+        {
+            'chat_id': chat_id
+        }
+    )
+
+
+def get_chat_members_count(token: str,
+                           chat_id: Union[int, str]
+                           ) -> int:
+    """Use this method to get the number of members in a chat.
+
+    Returns Int on success.
+    """
+    return request(
+        token,
+        'getChatMembersCount',
+        {
+            'chat_id': chat_id
+        }
+    )
+
+
+def get_chat_member(token: str,
+                    chat_id: Union[int, str],
+                    user_id: int
+                    ) -> ChatMember:
+    """Use this method to get information about a member of a chat.
+
+    Returns a ChatMember object on success.
+    """
+    return request(
+        token,
+        'getChatMember',
+        {
+            'chat_id': chat_id,
+            'user_id': user_id
+        }
+    )
+
+
+def set_chat_sticker_set(token: str,
+                         chat_id: Union[int, str],
+                         sticker_set_name: str
+                         ) -> bool:
+    """Use this method to set a new group sticker set for a supergroup
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'setChatStickerSet',
+        {
+            'chat_id': chat_id,
+            'sticker_set_name': sticker_set_name
+        }
+    )
+
+
+def delete_chat_sticker_set(token: str,
+                            chat_id:  Union[int, str]
+                            ) -> bool:
+    """Use this method to delete a group sticker set from a supergroup.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'deleteChatStickerSet',
+        {
+            'chat_id': chat_id
+        }
+    )
+
+
+def answer_callback_query(token: str,
+                          callback_query_id: str,
+                          text: Optional[str] = None,
+                          show_alert: Optional[bool] = None,
+                          url: Optional[str] = None,
+                          cache_time: Optional[int] = None
+                          ) -> bool:
+    """Use this method to send answers to callback queries
+    sent from inline keyboards
+
+    On success, True is returned.
+    """
+    return request(
+        token,
+        'answerCallbackQuery',
+        {
+            'callback_query_id': callback_query_id,
+            'text': text,
+            'show_alert': show_alert,
+            'url': url,
+            'cache_time': cache_time
+        }
+    )
+
+
+def set_my_commands(token: str,
+                    commands: List[BotCommand]
+                    ) -> bool:
+    """Use this method to change the list of the bot's commands.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'setMyCommands',
+        {
+            'commands': [asdict(i) for i in commands]
+        }
+    )
+
+
+def get_my_commands(token: str) -> List[BotCommand]:
+    """Use this method to get the current list of the bot's commands.
+
+    Returns Array of BotCommand on success.
+    """
+    return request(
+        token
     )
