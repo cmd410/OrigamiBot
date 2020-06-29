@@ -4,6 +4,8 @@
 
 Library for creating bots for telegram with [Python](https://www.python.org/). 
 
+![Upload Python Package](https://github.com/cmd410/OrigamiBot/workflows/Upload%20Python%20Package/badge.svg)
+
 ## Usage example
 
 Here goes a simple example of a bot:
