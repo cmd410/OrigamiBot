@@ -1,6 +1,6 @@
 # OrigamiBot - A Pythonic telegram bot API library
 
-> This is WORK IN PROGRESS
+![](./imgs/logo.png)
 
 Library for creating bots for telegram with [Python](https://www.python.org/). 
 
