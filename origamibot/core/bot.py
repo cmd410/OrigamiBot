@@ -44,7 +44,8 @@ from .api_request import (
     promote_chat_member,
     set_chat_administrator_custom_title,
     set_chat_permissions,
-    export_chat_invite_link)
+    export_chat_invite_link,
+    set_chat_photo)
 
 
 class OrigamiBot:
@@ -706,6 +707,20 @@ class OrigamiBot:
         return export_chat_invite_link(
             self.token,
             chat_id
+        )
+
+    def set_chat_photo(self,
+                       chat_id: Union[int, str],
+                       photo: IO
+                       ) -> bool:
+        """Use this method to set a new profile photo for the chat.
+
+        Returns True on success.
+        """
+        return set_chat_photo(
+            self.token,
+            chat_id,
+            photo
         )
 
     def _process_updates_loop(self):

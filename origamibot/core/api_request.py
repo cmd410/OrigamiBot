@@ -889,3 +889,23 @@ def export_chat_invite_link(token: str,
             'chat_id': chat_id
         }
     )
+
+
+def set_chat_photo(token: str,
+                   chat_id: Union[int, str],
+                   photo: IO
+                   ) -> bool:
+    """Use this method to set a new profile photo for the chat.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'setChatPhoto',
+        {
+            'chat_id': chat_id
+        },
+        {
+            'photo': photo
+        }
+    )
