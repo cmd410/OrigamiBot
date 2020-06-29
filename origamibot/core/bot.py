@@ -62,7 +62,8 @@ from .api_request import (
     set_chat_sticker_set,
     delete_chat_sticker_set,
     answer_callback_query,
-    set_my_commands)
+    set_my_commands,
+    get_my_commands)
 
 
 class OrigamiBot:
@@ -931,6 +932,13 @@ class OrigamiBot:
             self.token,
             commands
         )
+
+    def get_my_commands(self) -> List[BotCommand]:
+        """Use this method to get the current list of the bot's commands.
+
+        Returns Array of BotCommand on success.
+        """
+        return get_my_commands(self.token)
 
     def _process_updates_loop(self):
         """The main processing thread.

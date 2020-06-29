@@ -1161,3 +1161,13 @@ def set_my_commands(token: str,
             'commands': [asdict(i) for i in commands]
         }
     )
+
+
+def get_my_commands(token: str) -> List[BotCommand]:
+    """Use this method to get the current list of the bot's commands.
+
+    Returns Array of BotCommand on success.
+    """
+    return request(
+        token
+    )

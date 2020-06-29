@@ -57,10 +57,6 @@ Method signature supports any number of arguments with simple typing(`str`, `int
 
 ## TODO
 
-1. implement API methods:
-
-   - getMyCommands
-
-2. Add support for inline mode
-3. Process general messages without commands too
-4. Process events like chat member join/leave, etc
+1. Add support for inline mode
+2. Process general messages without commands too
+3. Process events like chat member join/leave, etc
