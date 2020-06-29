@@ -47,7 +47,8 @@ from .api_request import (
     export_chat_invite_link,
     set_chat_photo,
     delete_chat_photo,
-    set_chat_title)
+    set_chat_title,
+    set_chat_description)
 
 
 class OrigamiBot:
@@ -749,6 +750,21 @@ class OrigamiBot:
             self.token,
             chat_id,
             title
+        )
+
+    def set_chat_description(self,
+                             chat_id: Union[int, str],
+                             description: Optional[str] = None
+                             ) -> bool:
+        """Use this method to change the description of a group,
+        a supergroup or a channel.
+
+        Returns True on success.
+        """
+        return set_chat_description(
+            self.token,
+            chat_id,
+            description
         )
 
     def _process_updates_loop(self):

@@ -943,3 +943,23 @@ def set_chat_title(token: str,
             'title': title
         }
     )
+
+
+def set_chat_description(token: str,
+                         chat_id: Union[int, str],
+                         description: Optional[str] = None
+                         ) -> bool:
+    """Use this method to change the description of a group,
+    a supergroup or a channel.
+
+    Returns True on success.
+    """
+
+    return request(
+        token,
+        'setChatDescription'
+        {
+            'chat_id': chat_id,
+            'description': description
+        }
+    )
