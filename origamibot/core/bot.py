@@ -13,7 +13,8 @@ from .teletypes import (
     InlineKeyboardMarkup,
     UserProfilePhotos,
     ChatPermissions,
-    Chat)
+    Chat,
+    ChatMember)
 
 from .commands import CommandContainer
 from .util import check_args
@@ -53,7 +54,8 @@ from .api_request import (
     pin_chat_message,
     unpin_chat_message,
     leave_chat,
-    get_chat)
+    get_chat,
+    get_chat_administrators)
 
 
 class OrigamiBot:
@@ -820,6 +822,20 @@ class OrigamiBot:
         Returns a Chat object on success.
         """
         return get_chat(
+            self.token,
+            chat_id
+        )
+    
+    def get_chat_administrators(self,
+                                chat_id: Union[int, str],
+                                ) -> List[ChatMember]:
+        """Use this method to get a list of administrators in a chat.
+
+        On success, returns an Array of ChatMember objects
+        that contains information about all chat administrators
+        except other bots.
+        """
+        return get_chat_administrators(
             self.token,
             chat_id
         )

@@ -13,7 +13,8 @@ from .teletypes import (
     InlineKeyboardMarkup,
     UserProfilePhotos,
     ChatPermissions,
-    Chat)
+    Chat,
+    ChatMember)
 
 
 api_url = 'https://api.telegram.org/bot{token}/{method}'
@@ -1028,6 +1029,24 @@ def get_chat(token: str,
     return request(
         token,
         'getChat',
+        {
+            'chat_id': chat_id
+        }
+    )
+
+
+def get_chat_administrators(token: str,
+                            chat_id: Union[int, str],
+                            ) -> List[ChatMember]:
+    """Use this method to get a list of administrators in a chat.
+
+    On success, returns an Array of ChatMember objects
+    that contains information about all chat administrators
+    except other bots.
+    """
+    return request(
+        token,
+        'getChatAdministrators',
         {
             'chat_id': chat_id
         }
