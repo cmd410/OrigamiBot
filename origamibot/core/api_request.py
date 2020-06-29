@@ -1085,3 +1085,21 @@ def get_chat_member(token: str,
             'user_id': user_id
         }
     )
+
+
+def set_chat_sticker_set(token: str,
+                         chat_id: Union[int, str],
+                         sticker_set_name: str
+                         ) -> bool:
+    """Use this method to set a new group sticker set for a supergroup
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'setChatStickerSet',
+        {
+            'chat_id': chat_id,
+            'sticker_set_name': sticker_set_name
+        }
+    )

@@ -57,7 +57,8 @@ from .api_request import (
     get_chat,
     get_chat_administrators,
     get_chat_members_count,
-    get_chat_member)
+    get_chat_member,
+    set_chat_sticker_set)
 
 
 class OrigamiBot:
@@ -866,6 +867,20 @@ class OrigamiBot:
             self.token,
             chat_id,
             user_id
+        )
+
+    def set_chat_sticker_set(self,
+                             chat_id: Union[int, str],
+                             sticker_set_name: str
+                             ) -> bool:
+        """Use this method to set a new group sticker set for a supergroup
+
+        Returns True on success.
+        """
+        return set_chat_sticker_set(
+            self.token,
+            chat_id,
+            sticker_set_name
         )
 
     def _process_updates_loop(self):
