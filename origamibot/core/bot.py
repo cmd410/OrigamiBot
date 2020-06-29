@@ -49,7 +49,8 @@ from .api_request import (
     delete_chat_photo,
     set_chat_title,
     set_chat_description,
-    pin_chat_message)
+    pin_chat_message,
+    unpin_chat_message)
 
 
 class OrigamiBot:
@@ -782,6 +783,18 @@ class OrigamiBot:
             chat_id,
             message_id,
             disable_notification
+        )
+    
+    def unpin_chat_message(token: str,
+                           chat_id: Union[int, str]
+                           ) -> bool:
+        """Use this method to unpin a message in a group, a supergroup, or a channel.
+
+        Returns True on success.
+        """
+        return unpin_chat_message(
+            token,
+            chat_id
         )
 
     def _process_updates_loop(self):

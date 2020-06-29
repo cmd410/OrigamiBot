@@ -983,3 +983,19 @@ def pin_chat_message(token: str,
             'disable_notification': disable_notification
         }
     )
+
+
+def unpin_chat_message(token: str,
+                       chat_id: Union[int, str]
+                       ) -> bool:
+    """Use this method to unpin a message in a group, a supergroup, or a channel.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'unpinChatMessage',
+        {
+            'chat_id': chat_id
+        }
+    )
