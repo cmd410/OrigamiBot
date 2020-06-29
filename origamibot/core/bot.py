@@ -55,7 +55,8 @@ from .api_request import (
     unpin_chat_message,
     leave_chat,
     get_chat,
-    get_chat_administrators)
+    get_chat_administrators,
+    get_chat_members_count)
 
 
 class OrigamiBot:
@@ -836,6 +837,18 @@ class OrigamiBot:
         except other bots.
         """
         return get_chat_administrators(
+            self.token,
+            chat_id
+        )
+
+    def get_chat_members_count(self,
+                               chat_id: Union[int, str]
+                               ) -> int:
+        """Use this method to get the number of members in a chat.
+
+        Returns Int on success.
+        """
+        return get_chat_members_count(
             self.token,
             chat_id
         )

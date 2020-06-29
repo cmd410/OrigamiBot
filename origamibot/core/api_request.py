@@ -1051,3 +1051,19 @@ def get_chat_administrators(token: str,
             'chat_id': chat_id
         }
     )
+
+
+def get_chat_members_count(token: str,
+                           chat_id: Union[int, str]
+                           ) -> int:
+    """Use this method to get the number of members in a chat.
+
+    Returns Int on success.
+    """
+    return request(
+        token,
+        'getChatMembersCount',
+        {
+            'chat_id': chat_id
+        }
+    )
