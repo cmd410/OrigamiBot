@@ -59,7 +59,6 @@ Method signature supports any number of arguments with simple typing(`str`, `int
 
 1. implement API methods:
 
-   -  setMyCommands
    - getMyCommands
 
 2. Add support for inline mode

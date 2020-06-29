@@ -14,7 +14,8 @@ from .teletypes import (
     UserProfilePhotos,
     ChatPermissions,
     Chat,
-    ChatMember)
+    ChatMember,
+    BotCommand)
 
 
 api_url = 'https://api.telegram.org/bot{token}/{method}'
@@ -1142,5 +1143,21 @@ def answer_callback_query(token: str,
             'show_alert': show_alert,
             'url': url,
             'cache_time': cache_time
+        }
+    )
+
+
+def set_my_commands(token: str,
+                    commands: List[BotCommand]
+                    ) -> bool:
+    """Use this method to change the list of the bot's commands.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'setMyCommands',
+        {
+            'commands': [asdict(i) for i in commands]
         }
     )

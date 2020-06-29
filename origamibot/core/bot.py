@@ -14,7 +14,8 @@ from .teletypes import (
     UserProfilePhotos,
     ChatPermissions,
     Chat,
-    ChatMember)
+    ChatMember,
+    BotCommand)
 
 from .commands import CommandContainer
 from .util import check_args
@@ -60,7 +61,8 @@ from .api_request import (
     get_chat_member,
     set_chat_sticker_set,
     delete_chat_sticker_set,
-    answer_callback_query)
+    answer_callback_query,
+    set_my_commands)
 
 
 class OrigamiBot:
@@ -830,7 +832,7 @@ class OrigamiBot:
             self.token,
             chat_id
         )
-    
+
     def get_chat_administrators(self,
                                 chat_id: Union[int, str],
                                 ) -> List[ChatMember]:
@@ -916,6 +918,18 @@ class OrigamiBot:
             show_alert,
             url,
             cache_time
+        )
+
+    def set_my_commands(self,
+                        commands: List[BotCommand]
+                        ) -> bool:
+        """Use this method to change the list of the bot's commands.
+
+        Returns True on success.
+        """
+        return set_my_commands(
+            self.token,
+            commands
         )
 
     def _process_updates_loop(self):
