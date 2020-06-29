@@ -1103,3 +1103,19 @@ def set_chat_sticker_set(token: str,
             'sticker_set_name': sticker_set_name
         }
     )
+
+
+def delete_chat_sticker_set(token: str,
+                            chat_id:  Union[int, str]
+                            ) -> bool:
+    """Use this method to delete a group sticker set from a supergroup.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'deleteChatStickerSet',
+        {
+            'chat_id': chat_id
+        }
+    )

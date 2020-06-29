@@ -58,7 +58,8 @@ from .api_request import (
     get_chat_administrators,
     get_chat_members_count,
     get_chat_member,
-    set_chat_sticker_set)
+    set_chat_sticker_set,
+    delete_chat_sticker_set)
 
 
 class OrigamiBot:
@@ -881,6 +882,18 @@ class OrigamiBot:
             self.token,
             chat_id,
             sticker_set_name
+        )
+
+    def delete_chat_sticker_set(self,
+                                chat_id:  Union[int, str]
+                                ) -> bool:
+        """Use this method to delete a group sticker set from a supergroup.
+
+        Returns True on success.
+        """
+        return delete_chat_sticker_set(
+            self.token,
+            chat_id
         )
 
     def _process_updates_loop(self):
