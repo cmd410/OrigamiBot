@@ -1,4 +1,4 @@
-# OrigamiBot - A Pythonic telegram bot API library
+
 
 ![](./imgs/logo.png)
 
