@@ -960,7 +960,7 @@ def set_chat_description(token: str,
 
     return request(
         token,
-        'setChatDescription'
+        'setChatDescription',
         {
             'chat_id': chat_id,
             'description': description
