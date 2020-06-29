@@ -50,7 +50,8 @@ from .api_request import (
     set_chat_title,
     set_chat_description,
     pin_chat_message,
-    unpin_chat_message)
+    unpin_chat_message,
+    leave_chat)
 
 
 class OrigamiBot:
@@ -784,8 +785,8 @@ class OrigamiBot:
             message_id,
             disable_notification
         )
-    
-    def unpin_chat_message(token: str,
+
+    def unpin_chat_message(self,
                            chat_id: Union[int, str]
                            ) -> bool:
         """Use this method to unpin a message in a group, a supergroup, or a channel.
@@ -793,7 +794,19 @@ class OrigamiBot:
         Returns True on success.
         """
         return unpin_chat_message(
-            token,
+            self.token,
+            chat_id
+        )
+
+    def leave_chat(self,
+                   chat_id: Union[int, str]
+                   ) -> bool:
+        """Use this method for your bot to leave a group, supergroup or channel.
+
+        Returns True on success.
+        """
+        return leave_chat(
+            self.token,
             chat_id
         )
 

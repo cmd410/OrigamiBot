@@ -999,3 +999,19 @@ def unpin_chat_message(token: str,
             'chat_id': chat_id
         }
     )
+
+
+def leave_chat(token: str,
+               chat_id: Union[int, str]
+               ) -> bool:
+    """Use this method for your bot to leave a group, supergroup or channel.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'leaveChat',
+        {
+            'chat_id': chat_id
+        }
+    )
