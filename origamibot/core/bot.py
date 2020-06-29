@@ -12,7 +12,8 @@ from .teletypes import (
     ReplyMarkup,
     InlineKeyboardMarkup,
     UserProfilePhotos,
-    ChatPermissions)
+    ChatPermissions,
+    Chat)
 
 from .commands import CommandContainer
 from .util import check_args
@@ -51,7 +52,8 @@ from .api_request import (
     set_chat_description,
     pin_chat_message,
     unpin_chat_message,
-    leave_chat)
+    leave_chat,
+    get_chat)
 
 
 class OrigamiBot:
@@ -806,6 +808,18 @@ class OrigamiBot:
         Returns True on success.
         """
         return leave_chat(
+            self.token,
+            chat_id
+        )
+
+    def get_chat(self,
+                 chat_id: Union[int, str]
+                 ) -> Chat:
+        """Use this method to get up to date information about the chat.
+
+        Returns a Chat object on success.
+        """
+        return get_chat(
             self.token,
             chat_id
         )

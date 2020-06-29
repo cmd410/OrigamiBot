@@ -12,7 +12,8 @@ from .teletypes import (
     ReplyMarkup,
     InlineKeyboardMarkup,
     UserProfilePhotos,
-    ChatPermissions)
+    ChatPermissions,
+    Chat)
 
 
 api_url = 'https://api.telegram.org/bot{token}/{method}'
@@ -1011,6 +1012,22 @@ def leave_chat(token: str,
     return request(
         token,
         'leaveChat',
+        {
+            'chat_id': chat_id
+        }
+    )
+
+
+def get_chat(token: str,
+             chat_id: Union[int, str]
+             ) -> Chat:
+    """Use this method to get up to date information about the chat.
+
+    Returns a Chat object on success.
+    """
+    return request(
+        token,
+        'getChat',
         {
             'chat_id': chat_id
         }
