@@ -1,5 +1,6 @@
 from typing import List, Callable
 from inspect import getmembers
+from weakref import WeakMethod
 
 
 class CommandContainer:
@@ -17,9 +18,9 @@ class CommandContainer:
                 if c_name.startswith('_'):
                     continue
                 if c_name in self._cache.keys():
-                    self._cache[c_name].append(c_call)
+                    self._cache[c_name].append(self._make_weak(c_name, c_call))
                 else:
-                    self._cache[c_name] = [c_call]
+                    self._cache[c_name] = [self._make_weak(c_name, c_call)]
 
     def remove_by_filter(self, filter_func: Callable):
         """Remove commands from container by filter
@@ -33,16 +34,12 @@ class CommandContainer:
             if filter_func(i)
         ]
 
-        if removables:
-            self._cache = dict()
-
         for r in removables:
             self.command_holders.remove(r)
 
     def clear(self):
         """Remove all commands"""
         self.command_holders.clear()
-        self._cache = dict()
 
     def find_command(self, command: str) -> List[Callable]:
         """Find a method for given command.
@@ -53,7 +50,7 @@ class CommandContainer:
             command = command[1:]
 
         if command in self._cache.keys():
-            return self._cache[command]
+            return [i() for i in self._cache[command]]
 
         # Do not look for protected/private methods
         if command.startswith('_'):
@@ -65,5 +62,16 @@ class CommandContainer:
                 command_handle = getattr(holder, command)
                 if callable(command_handle):
                     matches.append(command_handle)
-        self._cache[command] = matches
+
+        self._cache[command] = [self._make_weak(command, i) for i in matches]
         return matches
+
+    def _make_weak(self, command, method):
+        """Make weak reference to command"""
+        return WeakMethod(method, self._on_command_delete(command))
+
+    def _on_command_delete(self, command: str):
+        """Remove command from cache when its GCed"""
+        def remove_from_cache(weak_reference):
+            self._cache[command].remove(weak_reference)
+        return remove_from_cache
