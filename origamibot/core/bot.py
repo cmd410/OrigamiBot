@@ -1,6 +1,6 @@
 import shlex
 
-from typing import List, Optional, Union, IO
+from typing import List, Optional, Union, IO, Callable
 from collections import deque
 from threading import current_thread, Event
 from time import sleep
@@ -65,6 +65,8 @@ from .api_request import (
     set_my_commands,
     get_my_commands)
 
+from ..util import Listener
+
 
 class OrigamiBot:
     """Telegram bot class."""
@@ -88,6 +90,7 @@ class OrigamiBot:
         self._last_update_id = 0
 
         self.command_container = CommandContainer()
+        self.listeners = []
 
     def start(self):
         """Start listening for updates. Non-blocking!"""
@@ -114,6 +117,23 @@ class OrigamiBot:
         will be considered bot's commands.
         """
         self.command_container.add_command(obj)
+
+    def add_listener(self, obj):
+        if not isinstance(obj, Listener):
+            raise TypeError(f'{obj} is not a Listener')
+        self.listeners.append(obj)
+
+    def remove_commands_by_filter(self, filter_func: Callable):
+        """Remove commands from container by filter
+
+        Filter must be a callable with single argument(item)
+        and should return True for each item that needs removing
+        """
+        self.command_container.remove_by_filter(filter_func)
+
+    def clear_commands(self):
+        """Remove all commands"""
+        self.command_container.clear()
 
     def get_updates(self) -> List[Update]:
         """Make getUpdate request to telegram API. Return list of updates"""
@@ -1011,16 +1031,30 @@ class OrigamiBot:
             for method in found:
                 bound_args = check_args(method, args)
                 if bound_args is None:
+                    self._call_listeners('on_command_failure', message)
                     continue
                 try:
                     method(*bound_args.args, **bound_args.kwargs)
                 except Exception as err:
-                    print(err)
-                    # TODO actual logging on failures
-
+                    self._call_listeners('on_command_failure', message, err)
         return True
 
     def _handle_message(self, message: Message):
         """Process a single message"""
-        if self._handle_commands(message):
-            return
+        self._call_listeners('on_message', message)
+
+        if not self._handle_commands(message):
+            self._call_listeners('on_plain_message', message)
+
+        if message.left_chat_member is not None:
+            self._call_listeners('on_left_chat_member', message)
+        elif message.new_chat_members is not None:
+            self._call_listeners('on_new_chat_members', message)
+
+        if message.new_chat_title is not None:
+            self._call_listeners('on_new_chat_title', message)
+
+    def _call_listeners(self, event, *args, **kwargs):
+        for listener in self.listeners:
+            method = getattr(listener, event)
+            method(*args, **kwargs)
