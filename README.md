@@ -1,10 +1,24 @@
 
 
-![](./imgs/logo.png)
+
+
+![](https://media.githubusercontent.com/media/cmd410/OrigamiBot/master/imgs/logo.png)
 
 Library for creating bots for telegram with [Python](https://www.python.org/). 
 
+**OrigamiBot** aims to make development of Telegram bots as easy and flexible as possible. 
+It offers a very modular architecture, which allows for creation of very complex bots, 
+as well as simpler ones.
+
 ![Upload Python Package](https://github.com/cmd410/OrigamiBot/workflows/Upload%20Python%20Package/badge.svg)
+
+## Installation
+
+Origamibot is published in [PyPI](https://pypi.org/project/origamibot/), so it can be installed with one simple command:
+
+```
+pip install origamibot
+```
 
 ## Usage example
 
@@ -57,6 +71,3 @@ Method signature supports any number of arguments with simple typing(`str`, `int
 
 > **Boolean** values are considered True if their string representation is in `{'True', 'true', '1'}`, and False if in `{'False', 'false', '0'}`
 
-## TODO
-
-1. Add support for inline mode
