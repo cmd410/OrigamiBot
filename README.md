@@ -60,5 +60,3 @@ Method signature supports any number of arguments with simple typing(`str`, `int
 ## TODO
 
 1. Add support for inline mode
-2. Process general messages without commands too
-3. Process events like chat member join/leave, etc

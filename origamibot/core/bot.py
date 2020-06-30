@@ -88,6 +88,7 @@ class OrigamiBot:
         self._last_update_id = 0
 
         self.command_container = CommandContainer()
+        self.listeners = []
 
     def start(self):
         """Start listening for updates. Non-blocking!"""
@@ -114,6 +115,9 @@ class OrigamiBot:
         will be considered bot's commands.
         """
         self.command_container.add_command(obj)
+
+    def add_listener(self, obj):
+        self.listeners.append(obj)
 
     def remove_commands_by_filter(self, filter_func: Callable):
         """Remove commands from container by filter
@@ -1023,16 +1027,33 @@ class OrigamiBot:
             for method in found:
                 bound_args = check_args(method, args)
                 if bound_args is None:
+                    self._call_listeners('on_command_failure', message)
                     continue
                 try:
                     method(*bound_args.args, **bound_args.kwargs)
                 except Exception as err:
-                    print(err)
-                    # TODO actual logging on failures
-
+                    self._call_listeners('on_command_failure', message, err)
         return True
 
     def _handle_message(self, message: Message):
         """Process a single message"""
-        if self._handle_commands(message):
-            return
+        self._call_listeners('on_message', message)
+
+        if not self._handle_commands(message):
+            self._call_listeners('on_plain_message', message)
+
+        if message.left_chat_member is not None:
+            self._call_listeners('on_left_chat_member', message)
+        elif message.new_chat_members is not None:
+            self._call_listeners('on_new_chat_members', message)
+
+        if message.new_chat_title is not None:
+            self._call_listeners('on_new_chat_title', message)
+
+    def _call_listeners(self, event, *args, **kwargs):
+        for listener in self.listeners:
+            if not hasattr(listener, event):
+                continue
+            method = getattr(listener, event)
+            if callable(method):
+                method(*args, **kwargs)
