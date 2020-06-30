@@ -1,6 +1,6 @@
 import shlex
 
-from typing import List, Optional, Union, IO
+from typing import List, Optional, Union, IO, Callable
 from collections import deque
 from threading import current_thread, Event
 from time import sleep
@@ -114,6 +114,18 @@ class OrigamiBot:
         will be considered bot's commands.
         """
         self.command_container.add_command(obj)
+
+    def remove_commands_by_filter(self, filter_func: Callable):
+        """Remove commands from container by filter
+
+        Filter must be a callable with single argument(item)
+        and should return True for each item that needs removing
+        """
+        self.command_container.remove_by_filter(filter_func)
+
+    def clear_commands(self):
+        """Remove all commands"""
+        self.command_container.clear()
 
     def get_updates(self) -> List[Update]:
         """Make getUpdate request to telegram API. Return list of updates"""
