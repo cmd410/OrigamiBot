@@ -1,9 +1,5 @@
 class Listener:
     """A helper base class for bots event listeners
-
-    Your listeners don't need to inherit it,
-    but it will help you to see what events are
-    available for listening with autocompletion.
     """
 
     def on_message(self, message):

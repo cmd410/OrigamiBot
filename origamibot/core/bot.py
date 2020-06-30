@@ -65,6 +65,8 @@ from .api_request import (
     set_my_commands,
     get_my_commands)
 
+from ..util import Listener
+
 
 class OrigamiBot:
     """Telegram bot class."""
@@ -117,6 +119,8 @@ class OrigamiBot:
         self.command_container.add_command(obj)
 
     def add_listener(self, obj):
+        if not isinstance(obj, Listener):
+            raise TypeError(f'{obj} is not a Listener')
         self.listeners.append(obj)
 
     def remove_commands_by_filter(self, filter_func: Callable):
@@ -1052,8 +1056,5 @@ class OrigamiBot:
 
     def _call_listeners(self, event, *args, **kwargs):
         for listener in self.listeners:
-            if not hasattr(listener, event):
-                continue
             method = getattr(listener, event)
-            if callable(method):
-                method(*args, **kwargs)
+            method(*args, **kwargs)
