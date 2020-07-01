@@ -15,7 +15,8 @@ from .teletypes import (
     ChatPermissions,
     Chat,
     ChatMember,
-    BotCommand)
+    BotCommand,
+    InlineQueryResult)
 
 
 api_url = 'https://api.telegram.org/bot{token}/{method}'
@@ -1170,4 +1171,32 @@ def get_my_commands(token: str) -> List[BotCommand]:
     """
     return request(
         token
+    )
+
+
+def answer_inline_query(token: str,
+                        inline_query_id: str,
+                        results: List[InlineQueryResult],
+                        cache_time: Optional[int] = None,
+                        is_personal: Optional[bool] = None,
+                        next_offset: Optional[str] = None,
+                        switch_pm_text: Optional[str] = None,
+                        switch_pm_parameter: Optional[str] = None
+                        ) -> bool:
+    """Use this method to send answers to an inline query.
+
+    On success, True is returned.
+    """
+    return request(
+        token,
+        'answerInlineQuery',
+        {
+            'inline_query_id': inline_query_id,
+            'results': [asdict(i) for i in results],
+            'cache_time': cache_time,
+            'is_personal': is_personal,
+            'next_offset': next_offset,
+            'switch_pm_text': switch_pm_text,
+            'switch_pm_parameter': switch_pm_parameter
+        }
     )
