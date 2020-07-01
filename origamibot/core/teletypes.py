@@ -614,6 +614,37 @@ class InputMessageContent:
 
 
 @dataclass
+class InputTextMessageContent(InputMessageContent):
+    message_text: str
+    parse_mode: str
+    disable_web_page_preview: bool = None
+
+
+@dataclass
+class InputLocationMessageContent(InputMessageContent):
+    latitude: float
+    longitude: float
+    live_period: int = None
+
+
+@dataclass
+class InputContactMessageContent(InputMessageContent):
+    phone_number: str
+    first_name: str
+    last_name: str = None
+    vcard: str = None
+
+
+@dataclass
+class ChosenInlineResult(InputMessageContent):
+    result_id: str
+    from_user: User
+    query: str
+    location: Location = None
+    inline_message_id: str = None
+
+
+@dataclass
 class InlineQuery:
     id: str
     from_user: User
@@ -821,7 +852,7 @@ class InlineQueryResultCachedMpeg4Gif(InlineQueryResult):
 @dataclass
 class InlineQueryResultCachedSticker(InlineQueryResult):
     type: str = field(init=False, default='sticker')
-    sticker_file_id str
+    sticker_file_id: str
     reply_markup: InlineKeyboardMarkup = None
     input_message_content: InputMessageContent = None
 
