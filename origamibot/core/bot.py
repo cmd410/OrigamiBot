@@ -15,7 +15,8 @@ from .teletypes import (
     ChatPermissions,
     Chat,
     ChatMember,
-    BotCommand)
+    BotCommand,
+    InlineQueryResult)
 
 from .commands import CommandContainer
 from .util import check_args
@@ -63,7 +64,8 @@ from .api_request import (
     delete_chat_sticker_set,
     answer_callback_query,
     set_my_commands,
-    get_my_commands)
+    get_my_commands,
+    answer_inline_query)
 
 from ..util import Listener
 
@@ -960,6 +962,30 @@ class OrigamiBot:
         """
         return get_my_commands(self.token)
 
+    def answer_inline_query(self,
+                            inline_query_id: str,
+                            results: List[InlineQueryResult],
+                            cache_time: Optional[int] = None,
+                            is_personal: Optional[bool] = None,
+                            next_offset: Optional[str] = None,
+                            switch_pm_text: Optional[str] = None,
+                            switch_pm_parameter: Optional[str] = None
+                            ) -> bool:
+        """Use this method to send answers to an inline query.
+
+        On success, True is returned.
+        """
+        return answer_inline_query(
+            self.token,
+            inline_query_id,
+            results,
+            cache_time,
+            is_personal,
+            next_offset,
+            switch_pm_text,
+            switch_pm_parameter
+        )
+
     def _process_updates_loop(self):
         """The main processing thread.
 
@@ -1058,3 +1084,6 @@ class OrigamiBot:
         for listener in self.listeners:
             method = getattr(listener, event)
             method(*args, **kwargs)
+
+
+__all__ = [OrigamiBot.__name__]

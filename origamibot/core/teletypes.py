@@ -1,6 +1,6 @@
 """All Telegram API types here"""
 
-from dataclasses import dataclass, fields, is_dataclass
+from dataclasses import dataclass, fields, is_dataclass, field
 from collections import deque
 from inspect import getmembers
 from sys import modules
@@ -608,6 +608,300 @@ class Update:
     edited_channel_post: Message = None
 
 
+@dataclass
+class InputMessageContent:
+    pass
+
+
+@dataclass
+class InputTextMessageContent(InputMessageContent):
+    message_text: str
+    parse_mode: str
+    disable_web_page_preview: bool = None
+
+
+@dataclass
+class InputLocationMessageContent(InputMessageContent):
+    latitude: float
+    longitude: float
+    live_period: int = None
+
+
+@dataclass
+class InputContactMessageContent(InputMessageContent):
+    phone_number: str
+    first_name: str
+    last_name: str = None
+    vcard: str = None
+
+
+@dataclass
+class ChosenInlineResult(InputMessageContent):
+    result_id: str
+    from_user: User
+    query: str
+    location: Location = None
+    inline_message_id: str = None
+
+
+@dataclass
+class InlineQuery:
+    id: str
+    from_user: User
+    query: str
+    offset: str
+    location: Location = None
+
+
+@dataclass
+class InlineQueryResult:
+    id: str
+    type: str
+
+
+@dataclass
+class InlineQueryResultArticle(InlineQueryResult):
+    type: str = field(init=False, default='article')
+    title: str
+    input_message_content: InputMessageContent
+    reply_markup: InlineKeyboardMarkup = None
+    url: str = None
+    hide_url: bool = None
+    description: str = None
+    thumb_url: str = None
+    thumb_width: int = None
+    thumb_height: int = None
+
+
+@dataclass
+class InlineQueryResultPhoto(InlineQueryResult):
+    type: str = field(init=False, default='photo')
+    photo_url: str
+    thumb_url: str
+    photo_width: int = None
+    title: str = None
+    description: str = None
+    caption: str = None
+    parse_mode: str = None
+    reply_markup: InlineKeyboardMarkup = None
+    input_message_content: InputMessageContent = None
+
+
+@dataclass
+class InlineQueryResultGif(InlineQueryResult):
+    type: str = field(init=False, default='gif')
+    gif_url: str
+    thumb_url: str
+    gif_width: int = None
+    gif_height: int = None
+    gif_duration: int = None
+    thumb_mime_type: str = None
+    title: str = None
+    caption: str = None
+    parse_mode: str = None
+    reply_markup: InlineKeyboardMarkup = None
+    input_message_content: InputMessageContent = None
+
+
+@dataclass
+class InlineQueryResultMpeg4Gif(InlineQueryResult):
+    type: str = field(init=False, default='mpeg4_gif')
+    mpeg4_url: str
+    thumb_url: str
+    mpeg4_width: int = None
+    mpeg4_height: int = None
+    mpeg4_duration: int = None
+    thumb_mime_type: str = None
+    title: str = None
+    caption: str = None
+    parse_mode: str = None
+    reply_markup: InlineKeyboardMarkup = None
+    input_message_content: InputMessageContent = None
+
+
+@dataclass
+class InlineQueryResultVideo(InlineQueryResult):
+    type: str = field(init=False, default='video')
+    video_url: str
+    mime_type: str
+    thumb_url: str
+    title: str
+    caption: str = None
+    parse_mode: str = None
+    video_width: int = None
+    video_height: int = None
+    video_duration: int = None
+    description: str = None
+    reply_markup: InlineKeyboardMarkup = None
+    input_message_content: InputMessageContent = None
+
+
+@dataclass
+class InlineQueryResultAudio(InlineQueryResult):
+    type: str = field(init=False, default='audio')
+    audio_url: str
+    title: str
+    caption: str = None
+    parse_mode: str = None
+    performer: str = None
+    audio_duration: int = None
+    reply_markup: InlineKeyboardMarkup = None
+    input_message_content: InputMessageContent = None
+
+
+@dataclass
+class InlineQueryResultVoice(InlineQueryResult):
+    type: str = field(init=False, default='voice')
+    voice_url: str
+    title: str
+    caption: str = None
+    parse_mode: str = None
+    voice_duration: int = None
+    reply_markup: InlineKeyboardMarkup = None
+    input_message_content: InputMessageContent = None
+
+
+@dataclass
+class InlineQueryResultDocument(InlineQueryResult):
+    type: str = field(init=False, default='document')
+    title: str
+    document_url: str
+    mime_type: str
+    caption: str = None
+    parse_mode: str = None
+    description: str = None
+    reply_markup: InlineKeyboardMarkup = None
+    input_message_content: InputMessageContent = None
+    thumb_url: str = None
+    thumb_width: int = None
+    thumb_height: int = None
+
+
+@dataclass
+class InlineQueryResultLocation(InlineQueryResult):
+    type: str = field(init=False, default='location')
+    latitude: float
+    longitude: float
+    title: str
+    live_period: int = None
+    reply_markup: InlineKeyboardMarkup = None
+    input_message_content: InputMessageContent = None
+    thumb_url: str = None
+    thumb_width: int = None
+    thumb_height: int = None
+
+
+@dataclass
+class InlineQueryResultVenue(InlineQueryResult):
+    type: str = field(init=False, default='venue')
+    latitude: float
+    longitude: float
+    title: str
+    address: str
+    foursquare_id: str = None
+    foursquare_type: str = None
+    reply_markup: InlineKeyboardMarkup = None
+    input_message_content: InputMessageContent = None
+    thumb_url: str = None
+    thumb_width: int = None
+    thumb_height: int = None
+
+
+@dataclass
+class InlineQueryResultContact(InlineQueryResult):
+    type: str = field(init=False, default='contact')
+    phone_number: str
+    first_name: str
+    last_name: str = None
+    vcard: str = None
+    reply_markup: InlineKeyboardMarkup = None
+    input_message_content: InputMessageContent = None
+    thumb_url: str = None
+    thumb_width: int = None
+    thumb_height: int = None
+
+
+@dataclass
+class InlineQueryResultGame(InlineQueryResult):
+    type: str = field(init=False, default='game')
+    game_short_name: str
+    reply_markup: InlineKeyboardMarkup
+
+
+@dataclass
+class InlineQueryResultCachedGif(InlineQueryResult):
+    type: str = field(init=False, default='gif')
+    gif_file_id: str
+    title: str = None
+    caption: str = None
+    parse_mode: str = None
+    reply_markup: InlineKeyboardMarkup = None
+
+
+@dataclass
+class InlineQueryResultCachedMpeg4Gif(InlineQueryResult):
+    type: str = field(init=False, default='mpeg4_gif')
+    mpeg4_file_id: str
+    title: str = None
+    caption: str = None
+    parse_mode: str = None
+    reply_markup: InlineKeyboardMarkup = None
+    input_message_content: InputMessageContent = None
+
+
+@dataclass
+class InlineQueryResultCachedSticker(InlineQueryResult):
+    type: str = field(init=False, default='sticker')
+    sticker_file_id: str
+    reply_markup: InlineKeyboardMarkup = None
+    input_message_content: InputMessageContent = None
+
+
+@dataclass
+class InlineQueryResultCachedDocument(InlineQueryResult):
+    type: str = field(init=False, default='document')
+    title: str
+    document_file_id: str
+    description: str = None
+    caption: str = None
+    parse_mode: str = None
+    reply_markup: InlineKeyboardMarkup = None
+    input_message_content: InputMessageContent = None
+
+
+@dataclass
+class InlineQueryResultCachedVideo(InlineQueryResult):
+    type: str = field(init=False, default='video')
+    video_file_id: str
+    title: str
+    description: str = None
+    caption: str = None
+    parse_mode: str = None
+    reply_markup: InlineKeyboardMarkup = None
+    input_message_content: InputMessageContent = None
+
+
+@dataclass
+class InlineQueryResultCachedVoice(InlineQueryResult):
+    type: str = field(init=False, default='voice')
+    voice_file_id: str
+    title: str
+    caption: str = None
+    parse_mode: str = None
+    reply_markup: InlineKeyboardMarkup = None
+    input_message_content: InputMessageContent = None
+
+
+@dataclass
+class InlineQueryResultCachedAudio(InlineQueryResult):
+    type: str = field(init=False, default='audio')
+    audio_file_id: str
+    caption: str = None
+    parse_mode: str = None
+    reply_markup: InlineKeyboardMarkup = None
+    input_message_content: InputMessageContent = None
+
+
 # Collect all dataclasses in this module
 api_types = [
     i[1] for i in getmembers(modules[__name__],
@@ -627,7 +921,7 @@ ReplyMarkup = Union[InlineKeyboardMarkup,
                     ForceReply]
 
 
-__all__ = api_types + [ReplyMarkup]
+__all__ = [i.__name__ for i in api_types]
 
 
 name_type_map = {
