@@ -16,7 +16,8 @@ from .teletypes import (
     Chat,
     ChatMember,
     BotCommand,
-    InlineQueryResult)
+    InlineQueryResult,
+    WebhookInfo)
 
 
 api_url = 'https://api.telegram.org/bot{token}/{method}'
@@ -1199,4 +1200,56 @@ def answer_inline_query(token: str,
             'switch_pm_text': switch_pm_text,
             'switch_pm_parameter': switch_pm_parameter
         }
+    )
+
+
+def set_webhook(token: str,
+                url: str,
+                certificate: Optional[IO] = None,
+                max_connections: Optional[int] = None,
+                allowed_updates: Optional[List[str]] = None
+                ) -> bool:
+    """Use this method to specify a url
+    and receive incoming updates via an outgoing webhook.
+
+    Whenever there is an update for the bot,
+    we will send an HTTPS POST request to the specified url,
+    containing a JSON-serialized Update.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'setWebhook',
+        {
+            'url': url,
+            'certificate': certificate,
+            'max_connections': max_connections,
+            'allowed_updates': allowed_updates
+        }
+    )
+
+
+def delete_webhook(token: str):
+    """Use this method to remove webhook integration
+    if you decide to switch back to getUpdates.
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'deleteWebhook'
+    )
+
+
+def get_webhook_info(token: str) -> WebhookInfo:
+    """Use this method to get current webhook status.
+
+    On success, returns a WebhookInfo object.
+    If the bot is using getUpdates,
+    will return an object with the url field empty.
+    """
+    return request(
+        token,
+        'getWebhookInfo'
     )

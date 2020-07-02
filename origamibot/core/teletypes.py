@@ -902,6 +902,17 @@ class InlineQueryResultCachedAudio(InlineQueryResult):
     input_message_content: InputMessageContent = None
 
 
+@dataclass
+class WebhookInfo:
+    url: str
+    has_custom_certificate: bool
+    pending_update_count: int
+    last_error_date: int = None
+    last_error_message: str = None
+    max_connections: int = None
+    allowed_update: list = None
+
+
 # Collect all dataclasses in this module
 api_types = [
     i[1] for i in getmembers(modules[__name__],

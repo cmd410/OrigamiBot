@@ -1,12 +1,15 @@
 import shlex
+import json
 
 from typing import List, Optional, Union, IO, Callable
 from collections import deque
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from threading import current_thread, Event
 from time import sleep
 
 from .sthread import StoppableThread
 from .teletypes import (
+    native_type,
     Update,
     Message,
     ReplyMarkup,
@@ -16,7 +19,8 @@ from .teletypes import (
     Chat,
     ChatMember,
     BotCommand,
-    InlineQueryResult)
+    InlineQueryResult,
+    WebhookInfo)
 
 from .commands import CommandContainer
 from .util import check_args
@@ -65,7 +69,10 @@ from .api_request import (
     answer_callback_query,
     set_my_commands,
     get_my_commands,
-    answer_inline_query)
+    answer_inline_query,
+    set_webhook,
+    delete_webhook,
+    get_webhook_info)
 
 from ..util import Listener
 
@@ -74,6 +81,7 @@ class OrigamiBot:
     """Telegram bot class."""
     def __init__(self, token):
         self.token = token
+        self.webhook = None
         self.updates = deque()
         self.interval = 0.1
 
@@ -81,6 +89,12 @@ class OrigamiBot:
             name='Listen thread',
             target=self._listen_loop,
             daemon=True)
+
+        self._webhook_thread = StoppableThread(
+            name='Webhook thread',
+            target=self._webhook_loop,
+            daemon=True
+        )
 
         self._process_thread = StoppableThread(
             name='Update process thread',
@@ -96,7 +110,10 @@ class OrigamiBot:
 
     def start(self):
         """Start listening for updates. Non-blocking!"""
-        self._listen_thread.start()
+        if self.webhook is None:
+            self._listen_thread.start()
+        else:
+            self._webhook_thread.start()
         self._process_thread.start()
 
     def stop(self):
@@ -986,6 +1003,47 @@ class OrigamiBot:
             switch_pm_parameter
         )
 
+    def set_webhook(self,
+                    url: str,
+                    certificate: Optional[IO] = None,
+                    max_connections: Optional[int] = None,
+                    allowed_updates: Optional[List[str]] = None
+                    ) -> bool:
+        """Use this method to specify a url
+        and receive incoming updates via an outgoing webhook.
+
+        Whenever there is an update for the bot,
+        we will send an HTTPS POST request to the specified url,
+        containing a JSON-serialized Update.
+
+        Returns True on success.
+        """
+        self.webhook = url
+        return set_webhook(
+            self.token,
+            url,
+            certificate,
+            max_connections,
+            allowed_updates
+        )
+
+    def delete_webhook(self):
+        """Use this method to remove webhook integration
+        if you decide to switch back to getUpdates.
+
+        Returns True on success.
+        """
+        return delete_webhook(self.token)
+
+    def get_webhook_info(self) -> WebhookInfo:
+        """Use this method to get current webhook status.
+
+        On success, returns a WebhookInfo object.
+        If the bot is using getUpdates,
+        will return an object with the url field empty.
+        """
+        return get_webhook_info(self.token)
+
     def _process_updates_loop(self):
         """The main processing thread.
 
@@ -1084,6 +1142,24 @@ class OrigamiBot:
         for listener in self.listeners:
             method = getattr(listener, event)
             method(*args, **kwargs)
+
+    def _webhook_loop(self):
+        class HandleUpdates(BaseHTTPRequestHandler):
+            bot = self
+
+            def _set_headers(self):
+                self.send_response(200)
+                self.end_headers()
+
+            def do_POST(self):
+                '''Reads post request body'''
+                self._set_headers()
+                content_len = int(self.headers.get('content-length', 0))
+                post_body = self.rfile.read(content_len).decode()
+                update = native_type(json.loads(post_body))
+                HandleUpdates.bot.process_update(update)
+
+        HTTPServer((self.webhook, 443), HandleUpdates).serve_forever()
 
 
 __all__ = [OrigamiBot.__name__]
