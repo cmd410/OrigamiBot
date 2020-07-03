@@ -17,7 +17,9 @@ from .teletypes import (
     ChatMember,
     BotCommand,
     InlineQueryResult,
-    WebhookInfo)
+    WebhookInfo,
+    InputMedia,
+    Poll)
 
 
 api_url = 'https://api.telegram.org/bot{token}/{method}'
@@ -470,7 +472,7 @@ def send_location(token: str,
         'live_period': live_period,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': reply_markup
+        'reply_markup': asdict(reply_markup)
     }
 
     return request(
@@ -503,7 +505,7 @@ def edit_message_live_location(token: str,
         'longitude': longitude,
         'message_id': message_id,
         'inline_message_id': inline_message_id,
-        'reply_markup': reply_markup
+        'reply_markup': asdict(reply_markup)
     }
 
     return request(
@@ -534,7 +536,7 @@ def stop_message_live_location(token: str,
         'chat_id': chat_id,
         'message_id': message_id,
         'inline_message_id': inline_message_id,
-        'reply_markup': reply_markup
+        'reply_markup': asdict(reply_markup)
     }
 
     return request(
@@ -571,7 +573,7 @@ def send_venue(token: str,
         'foursquare_type': foursquare_type,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': reply_markup
+        'reply_markup': asdict(reply_markup)
     }
 
     return request(
@@ -603,7 +605,7 @@ def send_contact(token: str,
         'vcard': vcard,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': reply_markup
+        'reply_markup': asdict(reply_markup)
     }
 
     return request(
@@ -650,7 +652,7 @@ def send_poll(token: str,
         'is_closed': is_closed,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': reply_markup
+        'reply_markup': asdict(reply_markup)
     }
 
     return request(
@@ -677,7 +679,7 @@ def send_dice(token: str,
         'emoji': emoji,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': reply_markup
+        'reply_markup': asdict(reply_markup)
     }
 
     return request(
@@ -1252,4 +1254,158 @@ def get_webhook_info(token: str) -> WebhookInfo:
     return request(
         token,
         'getWebhookInfo'
+    )
+
+
+def edit_message_text(token: str,
+                      chat_id: Union[int, str],
+                      text: str,
+                      message_id: Optional[int] = None,
+                      inline_message_id: Optional[str] = None,
+                      parse_mode: Optional[str] = None,
+                      disable_web_page_preview: Optional[bool] = None,
+                      reply_markup: Optional[InlineKeyboardMarkup] = None
+                      ) -> Union[Message, bool]:
+    """Use this method to edit text and game messages.
+
+    On success, if edited message is sent by the bot,
+    the edited Message is returned,
+    otherwise True is returned.
+    """
+    assert any([message_id, inline_message_id])
+    return request(
+        token,
+        'editMessageText',
+        {
+            'chat_id': chat_id,
+            'text': text,
+            'message_id': message_id,
+            'inline_message_id': inline_message_id,
+            'parse_mode': parse_mode,
+            'disable_web_page_preview': disable_web_page_preview,
+            'reply_markup': asdict(reply_markup)
+        }
+    )
+
+
+def edit_message_caption(token: str,
+                         chat_id: Union[int, str],
+                         caption: Optional[str] = None,
+                         message_id: Optional[int] = None,
+                         inline_message_id: Optional[str] = None,
+                         parse_mode: Optional[str] = None,
+                         reply_markup: Optional[InlineKeyboardMarkup] = None
+                         ) -> Union[Message, bool]:
+    """Use this method to edit captions of messages.
+
+    On success, if edited message is sent by the bot,
+    the edited Message is returned,
+    otherwise True is returned.
+    """
+    return request(
+        token,
+        'editMessageCaption',
+        {
+            'chat_id': chat_id,
+            'caption': caption,
+            'message_id': message_id,
+            'inline_message_id': inline_message_id,
+            'parse_mode': parse_mode,
+            'reply_markup': asdict(reply_markup)
+        }
+    )
+
+
+def edit_message_media(token: str,
+                       chat_id: Union[int, str],
+                       media: InputMedia,
+                       message_id: Optional[int] = None,
+                       inline_message_id: Optional[int] = None,
+                       reply_markup: Optional[InlineKeyboardMarkup] = None
+                       ) -> Union[Message, bool]:
+    """Use this method to edit animation, audio,
+    document, photo, or video messages.
+
+    On success, if the edited message was sent by the bot,
+    the edited Message is returned,
+    otherwise True is returned.
+    """
+    media_data, files = media.get_data_n_files()
+
+    data = {
+        'chat_id': chat_id,
+        'media': media_data,
+        'message_id': message_id,
+        'inline_message_id': inline_message_id,
+        'reply_markup': asdict(reply_markup)
+    }
+
+    return request(
+        token,
+        'editMessageMedia',
+        data,
+        files
+    )
+
+
+def edit_message_reply_markup(token: str,
+                              chat_id: Optional[Union[int, str]] = None,
+                              message_id: Optional[int] = None,
+                              inline_message_id: Optional[str] = None,
+                              reply_markup: Optional[
+                                  InlineKeyboardMarkup] = None
+                              ) -> Union[Message, bool]:
+    """Use this method to edit only the reply markup of messages.
+
+    On success, if edited message is sent by the bot,
+    the edited Message is returned,
+    otherwise True is returned.
+    """
+    return request(
+        token,
+        'editMessageReplyMarkup',
+        {
+            'chat_id': chat_id,
+            'message_id': message_id,
+            'inline_message_id': inline_message_id,
+            'reply_markup': asdict(reply_markup)
+        }
+    )
+
+
+def stop_poll(token: str,
+              chat_id: Union[int, str],
+              message_id: int,
+              reply_markup: Optional[InlineKeyboardMarkup] = None
+              ) -> Poll:
+    """Use this method to stop a poll which was sent by the bot.
+
+    On success, the stopped Poll with the final results is returned.
+    """
+    return request(
+        token,
+        'stopPoll',
+        {
+            'chat_id': chat_id,
+            'message_id': message_id,
+            'reply_markup': asdict(reply_markup)
+        }
+    )
+
+
+def delete_message(token: str,
+                   chat_id: Union[int, str],
+                   message_id: int
+                   ) -> bool:
+    """Use this method to delete a message, including service messages
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'deleteMessage',
+        {
+            'chat_id': chat_id,
+            'messsage_id': message_id
+        }
     )

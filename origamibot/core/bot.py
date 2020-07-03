@@ -9,7 +9,6 @@ from time import sleep
 
 from .sthread import StoppableThread
 from .teletypes import (
-    native_type,
     Update,
     Message,
     ReplyMarkup,
@@ -20,7 +19,9 @@ from .teletypes import (
     ChatMember,
     BotCommand,
     InlineQueryResult,
-    WebhookInfo)
+    WebhookInfo,
+    InputMedia,
+    Poll)
 
 from .commands import CommandContainer
 from .util import check_args
@@ -72,7 +73,13 @@ from .api_request import (
     answer_inline_query,
     set_webhook,
     delete_webhook,
-    get_webhook_info)
+    get_webhook_info,
+    edit_message_text,
+    edit_message_caption,
+    edit_message_media,
+    edit_message_reply_markup,
+    stop_poll,
+    delete_message)
 
 from ..util import Listener
 
@@ -1044,6 +1051,131 @@ class OrigamiBot:
         """
         return get_webhook_info(self.token)
 
+    def edit_message_text(self,
+                          chat_id: Union[int, str],
+                          text: str,
+                          message_id: Optional[int] = None,
+                          inline_message_id: Optional[str] = None,
+                          parse_mode: Optional[str] = None,
+                          disable_web_page_preview: Optional[bool] = None,
+                          reply_markup: Optional[InlineKeyboardMarkup] = None
+                          ) -> Union[Message, bool]:
+        """Use this method to edit text and game messages.
+
+        On success, if edited message is sent by the bot,
+        the edited Message is returned,
+        otherwise True is returned.
+        """
+        return edit_message_text(
+            self.token,
+            chat_id,
+            text,
+            message_id,
+            inline_message_id,
+            parse_mode,
+            disable_web_page_preview,
+            reply_markup
+        )
+
+    def edit_message_caption(self,
+                             chat_id: Union[int, str],
+                             caption: Optional[str] = None,
+                             message_id: Optional[int] = None,
+                             inline_message_id: Optional[str] = None,
+                             parse_mode: Optional[str] = None,
+                             reply_markup: Optional[
+                                 InlineKeyboardMarkup] = None
+                             ) -> Union[Message, bool]:
+        """Use this method to edit captions of messages.
+
+        On success, if edited message is sent by the bot,
+        the edited Message is returned,
+        otherwise True is returned.
+        """
+        return edit_message_caption(
+            self.token,
+            chat_id,
+            caption,
+            message_id,
+            inline_message_id,
+            parse_mode,
+            reply_markup
+        )
+
+    def edit_message_media(self,
+                           chat_id: Union[int, str],
+                           media: InputMedia,
+                           message_id: Optional[int] = None,
+                           inline_message_id: Optional[int] = None,
+                           reply_markup: Optional[InlineKeyboardMarkup] = None
+                           ) -> Union[Message, bool]:
+        """Use this method to edit animation, audio,
+        document, photo, or video messages.
+
+        On success, if the edited message was sent by the bot,
+        the edited Message is returned,
+        otherwise True is returned.
+        """
+        return edit_message_media(
+            self.token,
+            chat_id,
+            media,
+            message_id,
+            inline_message_id,
+            reply_markup
+        )
+
+    def edit_message_reply_markup(self,
+                                  chat_id: Optional[Union[int, str]] = None,
+                                  message_id: Optional[int] = None,
+                                  inline_message_id: Optional[str] = None,
+                                  reply_markup: Optional[
+                                      InlineKeyboardMarkup] = None
+                                  ) -> Union[Message, bool]:
+        """Use this method to edit only the reply markup of messages.
+
+        On success, if edited message is sent by the bot,
+        the edited Message is returned,
+        otherwise True is returned.
+        """
+        return edit_message_reply_markup(
+            self.token,
+            chat_id,
+            message_id,
+            inline_message_id,
+            reply_markup
+        )
+
+    def stop_poll(self,
+                  chat_id: Union[int, str],
+                  message_id: int,
+                  reply_markup: Optional[InlineKeyboardMarkup] = None
+                  ) -> Poll:
+        """Use this method to stop a poll which was sent by the bot.
+
+        On success, the stopped Poll with the final results is returned.
+        """
+        return stop_poll(
+            self.token,
+            chat_id,
+            message_id,
+            reply_markup
+        )
+
+    def delete_message(self,
+                       chat_id: Union[int, str],
+                       message_id: int
+                       ) -> bool:
+        """Use this method to delete a message, including service messages
+
+        Returns True on success.
+        """
+        return delete_message(
+            self.token,
+            chat_id,
+            message_id
+        )
+
     def _process_updates_loop(self):
         """The main processing thread.
 
@@ -1156,7 +1288,7 @@ class OrigamiBot:
                 self._set_headers()
                 content_len = int(self.headers.get('content-length', 0))
                 post_body = self.rfile.read(content_len).decode()
-                update = native_type(json.loads(post_body))
+                update = Update(**json.loads(post_body))
                 HandleUpdates.bot.process_update(update)
 
         HTTPServer((self.webhook, 443), HandleUpdates).serve_forever()
