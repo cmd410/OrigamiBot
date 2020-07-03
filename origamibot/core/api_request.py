@@ -1276,7 +1276,7 @@ def edit_message_text(token: str,
         'editMessageText',
         {
             'chat_id': chat_id,
-            'text': text
+            'text': text,
             'message_id': message_id,
             'inline_message_id': inline_message_id,
             'parse_mode': parse_mode,
@@ -1305,7 +1305,7 @@ def edit_message_caption(token: str,
         'editMessageCaption',
         {
             'chat_id': chat_id,
-            'caption': caption
+            'caption': caption,
             'message_id': message_id,
             'inline_message_id': inline_message_id,
             'parse_mode': parse_mode,

@@ -9,7 +9,6 @@ from time import sleep
 
 from .sthread import StoppableThread
 from .teletypes import (
-    native_type,
     Update,
     Message,
     ReplyMarkup,
@@ -1071,14 +1070,15 @@ class OrigamiBot:
             disable_web_page_preview,
             reply_markup
         )
-    
+
     def edit_message_caption(self,
                              chat_id: Union[int, str],
                              caption: Optional[str] = None,
                              message_id: Optional[int] = None,
                              inline_message_id: Optional[str] = None,
                              parse_mode: Optional[str] = None,
-                             reply_markup: Optional[InlineKeyboardMarkup] = None
+                             reply_markup: Optional[
+                                 InlineKeyboardMarkup] = None
                              ) -> Union[Message, bool]:
         """Use this method to edit captions of messages.
 
@@ -1208,7 +1208,7 @@ class OrigamiBot:
                 self._set_headers()
                 content_len = int(self.headers.get('content-length', 0))
                 post_body = self.rfile.read(content_len).decode()
-                update = native_type(json.loads(post_body))
+                update = Update(**json.loads(post_body))
                 HandleUpdates.bot.process_update(update)
 
         HTTPServer((self.webhook, 443), HandleUpdates).serve_forever()
