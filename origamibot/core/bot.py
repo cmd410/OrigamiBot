@@ -20,7 +20,8 @@ from .teletypes import (
     BotCommand,
     InlineQueryResult,
     WebhookInfo,
-    InputMedia)
+    InputMedia,
+    Poll)
 
 from .commands import CommandContainer
 from .util import check_args
@@ -76,7 +77,8 @@ from .api_request import (
     edit_message_text,
     edit_message_caption,
     edit_message_media,
-    edit_message_reply_markup)
+    edit_message_reply_markup,
+    stop_poll)
 
 from ..util import Listener
 
@@ -1140,6 +1142,22 @@ class OrigamiBot:
             chat_id,
             message_id,
             inline_message_id,
+            reply_markup
+        )
+
+    def stop_poll(self,
+                  chat_id: Union[int, str],
+                  message_id: int,
+                  reply_markup: Optional[InlineKeyboardMarkup] = None
+                  ) -> Poll:
+        """Use this method to stop a poll which was sent by the bot.
+
+        On success, the stopped Poll with the final results is returned.
+        """
+        return stop_poll(
+            self.token,
+            chat_id,
+            message_id,
             reply_markup
         )
 

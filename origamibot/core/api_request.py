@@ -18,7 +18,8 @@ from .teletypes import (
     BotCommand,
     InlineQueryResult,
     WebhookInfo,
-    InputMedia)
+    InputMedia,
+    Poll)
 
 
 api_url = 'https://api.telegram.org/bot{token}/{method}'
@@ -1367,6 +1368,26 @@ def edit_message_reply_markup(token: str,
             'chat_id': chat_id,
             'message_id': message_id,
             'inline_message_id': inline_message_id,
+            'reply_markup': asdict(reply_markup)
+        }
+    )
+
+
+def stop_poll(token: str,
+              chat_id: Union[int, str],
+              message_id: int,
+              reply_markup: Optional[InlineKeyboardMarkup] = None
+              ) -> Poll:
+    """Use this method to stop a poll which was sent by the bot.
+
+    On success, the stopped Poll with the final results is returned.
+    """
+    return request(
+        token,
+        'stopPoll',
+        {
+            'chat_id': chat_id,
+            'message_id': message_id,
             'reply_markup': asdict(reply_markup)
         }
     )
