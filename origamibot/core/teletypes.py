@@ -972,7 +972,9 @@ name_type_map = {
 
 
 def asdict(o):
-    return {k: v
+    if o is None:
+        return None
+    return {k: asdict(v) if is_dataclass(v) else v
             for k, v in o.__dict__.items()
             if v is not None and not k.startswith('_')}
 
