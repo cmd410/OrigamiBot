@@ -72,7 +72,8 @@ from .api_request import (
     answer_inline_query,
     set_webhook,
     delete_webhook,
-    get_webhook_info)
+    get_webhook_info,
+    edit_message_text)
 
 from ..util import Listener
 
@@ -1043,6 +1044,32 @@ class OrigamiBot:
         will return an object with the url field empty.
         """
         return get_webhook_info(self.token)
+
+    def edit_message_text(self,
+                          chat_id: Union[int, str],
+                          text: str,
+                          message_id: Optional[int] = None,
+                          inline_message_id: Optional[str] = None,
+                          parse_mode: Optional[str] = None,
+                          disable_web_page_preview: Optional[bool] = None,
+                          reply_markup: Optional[InlineKeyboardMarkup] = None
+                          ) -> Union[Message, bool]:
+        """Use this method to edit text and game messages.
+
+        On success, if edited message is sent by the bot,
+        the edited Message is returned,
+        otherwise True is returned.
+        """
+        return edit_message_text(
+            self.token,
+            chat_id,
+            text,
+            message_id,
+            inline_message_id,
+            parse_mode,
+            disable_web_page_preview,
+            reply_markup
+        )
 
     def _process_updates_loop(self):
         """The main processing thread.
