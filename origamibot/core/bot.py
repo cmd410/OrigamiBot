@@ -19,7 +19,8 @@ from .teletypes import (
     ChatMember,
     BotCommand,
     InlineQueryResult,
-    WebhookInfo)
+    WebhookInfo,
+    InputMedia)
 
 from .commands import CommandContainer
 from .util import check_args
@@ -73,7 +74,8 @@ from .api_request import (
     delete_webhook,
     get_webhook_info,
     edit_message_text,
-    edit_message_caption)
+    edit_message_caption,
+    edit_message_media)
 
 from ..util import Listener
 
@@ -1093,6 +1095,29 @@ class OrigamiBot:
             message_id,
             inline_message_id,
             parse_mode,
+            reply_markup
+        )
+
+    def edit_message_media(self,
+                           chat_id: Union[int, str],
+                           media: InputMedia,
+                           message_id: Optional[int] = None,
+                           inline_message_id: Optional[int] = None,
+                           reply_markup: Optional[InlineKeyboardMarkup] = None
+                           ) -> Union[Message, bool]:
+        """Use this method to edit animation, audio,
+        document, photo, or video messages.
+
+        On success, if the edited message was sent by the bot,
+        the edited Message is returned,
+        otherwise True is returned.
+        """
+        return edit_message_media(
+            self.token,
+            chat_id,
+            media,
+            message_id,
+            inline_message_id,
             reply_markup
         )
 

@@ -17,7 +17,8 @@ from .teletypes import (
     ChatMember,
     BotCommand,
     InlineQueryResult,
-    WebhookInfo)
+    WebhookInfo,
+    InputMedia)
 
 
 api_url = 'https://api.telegram.org/bot{token}/{method}'
@@ -1311,4 +1312,36 @@ def edit_message_caption(token: str,
             'parse_mode': parse_mode,
             'reply_markup': asdict(reply_markup)
         }
+    )
+
+
+def edit_message_media(token: str,
+                       chat_id: Union[int, str],
+                       media: InputMedia,
+                       message_id: Optional[int] = None,
+                       inline_message_id: Optional[int] = None,
+                       reply_markup: Optional[InlineKeyboardMarkup] = None
+                       ) -> Union[Message, bool]:
+    """Use this method to edit animation, audio,
+    document, photo, or video messages.
+
+    On success, if the edited message was sent by the bot,
+    the edited Message is returned,
+    otherwise True is returned.
+    """
+    media_data, files = media.get_data_n_files()
+
+    data = {
+        'chat_id': chat_id,
+        'media': media_data,
+        'message_id': message_id,
+        'inline_message_id': inline_message_id,
+        'reply_markup': reply_markup
+    }
+
+    return request(
+        token,
+        'editMessageMedia',
+        data,
+        files
     )

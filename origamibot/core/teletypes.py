@@ -357,6 +357,13 @@ class InputMedia:
     def __post_init__(self):
         self._file = None
 
+    def get_data_n_files(self):
+        data = asdict(self)
+        attach, file = self.file
+        if self.file is None:
+            return data, {}
+        return data, {attach: file}
+
     @property
     def file(self):
         """Returns local file attach://[name], and [file path]
