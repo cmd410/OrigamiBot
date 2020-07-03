@@ -471,7 +471,7 @@ def send_location(token: str,
         'live_period': live_period,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': reply_markup
+        'reply_markup': asdict(reply_markup)
     }
 
     return request(
@@ -504,7 +504,7 @@ def edit_message_live_location(token: str,
         'longitude': longitude,
         'message_id': message_id,
         'inline_message_id': inline_message_id,
-        'reply_markup': reply_markup
+        'reply_markup': asdict(reply_markup)
     }
 
     return request(
@@ -535,7 +535,7 @@ def stop_message_live_location(token: str,
         'chat_id': chat_id,
         'message_id': message_id,
         'inline_message_id': inline_message_id,
-        'reply_markup': reply_markup
+        'reply_markup': asdict(reply_markup)
     }
 
     return request(
@@ -572,7 +572,7 @@ def send_venue(token: str,
         'foursquare_type': foursquare_type,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': reply_markup
+        'reply_markup': asdict(reply_markup)
     }
 
     return request(
@@ -604,7 +604,7 @@ def send_contact(token: str,
         'vcard': vcard,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': reply_markup
+        'reply_markup': asdict(reply_markup)
     }
 
     return request(
@@ -651,7 +651,7 @@ def send_poll(token: str,
         'is_closed': is_closed,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': reply_markup
+        'reply_markup': asdict(reply_markup)
     }
 
     return request(
@@ -678,7 +678,7 @@ def send_dice(token: str,
         'emoji': emoji,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': reply_markup
+        'reply_markup': asdict(reply_markup)
     }
 
     return request(
@@ -1336,7 +1336,7 @@ def edit_message_media(token: str,
         'media': media_data,
         'message_id': message_id,
         'inline_message_id': inline_message_id,
-        'reply_markup': reply_markup
+        'reply_markup': asdict(reply_markup)
     }
 
     return request(
@@ -1344,4 +1344,29 @@ def edit_message_media(token: str,
         'editMessageMedia',
         data,
         files
+    )
+
+
+def edit_message_reply_markup(token: str,
+                              chat_id: Optional[Union[int, str]] = None,
+                              message_id: Optional[int] = None,
+                              inline_message_id: Optional[str] = None,
+                              reply_markup: Optional[
+                                  InlineKeyboardMarkup] = None
+                              ) -> Union[Message, bool]:
+    """Use this method to edit only the reply markup of messages.
+
+    On success, if edited message is sent by the bot,
+    the edited Message is returned,
+    otherwise True is returned.
+    """
+    return request(
+        token,
+        'editMessageReplyMarkup',
+        {
+            'chat_id': chat_id,
+            'message_id': message_id,
+            'inline_message_id': inline_message_id,
+            'reply_markup': asdict(reply_markup)
+        }
     )

@@ -75,7 +75,8 @@ from .api_request import (
     get_webhook_info,
     edit_message_text,
     edit_message_caption,
-    edit_message_media)
+    edit_message_media,
+    edit_message_reply_markup)
 
 from ..util import Listener
 
@@ -1116,6 +1117,27 @@ class OrigamiBot:
             self.token,
             chat_id,
             media,
+            message_id,
+            inline_message_id,
+            reply_markup
+        )
+
+    def edit_message_reply_markup(self,
+                                  chat_id: Optional[Union[int, str]] = None,
+                                  message_id: Optional[int] = None,
+                                  inline_message_id: Optional[str] = None,
+                                  reply_markup: Optional[
+                                      InlineKeyboardMarkup] = None
+                                  ) -> Union[Message, bool]:
+        """Use this method to edit only the reply markup of messages.
+
+        On success, if edited message is sent by the bot,
+        the edited Message is returned,
+        otherwise True is returned.
+        """
+        return edit_message_reply_markup(
+            self.token,
+            chat_id,
             message_id,
             inline_message_id,
             reply_markup
