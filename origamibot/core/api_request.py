@@ -1276,10 +1276,39 @@ def edit_message_text(token: str,
         'editMessageText',
         {
             'chat_id': chat_id,
+            'text': text
             'message_id': message_id,
             'inline_message_id': inline_message_id,
             'parse_mode': parse_mode,
             'disable_web_page_preview': disable_web_page_preview,
+            'reply_markup': asdict(reply_markup)
+        }
+    )
+
+
+def edit_message_caption(token: str,
+                         chat_id: Union[int, str],
+                         caption: Optional[str] = None,
+                         message_id: Optional[int] = None,
+                         inline_message_id: Optional[str] = None,
+                         parse_mode: Optional[str] = None,
+                         reply_markup: Optional[InlineKeyboardMarkup] = None
+                         ) -> Union[Message, bool]:
+    """Use this method to edit captions of messages.
+
+    On success, if edited message is sent by the bot,
+    the edited Message is returned,
+    otherwise True is returned.
+    """
+    return request(
+        token,
+        'editMessageCaption',
+        {
+            'chat_id': chat_id,
+            'caption': caption
+            'message_id': message_id,
+            'inline_message_id': inline_message_id,
+            'parse_mode': parse_mode,
             'reply_markup': asdict(reply_markup)
         }
     )

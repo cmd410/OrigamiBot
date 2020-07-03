@@ -73,7 +73,8 @@ from .api_request import (
     set_webhook,
     delete_webhook,
     get_webhook_info,
-    edit_message_text)
+    edit_message_text,
+    edit_message_caption)
 
 from ..util import Listener
 
@@ -1068,6 +1069,30 @@ class OrigamiBot:
             inline_message_id,
             parse_mode,
             disable_web_page_preview,
+            reply_markup
+        )
+    
+    def edit_message_caption(self,
+                             chat_id: Union[int, str],
+                             caption: Optional[str] = None,
+                             message_id: Optional[int] = None,
+                             inline_message_id: Optional[str] = None,
+                             parse_mode: Optional[str] = None,
+                             reply_markup: Optional[InlineKeyboardMarkup] = None
+                             ) -> Union[Message, bool]:
+        """Use this method to edit captions of messages.
+
+        On success, if edited message is sent by the bot,
+        the edited Message is returned,
+        otherwise True is returned.
+        """
+        return edit_message_caption(
+            self.token,
+            chat_id,
+            caption,
+            message_id,
+            inline_message_id,
+            parse_mode,
             reply_markup
         )
 
