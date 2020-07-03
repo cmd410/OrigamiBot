@@ -78,7 +78,8 @@ from .api_request import (
     edit_message_caption,
     edit_message_media,
     edit_message_reply_markup,
-    stop_poll)
+    stop_poll,
+    delete_message)
 
 from ..util import Listener
 
@@ -1159,6 +1160,20 @@ class OrigamiBot:
             chat_id,
             message_id,
             reply_markup
+        )
+
+    def delete_message(self,
+                       chat_id: Union[int, str],
+                       message_id: int
+                       ) -> bool:
+        """Use this method to delete a message, including service messages
+
+        Returns True on success.
+        """
+        return delete_message(
+            self.token,
+            chat_id,
+            message_id
         )
 
     def _process_updates_loop(self):

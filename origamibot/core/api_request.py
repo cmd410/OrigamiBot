@@ -1391,3 +1391,21 @@ def stop_poll(token: str,
             'reply_markup': asdict(reply_markup)
         }
     )
+
+
+def delete_message(token: str,
+                   chat_id: Union[int, str],
+                   message_id: int
+                   ) -> bool:
+    """Use this method to delete a message, including service messages
+
+    Returns True on success.
+    """
+    return request(
+        token,
+        'deleteMessage',
+        {
+            'chat_id': chat_id,
+            'messsage_id': message_id
+        }
+    )
