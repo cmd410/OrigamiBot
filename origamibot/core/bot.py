@@ -9,6 +9,7 @@ from time import sleep
 
 from .sthread import StoppableThread
 from .teletypes import (
+    native_type,
     Update,
     Message,
     ReplyMarkup,
@@ -134,7 +135,22 @@ class OrigamiBot:
     def process_update(self, update: Update):
         """Process a single update."""
         if update.message is not None:
+            self._call_listeners(
+                'on_message',
+                update.message)
             self._handle_message(update.message)
+        elif update.channel_post is not None:
+            self._call_listeners(
+                'on_channel_post',
+                update.channel_post)
+        elif update.edited_message is not None:
+            self._call_listeners(
+                'on_edited_message',
+                update.edited_message)
+        elif update.edited_channel_post is not None:
+            self._call_listeners(
+                'on_edited_channel_post',
+                update.edited_channel_post)
 
     def add_commands(self, obj):
         """Add an object to bot's commands container.
@@ -1257,8 +1273,6 @@ class OrigamiBot:
 
     def _handle_message(self, message: Message):
         """Process a single message"""
-        self._call_listeners('on_message', message)
-
         if not self._handle_commands(message):
             self._call_listeners('on_plain_message', message)
 
@@ -1288,7 +1302,7 @@ class OrigamiBot:
                 self._set_headers()
                 content_len = int(self.headers.get('content-length', 0))
                 post_body = self.rfile.read(content_len).decode()
-                update = Update(**json.loads(post_body))
+                update = native_type(json.loads(post_body))
                 HandleUpdates.bot.process_update(update)
 
         HTTPServer((self.webhook, 443), HandleUpdates).serve_forever()
