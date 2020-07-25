@@ -25,6 +25,7 @@ from .teletypes import (
     Poll)
 
 from .commands import CommandContainer
+from .inline import InlineCallbacks
 from .util import check_args
 
 from .api_request import (
@@ -114,6 +115,7 @@ class OrigamiBot:
         self._last_update_id = 0
 
         self.command_container = CommandContainer()
+        self.inline_container = InlineCallbacks()
         self.listeners = []
 
     def start(self):
@@ -151,6 +153,8 @@ class OrigamiBot:
             self._call_listeners(
                 'on_edited_channel_post',
                 update.edited_channel_post)
+        elif update.inline_query is not None:
+            self.inline_container.call(update.inline_query)
 
     def add_commands(self, obj):
         """Add an object to bot's commands container.
@@ -164,6 +168,9 @@ class OrigamiBot:
         if not isinstance(obj, Listener):
             raise TypeError(f'{obj} is not a Listener')
         self.listeners.append(obj)
+
+    def add_inline(self, obj):
+        self.inline_container.add(obj)
 
     def remove_commands_by_filter(self, filter_func: Callable):
         """Remove commands from container by filter
