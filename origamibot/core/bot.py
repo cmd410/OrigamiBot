@@ -83,7 +83,7 @@ from .api_request import (
     stop_poll,
     delete_message)
 
-from ..util import Listener
+from ..listener import Listener
 
 
 class OrigamiBot:
