@@ -43,7 +43,9 @@ def request(token, method, data=dict(), files=dict(), excpect=None):
         for key, value in files.items()
         if value is not None
     }
-    responce = requests.post(url, json=json.dumps(data, ensure_ascii=False), files=files)
+    json_data = json.dumps(data, ensure_ascii=True)
+    headers = { 'Content-type': 'application/json' }
+    responce = requests.post(url, data=json_data, files=files, headers=headers)
 
     if responce.status_code != 200:
         print(json.dumps(data))
