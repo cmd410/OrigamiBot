@@ -35,7 +35,7 @@ from sys import argv
 from time import sleep
 
 from origamibot import OrigamiBot as Bot
-from origamibot.util import Listener
+from origamibot.listener import Listener
 
 
 class BotsCommands:
