@@ -25,7 +25,7 @@ from .teletypes import (
 api_url = 'https://api.telegram.org/bot{token}/{method}'
 
 
-def request(token, method, data=dict(), files=dict()):
+def request(token, method, data=dict(), files=dict(), excpect=None):
     """Make a raw api request.
 
     Returns result as dataclass or list of dataclasses
@@ -53,10 +53,10 @@ def request(token, method, data=dict(), files=dict()):
     data = json.loads(responce.text)['result']
 
     if isinstance(data, dict):
-        return native_type(data)
+        return native_type(data, excpect)
     elif isinstance(data, list):
         for i, item in enumerate(data):
-            data[i] = native_type(item)
+            data[i] = native_type(item, excpect)
     return data
 
 
@@ -72,7 +72,8 @@ def get_updates(token: str,
         data={
             'offset': offset + 1,
             'limit': limit,
-            'allowed_updates': allowed_updates}
+            'allowed_updates': allowed_updates},
+        excpect='update'
         )
     return updates
 
@@ -84,7 +85,8 @@ def get_me(token: str) -> User:
     """
     return request(
         token,
-        'getMe'
+        'getMe',
+        excpect='user'
         )
 
 
@@ -113,7 +115,8 @@ def send_message(token: str,
     return request(
         token,
         'sendMessage',
-        data
+        data,
+        excpect='message'
     )
 
 
@@ -136,7 +139,8 @@ def forward_message(token: str,
     return request(
         token,
         'forwardMessage',
-        data
+        data,
+        excpect='message'
     )
 
 
@@ -168,12 +172,14 @@ def send_photo(token: str,
                        data,
                        files={
                            'photo': photo
-                       })
+                       },
+                       excpect='message')
     else:
         data['photo'] = photo
         return request(token,
                        'sendPhoto',
-                       data)
+                       data,
+                       excpect='message')
 
 
 def send_audio(token: str,
@@ -405,7 +411,8 @@ def send_voice(token: str,
         token,
         'sendVoice',
         data,
-        files
+        files,
+        excpect='message'
     )
 
 
@@ -447,7 +454,8 @@ def send_video_note(token: str,
         token,
         'sendVideoNote',
         data,
-        files
+        files,
+        excpect='message'
     )
 
 
@@ -478,7 +486,8 @@ def send_location(token: str,
     return request(
         token,
         'sendLocation',
-        data
+        data,
+        excpect='message'
     )
 
 
@@ -511,7 +520,8 @@ def edit_message_live_location(token: str,
     return request(
         token,
         'editMessageLiveLocation',
-        data
+        data,
+        excpect='message'
     )
 
 
@@ -542,7 +552,8 @@ def stop_message_live_location(token: str,
     return request(
         token,
         'stopMessageLiveLocation',
-        data
+        data,
+        excpect='message'
     )
 
 
@@ -579,7 +590,8 @@ def send_venue(token: str,
     return request(
         token,
         'sendVenue',
-        data
+        data,
+        excpect='message'
     )
 
 
@@ -611,7 +623,8 @@ def send_contact(token: str,
     return request(
         token,
         'sendContact',
-        data
+        data,
+        excpect='message'
     )
 
 
@@ -658,7 +671,8 @@ def send_poll(token: str,
     return request(
         token,
         'sendPoll',
-        data
+        data,
+        excpect='message'
     )
 
 
@@ -685,7 +699,8 @@ def send_dice(token: str,
     return request(
         token,
         'sendDice',
-        data
+        data,
+        excpect='message'
     )
 
 

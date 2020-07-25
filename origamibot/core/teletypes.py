@@ -606,13 +606,6 @@ class Chat:
     can_set_sticker_set: bool = None
 
 
-@dataclass
-class Update:
-    update_id: int
-    message: Message = None
-    edited_message: Message = None
-    channel_post: Message = None
-    edited_channel_post: Message = None
 
 
 @dataclass
@@ -920,6 +913,33 @@ class WebhookInfo:
     allowed_update: list = None
 
 
+@dataclass
+class ShippingQuery:
+    pass
+
+
+@dataclass
+class PreCheckoutQuery:
+    pass
+
+
+@dataclass
+class Update:
+    update_id: int
+    message: Message = None
+    edited_message: Message = None
+    channel_post: Message = None
+    edited_channel_post: Message = None
+    inline_query: InlineQuery = None
+    chosen_inline_result: ChosenInlineResult = None
+    callback_query: CallbackQuery = None
+    shipping_query: ShippingQuery = None
+    pre_checkout_query: PreCheckoutQuery = None
+    poll: Poll = None
+    poll_answer: PollAnswer = None
+
+
+
 # Collect all dataclasses in this module
 api_types = [
     i[1] for i in getmembers(modules[__name__],
@@ -974,7 +994,13 @@ name_type_map = {
             'forward_from_chat': Chat,
             'permissions': ChatPermissions,
             'photo': ChatPhoto,
-            'entities': MessageEntity
+            'entities': MessageEntity,
+            'inline_query': InlineQuery,
+            'shipping_query': ShippingQuery,
+            'pre_checkout_query': PreCheckoutQuery,
+            'poll': Poll,
+            'poll_answer': PollAnswer,
+            'update': Update
         }
 
 
@@ -1084,13 +1110,13 @@ def map_list(arr: list, name=None):
         return [map_dict(i, name) for i in arr]
 
 
-def native_type(d):
+def native_type(d, name=None):
     """Recursively converts given dict/list into suitable dataclass"""
     t = type(d)
     if t not in {dict, list}:
         return d
     if t == dict:
-        return map_dict(d)
+        return map_dict(d, name)
     if t == list:
-        return map_list(d)
+        return map_list(d, name)
     return d
