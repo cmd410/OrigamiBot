@@ -92,6 +92,7 @@ class OrigamiBot:
         self.token = token
         self.webhook = None
         self.updates = deque()
+        self.inline = deque()
         self.interval = 0.1
 
         self._listen_thread = StoppableThread(
@@ -109,8 +110,14 @@ class OrigamiBot:
             name='Update process thread',
             target=self._process_updates_loop,
             daemon=True)
+        
+        self._inline_thread = StoppableThread(
+            name='Inline thread',
+            target=self._inline_loop,
+            daemon=True)
 
         self.has_updates = Event()
+        self.has_inline = Event()
 
         self._last_update_id = 0
 
@@ -125,6 +132,7 @@ class OrigamiBot:
         else:
             self._webhook_thread.start()
         self._process_thread.start()
+        self._inline_thread.start()
 
     def stop(self):
         """Terminate all bot's threads."""
@@ -133,6 +141,8 @@ class OrigamiBot:
             self._listen_thread.join()
             self._process_thread.stop()
             self._process_thread.join()
+            self._inline_thread.stop()
+            self._inline_thread.join()
 
     def process_update(self, update: Update):
         """Process a single update."""
@@ -154,7 +164,8 @@ class OrigamiBot:
                 'on_edited_channel_post',
                 update.edited_channel_post)
         elif update.inline_query is not None:
-            self.inline_container.call(update.inline_query)
+            self.inline.append(update.inline_query)
+            self.has_inline.set()
 
     def add_commands(self, obj):
         """Add an object to bot's commands container.
@@ -1225,6 +1236,17 @@ class OrigamiBot:
                     self.updates.extend(updates)
                     self.has_updates.set()
                 sleep(self.interval)
+
+    def _inline_loop(self):
+        while True:
+            if current_thread().stopped:
+                break
+            self.has_inline.wait()
+            while self.inline:
+                query = self.inline.popleft()
+                self.inline_container.call(query)
+            self.has_inline.clear()
+
 
     def _handle_commands(self, message: Message, first_only=False) -> bool:
         """Check message for commands in it.

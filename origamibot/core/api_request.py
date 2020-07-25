@@ -1,11 +1,10 @@
 import requests
 import json
 
-from dataclasses import asdict
 from typing import List, Union, Optional, IO
 
 from .teletypes import (
-    native_type,
+    native_type, asdict,
     Update,
     User,
     Message,
@@ -44,11 +43,12 @@ def request(token, method, data=dict(), files=dict(), excpect=None):
         for key, value in files.items()
         if value is not None
     }
-
-    responce = requests.post(url, data, files=files)
+    responce = requests.post(url, json=json.dumps(data, ensure_ascii=False), files=files)
 
     if responce.status_code != 200:
-        raise Exception(f'Server returned error: {responce.status_code}')
+        print(json.dumps(data))
+        raise Exception(
+            f'Server returned error: {responce.status_code}\n\n{responce.text}')
 
     data = json.loads(responce.text)['result']
 

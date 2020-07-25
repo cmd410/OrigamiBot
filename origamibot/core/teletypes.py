@@ -606,8 +606,6 @@ class Chat:
     can_set_sticker_set: bool = None
 
 
-
-
 @dataclass
 class InputMessageContent:
     pass
@@ -616,7 +614,7 @@ class InputMessageContent:
 @dataclass
 class InputTextMessageContent(InputMessageContent):
     message_text: str
-    parse_mode: str
+    parse_mode: str = None
     disable_web_page_preview: bool = None
 
 
@@ -937,7 +935,6 @@ class Update:
     pre_checkout_query: PreCheckoutQuery = None
     poll: Poll = None
     poll_answer: PollAnswer = None
-
 
 
 # Collect all dataclasses in this module
