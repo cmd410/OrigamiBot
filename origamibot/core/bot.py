@@ -105,8 +105,7 @@ class OrigamiBot:
         self._webhook_thread = StoppableThread(
             name='Webhook thread',
             target=self._webhook_loop,
-            daemon=True
-        )
+            daemon=True)
 
         self._process_thread = StoppableThread(
             name='Update process thread',
@@ -194,6 +193,9 @@ class OrigamiBot:
         """
         self.command_container.add_command(obj)
 
+    def remove_commands(self, obj):
+        self.command_container.remove(obj)
+
     def add_listener(self, obj):
         if not isinstance(obj, Listener):
             raise TypeError(f'{obj} is not a Listener')
@@ -201,6 +203,9 @@ class OrigamiBot:
 
     def add_inline(self, obj):
         self.inline_container.add(obj)
+
+    def remove_inline(self, obj):
+        self.inline_container.remove(obj)
 
     def remove_commands_by_filter(self, filter_func: Callable):
         """Remove commands from container by filter

@@ -1,5 +1,6 @@
 from weakref import WeakMethod
 from inspect import getmembers
+from collections import deque
 
 
 class InlineCallbacks:
@@ -14,12 +15,19 @@ class InlineCallbacks:
                 continue
             self.callback_methods.append(WeakMethod(c_call))
 
+    def remove(self, callback):
+        self.callback_objs.remove(callback)
+
     def call(self, query):
-        for i in self.callback_methods:
-            method = i()
+        que = deque(self.callback_methods)
+        self.callback_methods = []
+        while que:
+            method_ref = que.popleft()
+            method = method_ref()
             if method is None:
                 continue
             try:
                 method(query)
             except Exception as err:
                 print(err)
+            self.callback_methods.append(method_ref)

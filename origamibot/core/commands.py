@@ -22,6 +22,9 @@ class CommandContainer:
                 else:
                     self._cache[c_name] = [self._make_weak(c_name, c_call)]
 
+    def remove(self, obj):
+        self.command_holders.remove(obj)
+
     def remove_by_filter(self, filter_func: Callable):
         """Remove commands from container by filter
 
