@@ -126,12 +126,12 @@ class OrigamiBot:
         self.inline_container = InlineCallbacks()
         self.listeners = []
 
-    def start(self):
+    def start(self, start_webhook=False):
         """Start listening for updates. Non-blocking!"""
-        if self.webhook is None:
-            self._listen_thread.start()
-        else:
+        if start_webhook:
             self._webhook_thread.start()
+        else:
+            self._listen_thread.start()
         self._process_thread.start()
         self._inline_thread.start()
 
