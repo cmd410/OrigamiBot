@@ -1426,3 +1426,37 @@ def delete_message(token: str,
             'messsage_id': message_id
         }
     )
+
+
+def send_media_group(token: str,
+                     chat_id: Union[int, str],
+                     media: List[InputMedia],
+                     disable_notification: Optional[bool] = None,
+                     reply_to_message_id: Optional[bool] = None
+                     ) -> Message:
+    """Use this method to send a group of photos or videos as an album.
+    On success, an array of the sent Messages is returned
+    """
+    assert 10 >= len(media) >= 2, 'Invalid number of media, must be 2-10'
+
+    data = {
+        'chat_id': chat_id,
+        'media': [asdict(m) for m in media],
+        'disable_notification': disable_notification,
+        'reply_to_message_id': reply_to_message_id
+    }
+
+    files = dict()
+    for media_item in media:
+        attach_name, file_path = media_item.file
+        if not all([attach_name, file_path]):
+            continue
+        files[attach_name] = file_path
+
+    return request(
+        token,
+        'sendMediaGroup',
+        data,
+        files,
+        'message'
+    )
