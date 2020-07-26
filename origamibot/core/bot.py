@@ -95,6 +95,7 @@ class OrigamiBot:
         self.updates = deque()
         self.inline = deque()
         self.interval = 0.1
+        self.safe_poll = True
 
         self._listen_thread = StoppableThread(
             name='Listen thread',
@@ -126,22 +127,36 @@ class OrigamiBot:
         self.inline_container = InlineCallbacks()
         self.listeners = []
 
-    def start(self, start_webhook=False):
-        """Start listening for updates. Non-blocking!"""
-        if start_webhook:
+    def start(self,
+              start_webhook=False,
+              poll=True, 
+              process=True,
+              inline=True):
+        """Start listening for updates. Non-blocking!
+        
+        start_webhook=False - Start inbuilt webhook server
+        poll=True - Start Polling thread
+        process=True - Start update processing thread
+        inline=True - Start separate inline thread
+        """
+        if start_webhook and not poll:
             self._webhook_thread.start()
-        else:
+        elif poll:
             self._listen_thread.start()
-        self._process_thread.start()
-        self._inline_thread.start()
+        if process:
+            self._process_thread.start()
+        if inline:
+            self._inline_thread.start()
 
     def stop(self):
         """Terminate all bot's threads."""
         if self._listen_thread.is_alive():
             self._listen_thread.stop()
             self._listen_thread.join()
+        if self._process_thread.is_alive():
             self._process_thread.stop()
             self._process_thread.join()
+        if self._inline_thread.is_alive():
             self._inline_thread.stop()
             self._inline_thread.join()
 
@@ -165,8 +180,11 @@ class OrigamiBot:
                 'on_edited_channel_post',
                 update.edited_channel_post)
         elif update.inline_query is not None:
-            self.inline.append(update.inline_query)
-            self.has_inline.set()
+            if self._inline_thread.is_alive():
+                self.inline.append(update.inline_query)
+                self.has_inline.set()
+            else:
+                self.inline_container.call(update.inline_query)
 
     def add_commands(self, obj):
         """Add an object to bot's commands container.
@@ -1249,7 +1267,16 @@ class OrigamiBot:
             while True:
                 if current_thread().stopped:
                     break
-                updates = self.get_updates()
+                if self.safe_poll:
+                    try:
+                        updates = self.get_updates()
+                    except (IOError, ConnectionError) as err:
+                        self._call_listeners("on_poll_error", err)
+                        sleep(self.interval)
+                        continue
+                else:
+                    updates = self.get_updates()
+
                 if updates:
                     self.updates.extend(updates)
                     self.has_updates.set()
