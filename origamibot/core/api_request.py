@@ -3,6 +3,7 @@ import json
 
 from typing import List, Union, Optional, IO
 
+from .exceptions import TelegramAPIError
 from .teletypes import (
     native_type, asdict,
     Update,
@@ -48,9 +49,9 @@ def request(token, method, data=dict(), files=dict(), excpect=None):
     responce = requests.post(url, data=json_data, files=files, headers=headers)
 
     if responce.status_code != 200:
-        print(json.dumps(data))
-        raise Exception(
-            f'Server returned error: {responce.status_code}\n\n{responce.text}')
+        description = json.loads(responce.text).get('description', 'No description')
+        raise TelegramAPIError(f'[{responce.status_code}] {description}')
+        
 
     data = json.loads(responce.text)['result']
 
@@ -1190,7 +1191,8 @@ def get_my_commands(token: str) -> List[BotCommand]:
     Returns Array of BotCommand on success.
     """
     return request(
-        token
+        token,
+        'getMyCommands'
     )
 
 

@@ -57,3 +57,9 @@ class Listener:
         group_chat_created
         """
         pass
+
+    def on_poll_error(self, exc):
+        """Called when get_updates results in connection related
+        error
+        """
+        pass
