@@ -656,6 +656,10 @@ class InlineQueryResult:
     id: str
     type: str
 
+    def __post_init__(self):
+        self.type = self.type
+        # a workaround for a strange dataclass field bug
+
 
 @dataclass
 class InlineQueryResultArticle(InlineQueryResult):
