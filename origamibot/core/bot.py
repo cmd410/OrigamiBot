@@ -81,7 +81,8 @@ from .api_request import (
     edit_message_media,
     edit_message_reply_markup,
     stop_poll,
-    delete_message)
+    delete_message,
+    send_media_group)
 
 from ..listener import Listener
 
@@ -654,6 +655,23 @@ class OrigamiBot:
             self.token,
             chat_id,
             action
+        )
+
+    def send_media_group(self,
+                         chat_id: Union[int, str],
+                         media: List[InputMedia],
+                         disable_notification: Optional[bool] = None,
+                         reply_to_message_id: Optional[bool] = None
+                         ) -> Message:
+        """Use this method to send a group of photos or videos as an album.
+        On success, an array of the sent Messages is returned
+        """
+        return send_media_group(
+            self.token,
+            chat_id,
+            media,
+            disable_notification,
+            reply_to_message_id
         )
 
     def get_user_profile_photos(self,
@@ -1246,7 +1264,6 @@ class OrigamiBot:
                 query = self.inline.popleft()
                 self.inline_container.call(query)
             self.has_inline.clear()
-
 
     def _handle_commands(self, message: Message, first_only=False) -> bool:
         """Check message for commands in it.
