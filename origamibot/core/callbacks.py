@@ -3,7 +3,7 @@ from inspect import getmembers
 from collections import deque
 
 
-class InlineCallbacks:
+class Callbacks:
     def __init__(self):
         self.callback_objs = []
         self.callback_methods = []
