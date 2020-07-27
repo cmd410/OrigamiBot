@@ -25,7 +25,7 @@ from .teletypes import (
     Poll)
 
 from .commands import CommandContainer
-from .inline import InlineCallbacks
+from .callbacks import Callbacks
 from .util import check_args
 
 from .api_request import (
@@ -111,6 +111,7 @@ class OrigamiBot:
         self.webhook = None
         self.updates = deque()
         self.inline = deque()
+        self.callback = deque()
         self.interval = 0.1
         self.safe_poll = True
 
@@ -133,21 +134,29 @@ class OrigamiBot:
             name='Inline thread',
             target=self._inline_loop,
             daemon=True)
+        
+        self._callback_thread = StoppableThread(
+            name='Inline thread',
+            target=self._callback_loop,
+            daemon=True)
 
         self.has_updates = Event()
         self.has_inline = Event()
+        self.has_callback = Event()
 
         self._last_update_id = 0
 
         self.command_container = CommandContainer()
-        self.inline_container = InlineCallbacks()
+        self.inline_container = Callbacks()
+        self.callback_container = Callbacks()
         self.listeners = []
 
     def start(self,
-              start_webhook=False,
+              webhook=False,
               poll=True, 
               process=True,
-              inline=True):
+              inline=True,
+              callback=True):
         """Start listening for updates. Non-blocking!
         
         start_webhook=False - Start inbuilt webhook server
@@ -155,7 +164,7 @@ class OrigamiBot:
         process=True - Start update processing thread
         inline=True - Start separate inline thread
         """
-        if start_webhook and not poll:
+        if webhook and not poll:
             self._webhook_thread.start()
         elif poll:
             self._listen_thread.start()
@@ -163,6 +172,8 @@ class OrigamiBot:
             self._process_thread.start()
         if inline:
             self._inline_thread.start()
+        if callback:
+            self._callback_thread.start()
 
     def stop(self):
         """Terminate all bot's threads."""
@@ -201,6 +212,12 @@ class OrigamiBot:
                 self.has_inline.set()
             else:
                 self.inline_container.call(update.inline_query)
+        elif update.callback_query is not None:
+            if self._callback_thread.is_alive():
+                self.callback.append(update.callback_query)
+                self.has_callback.set()
+            else:
+                self.callback_container.call(update.callback_query)
 
     def add_commands(self, obj):
         """Add an object to bot's commands container.
@@ -223,6 +240,12 @@ class OrigamiBot:
 
     def remove_inline(self, obj):
         self.inline_container.remove(obj)
+    
+    def add_callback(self, obj):
+        self.callback_container.add(obj)
+
+    def remove_callback(self, obj):
+        self.callback_container.remove(obj)
 
     def remove_commands_by_filter(self, filter_func: Callable):
         """Remove commands from container by filter
@@ -1331,8 +1354,24 @@ class OrigamiBot:
             self.has_inline.wait()
             while self.inline:
                 query = self.inline.popleft()
-                self.inline_container.call(query)
+                if not using_greenlets:
+                    self.inline_container.call(query)
+                else:
+                    gevent.spawn(self.inline_container.call, query)
             self.has_inline.clear()
+
+    def _callback_loop(self):
+        while True:
+            if current_thread().stopped:
+                break
+            self.has_callback.wait()
+            while self.callback:
+                query = self.callback.popleft()
+                if not using_greenlets:
+                    self.callback_container.call(query)
+                else:
+                    gevent.spawn(self.callback_container.call, query)
+            self.has_callback.clear()
 
     def _handle_commands(self, message: Message, first_only=False) -> bool:
         """Check message for commands in it.
