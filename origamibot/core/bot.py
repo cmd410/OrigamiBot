@@ -265,7 +265,27 @@ class OrigamiBot:
                             parse_mode,
                             disable_web_page_preview,
                             disable_notification,
-                            reply_to_message_id)
+                            reply_to_message_id,
+                            reply_markup)
+
+    def reply_to(self, 
+                 msg: Message,
+                 text: str, 
+                 parse_mode: Optional[str] = None,
+                 disable_web_page_preview: Optional[bool] = None,
+                 disable_notification: Optional[bool] = None,
+                 reply_markup: Optional[ReplyMarkup] = None) -> Message:
+        mid = msg.message_id
+        cid = msg.chat.id
+        return self.send_message(
+            cid,
+            text,
+            parse_mode=parse_mode,
+            disable_web_page_preview=disable_web_page_preview,
+            disable_notification=disable_notification,
+            reply_to_message_id=mid,
+            reply_markup=reply_markup
+        )
 
     def forward_message(self,
                         chat_id: Union[int, str],

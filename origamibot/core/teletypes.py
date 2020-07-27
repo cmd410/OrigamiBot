@@ -1008,9 +1008,27 @@ name_type_map = {
 def asdict(o):
     if o is None:
         return None
-    return {k: asdict(v) if is_dataclass(v) else v
-            for k, v in o.__dict__.items()
-            if v is not None and not k.startswith('_')}
+    d = {}
+    if is_dataclass(o):
+        #print(o)
+        for key, value in o.__dict__.items():
+            if key.startswith('_') or value is None:
+                continue
+            if is_dataclass(value):
+                d[key] = asdict(value)
+            elif isinstance(value, list):
+                d[key] = []
+                for i, item in enumerate(value):
+                    d[key].append(asdict(item))
+            else:
+                d[key] = value
+    elif isinstance(o, list):
+        for i, item in enumerate(o):
+            o[i] = asdict(item)
+        return o
+    else:
+        return item
+    return d
 
 
 def map_dict(d: dict, name=None):
