@@ -87,6 +87,21 @@ from .api_request import (
 from ..listener import Listener
 
 
+using_greenlets = False
+try:
+    import gevent
+    if any([
+        gevent.monkey.is_module_patched('socket'),
+        gevent.monkey.is_module_patched('threading'),
+        gevent.monkey.is_module_patched('time')
+        ]):
+        using_greenlets = True
+    else:
+        del gevent
+except ImportError:
+    pass
+
+
 class OrigamiBot:
     """Telegram bot class."""
     def __init__(self, token):
@@ -1344,7 +1359,10 @@ class OrigamiBot:
                     self._call_listeners('on_command_failure', message)
                     continue
                 try:
-                    method(*bound_args.args, **bound_args.kwargs)
+                    if not using_greenlets:
+                        method(*bound_args.args, **bound_args.kwargs)
+                    else:
+                        gevent.spawn(method, *bound_args.args, **bound_args.kwargs)
                 except Exception as err:
                     self._call_listeners('on_command_failure', message, err)
         return True
@@ -1365,7 +1383,10 @@ class OrigamiBot:
     def _call_listeners(self, event, *args, **kwargs):
         for listener in self.listeners:
             method = getattr(listener, event)
-            method(*args, **kwargs)
+            if not using_greenlets:
+                method(*args, **kwargs)
+            else:
+                gevent.spawn(method, *args, **kwargs)
 
     def _webhook_loop(self):
         class HandleUpdates(BaseHTTPRequestHandler):
