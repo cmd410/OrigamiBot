@@ -90,13 +90,15 @@ from ..listener import Listener
 using_greenlets = False
 try:
     import gevent
+    from gevent.monkey import is_module_patched
     if any([
-        gevent.monkey.is_module_patched('socket'),
-        gevent.monkey.is_module_patched('threading'),
-        gevent.monkey.is_module_patched('time')
+        is_module_patched('socket'),
+        is_module_patched('threading'),
+        is_module_patched('time')
         ]):
         using_greenlets = True
     else:
+        print('no gevent this time')
         del gevent
 except ImportError:
     pass
