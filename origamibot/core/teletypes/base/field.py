@@ -9,6 +9,8 @@ class Field:
     Usual user does not interact with this class directly
     """
 
+    __slots__ = ('_value', 'data_types')
+
     def unfold(self):
         if isinstance(self.value, list):
             return [
