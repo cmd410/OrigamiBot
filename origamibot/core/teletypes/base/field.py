@@ -37,6 +37,8 @@ class Field:
         """Check the type of value assigned,
         convert dict to structure if needed
         """
+        if not self.data_types:
+            return value
         if not (value is None and None in self.data_types):
             value_type = type(value)
             if value_type not in self.data_types:
