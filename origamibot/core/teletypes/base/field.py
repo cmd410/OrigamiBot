@@ -9,7 +9,7 @@ class Field:
     Usual user does not interact with this class directly
     """
 
-    __slots__ = ('_value', 'data_types')
+    __slots__ = ('_value', 'data_types', 'structures')
 
     def unfold(self):
         if isinstance(self.value, list):
@@ -22,7 +22,12 @@ class Field:
         return self.value
 
     def __init__(self, value=None, data_types=[]):
-        self.data_types = data_types
+        self.data_types = set(data_types)
+        self.structures = [
+            i
+            for i in data_types
+            if issubclass(i, TelegramStructure)
+            ]
         value = self.validate_value(value)
         self._value = value
 
@@ -39,38 +44,24 @@ class Field:
         """Check the type of value assigned,
         convert dict to structure if needed
         """
+        if value is None:
+            return value
         if not self.data_types:
             return value
-        if not (value is None and None in self.data_types):
-            value_type = type(value)
-            if value_type not in self.data_types:
-                if value_type == dict:   # Auto convert dict to data structure
-                    # Collect all possible structures
-                    structures = [
-                        i
-                        for i in self.data_types
-                        if issubclass(i, TelegramStructure)
-                        or isinstance(i, str)
-                    ]
 
-                    for struct in structures:
-                        if isinstance(struct, str):
-                            # If structure is given by its name search in
-                            # TelegramStructure subclasses
-                            # It should not happend in 99% of times
-                            # but just in case
-                            for cls in TelegramStructure.__subclasses__():
-                                if cls.__name__ == struct:
-                                    struct = cls
-                                    break
-                            try:
-                                return struct(**value)
-                            except TypeError:
-                                pass
-
-                raise FieldTypeError(
-                    f'''Got wrong type: {
-                        type(value)} expected one of {self.data_types}''')
+        value_type = type(value)
+        if value_type not in self.data_types:
+            if value_type == dict and self.structures:
+                # Map dict to structures
+                for struct in self.structures:
+                    try:
+                        return struct(**value)
+                        break
+                    except TypeError:
+                        pass
+            raise FieldTypeError(
+                f'''Got wrong type: {
+                    type(value)} expected one of {self.data_types}''')
         return value
 
     def __repr__(self):
@@ -82,6 +73,50 @@ class Field:
     @property
     def type(self):
         return type(self.value)
+
+
+class ListField(Field):
+    def validate_value(self, value):
+        if value is None:
+            return value
+
+        if not isinstance(value, list):
+            raise FieldTypeError(
+                f'''Got wrong type: {
+                    type(value)} expected list of {self.data_types}''')
+        if not value:
+            return value
+
+        for i, item in enumerate(value):
+            item_type = type(item)
+            if item_type in self.data_types:
+                continue
+            elif item_type == dict and self.structures:
+                # Map dicts to structures
+                for struct in self.structures:
+                    try:
+                        value[i] = struct(**item)
+                        break
+                    except TypeError:
+                        pass
+                if type(value[i]) == dict:
+                    raise FieldTypeError(
+                        f'''Can\'t map dict {
+                            item} to any stucture in {
+                                self.structures}'''
+                        )
+            elif item_type == list:
+                # Convert nested lists
+                value[i] = self.validate_value(item)
+            else:
+                raise FieldTypeError(
+                    f'''Wrong type in list {
+                        item}, excpected one of {
+                            self.datatypes}'''
+                    )
+
+        return value
+
 
 
 from .telegram_structure import TelegramStructure  # NOQA

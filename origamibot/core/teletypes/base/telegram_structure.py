@@ -23,7 +23,7 @@ class TelegramStructure:
     @classmethod
     def fields_names(cls):
         return {
-            name 
+            name
             for name, value in cls.__dict__.items()
             if isinstance(value, Field)
             }
@@ -55,6 +55,9 @@ class TelegramStructure:
 
     @classmethod
     def from_dict(cls, d: dict):
+        if 'from' in d.keys():
+            d['from_user'] = d.pop('from')
+
         # Collect subclasses and their fields
         classes = [
             (c, c.fields_names())
@@ -78,7 +81,7 @@ class TelegramStructure:
             raise ValueError(f'Could not map dict: {d} to any type')
 
     @classmethod
-    def from_list(cls, l: list):
+    def from_list(cls, l: list):  # NOQA
         new_list = []
         for i in l:
             if isinstance(i, dict):
