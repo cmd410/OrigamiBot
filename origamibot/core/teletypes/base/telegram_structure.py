@@ -70,7 +70,9 @@ class TelegramStructure:
             key=lambda item: len(item[1]),
             reverse=True
             )
-        classes.append(cls)
+        if cls != TelegramStructure:
+            classes.append((cls, cls.fields_names()))
+
         d_keys = set(d.keys())
         for c, fields in classes:
             if d_keys.issubset(fields):
@@ -78,7 +80,7 @@ class TelegramStructure:
                     return c(**d)
                 except FieldTypeError:
                     pass
-            raise ValueError(f'Could not map dict: {d} to any type')
+        raise ValueError(f'Could not map dict: {d} to any type')
 
     @classmethod
     def from_list(cls, l: list):  # NOQA
