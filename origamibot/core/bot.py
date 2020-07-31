@@ -98,7 +98,6 @@ try:
         ]):
         using_greenlets = True
     else:
-        print('no gevent this time')
         del gevent
 except ImportError:
     pass
