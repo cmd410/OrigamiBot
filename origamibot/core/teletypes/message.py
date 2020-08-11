@@ -79,7 +79,7 @@ class Message(TelegramStructure):
                  contact: Contact = None,
                  location: Location = None,
                  venue: Venue = None,
-                 new_chat_member: User = None,
+                 new_chat_members: User = None,
                  left_chat_member: User = None,
                  new_chat_title: str = None,
                  new_chat_photo: List[PhotoSize] = None,
@@ -160,8 +160,8 @@ class Message(TelegramStructure):
         self.venue = \
             Field(venue, [Venue])
 
-        self.new_chat_member = \
-            Field(new_chat_member, [User])
+        self.new_chat_members = \
+            Field(new_chat_members, [User])
 
         self.left_chat_member = \
             Field(left_chat_member, [User])

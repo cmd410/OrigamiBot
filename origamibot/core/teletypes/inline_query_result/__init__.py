@@ -17,3 +17,27 @@ from .photo import InlineQueryResultPhoto as Photo
 from .venue import InlineQueryResultVenue as Venue
 from .video import InlineQueryResultVideo as Video
 from .voice import InlineQueryResultVoice as Voice
+
+from typing import Union
+
+InlineQueryResult = Union[
+    Article,
+    Audio,
+    CachedAudio,
+    CachedDocument,
+    CachedGif,
+    CachedMpeg4Gif,
+    CachedSticker,
+    CachedVideo,
+    CachedVoice,
+    Contact,
+    Document,
+    Game,
+    Gif,
+    Location,
+    Mpeg4Gif,
+    Photo,
+    Venue,
+    Video,
+    Voice
+]

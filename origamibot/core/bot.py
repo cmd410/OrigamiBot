@@ -9,7 +9,6 @@ from time import sleep
 
 from .sthread import StoppableThread
 from .teletypes import (
-    native_type,
     Update,
     Message,
     ReplyMarkup,
@@ -19,10 +18,12 @@ from .teletypes import (
     Chat,
     ChatMember,
     BotCommand,
-    InlineQueryResult,
     WebhookInfo,
     InputMedia,
-    Poll)
+    Poll
+    )
+
+from .teletypes.inline_query_result import InlineQueryResult
 
 from .commands import CommandContainer
 from .callbacks import Callbacks
@@ -92,10 +93,10 @@ try:
     import gevent
     from gevent.monkey import is_module_patched
     if any([
-        is_module_patched('socket'),
-        is_module_patched('threading'),
-        is_module_patched('time')
-        ]):
+            is_module_patched('socket'),
+            is_module_patched('threading'),
+            is_module_patched('time')
+            ]):
         using_greenlets = True
     else:
         del gevent
@@ -189,6 +190,7 @@ class OrigamiBot:
     def process_update(self, update: Update):
         """Process a single update."""
         if update.message is not None:
+            update.message.bot = self
             self._call_listeners(
                 'on_message',
                 update.message)
@@ -239,7 +241,7 @@ class OrigamiBot:
 
     def remove_inline(self, obj):
         self.inline_container.remove(obj)
-    
+
     def add_callback(self, obj):
         self.callback_container.add(obj)
 
@@ -1422,7 +1424,11 @@ class OrigamiBot:
                     if not using_greenlets:
                         method(*bound_args.args, **bound_args.kwargs)
                     else:
-                        gevent.spawn(method, *bound_args.args, **bound_args.kwargs)
+                        gevent.spawn(
+                            method,
+                            *bound_args.args,
+                            **bound_args.kwargs
+                            )
                 except Exception as err:
                     self._call_listeners('on_command_failure', message, err)
         return True
@@ -1461,7 +1467,7 @@ class OrigamiBot:
                 self._set_headers()
                 content_len = int(self.headers.get('content-length', 0))
                 post_body = self.rfile.read(content_len).decode()
-                update = native_type(json.loads(post_body))
+                update = Update.from_json(post_body)
                 HandleUpdates.bot.process_update(update)
 
         HTTPServer((self.webhook, 443), HandleUpdates).serve_forever()

@@ -12,13 +12,24 @@ class TelegramStructure:
     def __setattr__(self, name, value):
         if name not in self.__dict__:
             object.__setattr__(self, name, value)
-        item = self.__dict__[name]
+
+        item = object.__getattribute__(self, name)
         is_field = isinstance(item, Field)
         is_value_field = isinstance(value, Field)
+
         if is_field and not is_value_field:
             item.value = value
         else:
             object.__setattr__(self, name, value)
+
+    def __repr__(self):
+        s = f'{self.__class__.__name__}('
+        s += ', '.join([
+            f'{key}={value.value}'
+            for key, value in self.raw_fields().items()
+            if value.value is not None])
+        s += ')'
+        return s
 
     @classmethod
     def fields_names(cls):

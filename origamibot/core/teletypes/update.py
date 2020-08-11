@@ -61,7 +61,7 @@ class Update(TelegramStructure):
             Field(chosen_inline_result, [ChosenInlineResult])
 
         self.callback_query = \
-            Field(callback_query, CallbackQuery)
+            Field(callback_query, [CallbackQuery])
 
         self.shipping_query = \
             Field(shipping_query, [ShippingQuery])

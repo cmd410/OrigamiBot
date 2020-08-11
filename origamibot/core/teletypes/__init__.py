@@ -67,3 +67,19 @@ from .input_media_audio import InputMediaAudio
 from .input_media_document import InputMediaDocument
 from .input_media_photo import InputMediaPhoto
 from .input_media_video import InputMediaVideo
+
+from typing import Union
+
+ReplyMarkup = Union[
+    ReplyKeyboardMarkup,
+    ReplyKeyboardRemove,
+    InlineKeyboardMarkup
+    ]
+
+InputMedia = Union[
+    InputMediaAnimation,
+    InputMediaAudio,
+    InputMediaDocument,
+    InputMediaPhoto,
+    InputMediaVideo
+]

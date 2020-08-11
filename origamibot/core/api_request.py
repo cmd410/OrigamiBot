@@ -5,7 +5,7 @@ from typing import List, Union, Optional, IO
 
 from .exceptions import TelegramAPIError
 from .teletypes import (
-    native_type, asdict,
+    TelegramStructure,
     Update,
     User,
     Message,
@@ -16,10 +16,11 @@ from .teletypes import (
     Chat,
     ChatMember,
     BotCommand,
-    InlineQueryResult,
     WebhookInfo,
     InputMedia,
     Poll)
+
+from .teletypes.inline_query_result import InlineQueryResult
 
 
 api_url = 'https://api.telegram.org/bot{token}/{method}'
@@ -45,21 +46,20 @@ def request(token, method, data=dict(), files=dict(), excpect=None):
         if value is not None
     }
     json_data = json.dumps(data, ensure_ascii=True)
-    headers = { 'Content-type': 'application/json' }
+    headers = {'Content-type': 'application/json'}
     responce = requests.post(url, data=json_data, files=files, headers=headers)
 
     if responce.status_code != 200:
-        description = json.loads(responce.text).get('description', 'No description')
+        description = \
+            json.loads(responce.text).get('description', 'No description')
         raise TelegramAPIError(f'[{responce.status_code}] {description}')
-        
 
     data = json.loads(responce.text)['result']
 
     if isinstance(data, dict):
-        return native_type(data, excpect)
+        return TelegramStructure.from_dict(data)
     elif isinstance(data, list):
-        for i, item in enumerate(data):
-            data[i] = native_type(item, excpect)
+        return TelegramStructure.from_list(data)
     return data
 
 
@@ -112,7 +112,7 @@ def send_message(token: str,
             'disable_web_page_preview': disable_web_page_preview,
             'disable_notification': disable_notification,
             'reply_to_message_id': reply_to_message_id,
-            'reply_markup': (asdict(reply_markup)
+            'reply_markup': (reply_markup.unfold()
                              if reply_markup is not None else None)
         }
     return request(
@@ -166,7 +166,7 @@ def send_photo(token: str,
             'parse_mode': parse_mode,
             'disable_notification': disable_notification,
             'reply_to_message_id': reply_to_message_id,
-            'reply_markup': (asdict(reply_markup)
+            'reply_markup': (reply_markup.unfold()
                              if reply_markup is not None else None)
         }
     if not isinstance(photo, str):
@@ -211,7 +211,7 @@ def send_audio(token: str,
             'reply_to_message_id': reply_to_message_id,
             'title': title,
             'performer': performer,
-            'reply_markup': (asdict(reply_markup)
+            'reply_markup': (reply_markup.unfold()
                              if reply_markup is not None else None)
         }
     files = dict()
@@ -253,7 +253,7 @@ def send_document(token: str,
             'parse_mode': parse_mode,
             'disable_notification': disable_notification,
             'reply_to_message_id': reply_to_message_id,
-            'reply_markup': (asdict(reply_markup)
+            'reply_markup': (reply_markup.unfold()
                              if reply_markup is not None else None)
         }
 
@@ -305,7 +305,7 @@ def send_video(token: str,
             'supports_streaming': supports_streaming,
             'disable_notification': disable_notification,
             'reply_to_message_id': reply_to_message_id,
-            'reply_markup': (asdict(reply_markup)
+            'reply_markup': (reply_markup.unfold()
                              if reply_markup is not None else None)
         }
 
@@ -355,7 +355,7 @@ def send_animation(token: str,
         'parse_mode': parse_mode,
         'disable_notification': disable_notification,
         'reply_to_message_id': disable_notification,
-        'reply_markup': (asdict(reply_markup)
+        'reply_markup': (reply_markup.unfold()
                          if reply_markup is not None else None)
     }
 
@@ -400,7 +400,7 @@ def send_voice(token: str,
         'parse_mode': parse_mode,
         'disable_notification': disable_notification,
         'reply_to_message_id': disable_notification,
-        'reply_markup': (asdict(reply_markup)
+        'reply_markup': (reply_markup.unfold()
                          if reply_markup is not None else None)
     }
 
@@ -438,7 +438,7 @@ def send_video_note(token: str,
             'length': length,
             'disable_notification': disable_notification,
             'reply_to_message_id': reply_to_message_id,
-            'reply_markup': (asdict(reply_markup)
+            'reply_markup': (reply_markup.unfold()
                              if reply_markup is not None else None)
         }
 
@@ -483,7 +483,7 @@ def send_location(token: str,
         'live_period': live_period,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': asdict(reply_markup)
+        'reply_markup': reply_markup.unfold()
     }
 
     return request(
@@ -517,7 +517,7 @@ def edit_message_live_location(token: str,
         'longitude': longitude,
         'message_id': message_id,
         'inline_message_id': inline_message_id,
-        'reply_markup': asdict(reply_markup)
+        'reply_markup': reply_markup.unfold()
     }
 
     return request(
@@ -549,7 +549,7 @@ def stop_message_live_location(token: str,
         'chat_id': chat_id,
         'message_id': message_id,
         'inline_message_id': inline_message_id,
-        'reply_markup': asdict(reply_markup)
+        'reply_markup': reply_markup.unfold()
     }
 
     return request(
@@ -587,7 +587,7 @@ def send_venue(token: str,
         'foursquare_type': foursquare_type,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': asdict(reply_markup)
+        'reply_markup': reply_markup.unfold()
     }
 
     return request(
@@ -620,7 +620,7 @@ def send_contact(token: str,
         'vcard': vcard,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': asdict(reply_markup)
+        'reply_markup': reply_markup.unfold()
     }
 
     return request(
@@ -668,7 +668,7 @@ def send_poll(token: str,
         'is_closed': is_closed,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': asdict(reply_markup)
+        'reply_markup': reply_markup.unfold()
     }
 
     return request(
@@ -696,7 +696,7 @@ def send_dice(token: str,
         'emoji': emoji,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': asdict(reply_markup)
+        'reply_markup': reply_markup.unfold()
     }
 
     return request(
@@ -808,7 +808,7 @@ def restrict_chat_member(token: str,
     data = {
         'chat_id': chat_id,
         'user_id': user_id,
-        'permissions': asdict(permissions),
+        'permissions': permissions.unfold(),
         'until_date': until_date
     }
 
@@ -894,7 +894,7 @@ def set_chat_permissions(token: str,
         'setChatPermissions',
         {
             'chat_id': chat_id,
-            'permissions': asdict(permissions)
+            'permissions': permissions.unfold()
         }
     )
 
@@ -1180,7 +1180,7 @@ def set_my_commands(token: str,
         token,
         'setMyCommands',
         {
-            'commands': [asdict(i) for i in commands]
+            'commands': [i.unfold() for i in commands]
         }
     )
 
@@ -1214,7 +1214,7 @@ def answer_inline_query(token: str,
         'answerInlineQuery',
         {
             'inline_query_id': inline_query_id,
-            'results': [asdict(i) for i in results],
+            'results': [i.unfold() for i in results],
             'cache_time': cache_time,
             'is_personal': is_personal,
             'next_offset': next_offset,
@@ -1302,7 +1302,7 @@ def edit_message_text(token: str,
             'inline_message_id': inline_message_id,
             'parse_mode': parse_mode,
             'disable_web_page_preview': disable_web_page_preview,
-            'reply_markup': asdict(reply_markup)
+            'reply_markup': reply_markup.unfold()
         }
     )
 
@@ -1330,7 +1330,7 @@ def edit_message_caption(token: str,
             'message_id': message_id,
             'inline_message_id': inline_message_id,
             'parse_mode': parse_mode,
-            'reply_markup': asdict(reply_markup)
+            'reply_markup': reply_markup.unfold()
         }
     )
 
@@ -1356,7 +1356,7 @@ def edit_message_media(token: str,
         'media': media_data,
         'message_id': message_id,
         'inline_message_id': inline_message_id,
-        'reply_markup': asdict(reply_markup)
+        'reply_markup': reply_markup.unfold()
     }
 
     return request(
@@ -1387,7 +1387,7 @@ def edit_message_reply_markup(token: str,
             'chat_id': chat_id,
             'message_id': message_id,
             'inline_message_id': inline_message_id,
-            'reply_markup': asdict(reply_markup)
+            'reply_markup': reply_markup.unfold()
         }
     )
 
@@ -1407,7 +1407,7 @@ def stop_poll(token: str,
         {
             'chat_id': chat_id,
             'message_id': message_id,
-            'reply_markup': asdict(reply_markup)
+            'reply_markup': reply_markup.unfold()
         }
     )
 
@@ -1443,7 +1443,7 @@ def send_media_group(token: str,
 
     data = {
         'chat_id': chat_id,
-        'media': [asdict(m) for m in media],
+        'media': [m.unfold() for m in media],
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id
     }

@@ -52,6 +52,8 @@ class Field:
         value_type = type(value)
         if value_type not in self.data_types:
             if value_type == dict and self.structures:
+                if 'from' in value.keys():
+                    value['from_user'] = value.pop('from')
                 # Map dict to structures
                 for struct in self.structures:
                     try:
