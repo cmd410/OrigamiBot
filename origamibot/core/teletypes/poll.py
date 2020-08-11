@@ -41,7 +41,7 @@ class Poll(TelegramStructure):
             Field(question, [str])
 
         self.options = \
-            Field(options, [PollOption])
+            ListField(options, [PollOption])
 
         self.total_voter_count = \
             Field(total_voter_count, [int])
