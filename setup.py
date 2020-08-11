@@ -7,7 +7,7 @@ requires = ['requests']
 
 setuptools.setup(
     name='origamibot',
-    version='1.2.1',
+    version='1.2.2',
     author='Crystal Melting Dot',
     author_email='stresspassing@gmail.com',
     description='Library for creating bots for telegram with Python.',
