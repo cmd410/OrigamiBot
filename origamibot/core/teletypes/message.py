@@ -51,6 +51,7 @@ class Message(TelegramStructure):
     photo = Field()
     sticker = Field()
     video = Field()
+    video_note = Field()
     voice = Field()
     caption = Field()
     caption_entities = Field()
@@ -61,7 +62,7 @@ class Message(TelegramStructure):
     location = Field()
     venue = Field()
     new_chat_members = Field()
-    new_chat_member = Field()       # Wierd Fields that exist
+    new_chat_member = Field()       # Weird Fields that exist
     new_chat_participant = Field()  # in some messages but not in the doc
     left_chat_member = Field()
     left_chat_participant = Field()
