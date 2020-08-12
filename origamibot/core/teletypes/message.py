@@ -3,7 +3,10 @@ from typing import List
 from .base import TelegramStructure, Field, ListField
 from .user import User
 from .audio import Audio
+from .animation import Animation
 from .document import Document
+from .dice import Dice
+from .poll import Poll
 from .game import Game
 from .sticker import Sticker
 from .video import Video
@@ -31,15 +34,19 @@ class Message(TelegramStructure):
     forward_from = Field()
     forward_from_chat = Field()
     forward_from_message_id = Field()
+    forward_signature = Field()
+    forward_sender_name = Field()
     forward_date = Field()
     reply_to_message = Field()
     via_bot = Field()
     edit_date = Field()
+    media_group_id = Field()
+    author_signature = Field()
     text = Field()
     entities = Field()
+    animation = Field()
     audio = Field()
     document = Field()
-    game = Field()
     photo = Field()
     sticker = Field()
     video = Field()
@@ -47,6 +54,9 @@ class Message(TelegramStructure):
     caption = Field()
     caption_entities = Field()
     contact = Field()
+    dice = Field()
+    game = Field()
+    poll = Field()
     location = Field()
     venue = Field()
     new_chat_member = Field()
@@ -74,15 +84,22 @@ class Message(TelegramStructure):
                  forward_from: User = None,
                  forward_from_chat: 'Chat' = None,
                  forward_from_message_id: int = None,
+                 forward_signature: str = None,
+                 forward_sender_name: str = None,
                  forward_date: int = None,
                  reply_to_message: 'Message' = None,
                  via_bot: User = None,
                  edit_date: int = None,
+                 media_group_id: str = None,
+                 author_signature: str = None,
                  text: str = None,
                  entities: List[MessageEntity] = None,
+                 animation: Animation = None,
                  audio: Audio = None,
                  document: Document = None,
+                 dice: Dice = None,
                  game: Game = None,
+                 poll: Poll = None,
                  photo: List[PhotoSize] = None,
                  sticker: Sticker = None,
                  video: Video = None,
@@ -130,6 +147,12 @@ class Message(TelegramStructure):
         self.forward_from_message_id = \
             Field(forward_from_message_id, [int])
 
+        self.forward_signature = \
+            Field(forward_signature, [str])
+
+        self.forward_sender_name = \
+            Field(forward_sender_name, [str])
+
         self.forward_date = \
             Field(forward_date, [int])
 
@@ -142,11 +165,20 @@ class Message(TelegramStructure):
         self.edit_date = \
             Field(edit_date, [int])
 
+        self.media_group_id = \
+            Field(media_group_id, [str])
+
+        self.author_signature = \
+            Field(author_signature, [str])
+
         self.text = \
             Field(text, [str])
 
         self.entities = \
             ListField(entities, [MessageEntity])
+
+        self.animation = \
+            Field(animation, [Animation])
 
         self.audio = \
             Field(audio, [Audio])
