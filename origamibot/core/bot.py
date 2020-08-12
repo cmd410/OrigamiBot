@@ -20,7 +20,8 @@ from .teletypes import (
     BotCommand,
     WebhookInfo,
     InputMedia,
-    Poll
+    Poll,
+    User
     )
 
 from .teletypes.inline_query_result import InlineQueryResult
@@ -114,6 +115,7 @@ class OrigamiBot:
         self.callback = deque()
         self.interval = 0.1
         self.safe_poll = True
+        self._name = None
 
         self._listen_thread = StoppableThread(
             name='Listen thread',
@@ -150,6 +152,12 @@ class OrigamiBot:
         self.inline_container = Callbacks()
         self.callback_container = Callbacks()
         self.listeners = []
+
+    @property
+    def name(self):
+        if self._name is None:
+            self._name = self.get_me().username
+        return self._name
 
     def start(self,
               webhook=False,
@@ -270,7 +278,7 @@ class OrigamiBot:
             self._last_update_id = updates[-1].update_id
         return updates
 
-    def get_me(self):
+    def get_me(self) -> User:
         return get_me(self.token)
 
     def send_message(self,
@@ -1406,6 +1414,10 @@ class OrigamiBot:
 
         while commands:
             command, start, end = commands.popleft()
+            if '@' in command:
+                command, bot_name = command.split('@', 1)
+                if bot_name != self.name:
+                    continue
 
             # Parse arguments for each command
             if commands:
