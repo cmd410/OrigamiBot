@@ -1,5 +1,6 @@
 from .base import TelegramStructure, Field
 from .photo_size import PhotoSize
+from .mask_position import MaskPosition
 
 
 class Sticker(TelegramStructure):
@@ -14,6 +15,8 @@ class Sticker(TelegramStructure):
     is_animated = Field()
     thumb = Field()
     emoji = Field()
+    set_name = Field()
+    mask_position = Field()
     file_size = Field()
 
     def __init__(self,
@@ -24,6 +27,8 @@ class Sticker(TelegramStructure):
                  is_animated: bool,
                  thumb: PhotoSize = None,
                  emoji: str = None,
+                 set_name: str = None,
+                 mask_position: MaskPosition = None,
                  file_size: int = None,
                  ):
         self.file_id = \
@@ -46,6 +51,12 @@ class Sticker(TelegramStructure):
 
         self.emoji = \
             Field(emoji, [str])
+
+        self.set_name = \
+            Field(set_name, [str])
+
+        self.mask_position = \
+            Field(mask_position, [MaskPosition])
 
         self.file_size = \
             Field(file_size, [int])
