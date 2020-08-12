@@ -1,6 +1,9 @@
 from weakref import WeakMethod
 from inspect import getmembers
 from collections import deque
+from logging import getLogger
+
+logger = getLogger(__name__)
 
 
 class Callbacks:
@@ -28,6 +31,8 @@ class Callbacks:
                 continue
             try:
                 method(query)
-            except Exception as err:
-                print(err)
+            except Exception:
+                logger.exception(
+                    'Exception while calling Inline query handler'
+                    )
             self.callback_methods.append(method_ref)

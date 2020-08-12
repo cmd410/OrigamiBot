@@ -1,3 +1,8 @@
+from logging import getLogger
+
+logger = getLogger(__name__)
+
+
 class FieldTypeError(TypeError):
     pass
 
@@ -59,7 +64,10 @@ class Field:
                     try:
                         return struct(**value)
                         break
-                    except TypeError:
+                    except TypeError as err:
+                        logger.debug(
+                            f'Error in Field, unpacking {struct}:\n\t{err}'
+                            )
                         pass
             raise FieldTypeError(
                 f'''Got wrong type: {

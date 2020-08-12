@@ -1,5 +1,6 @@
-from .field import Field
 import json
+
+from .field import Field
 
 
 class TelegramStructure:

@@ -1,5 +1,5 @@
 import shlex
-import json
+import logging
 
 from typing import List, Optional, Union, IO, Callable
 from collections import deque
@@ -103,6 +103,9 @@ try:
         del gevent
 except ImportError:
     pass
+
+
+logger = logging.getLogger(__name__)
 
 
 class OrigamiBot:
@@ -1357,7 +1360,8 @@ class OrigamiBot:
                     try:
                         updates = self.get_updates()
                     except (IOError, ConnectionError) as err:
-                        self._call_listeners("on_poll_error", err)
+                        logger.exception('Exception while polling')
+                        self._call_listeners('on_poll_error', err)
                         sleep(self.interval)
                         continue
                 else:
@@ -1454,6 +1458,7 @@ class OrigamiBot:
                             **bound_args.kwargs
                             )
                 except Exception as err:
+                    logger.exception(f"Exception on command {repr(command)}")
                     self._call_listeners('on_command_failure', message, err)
         return True
 
