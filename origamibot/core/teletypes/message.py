@@ -63,6 +63,7 @@ class Message(TelegramStructure):
     new_chat_member = Field()       # Wierd Fields that exist
     new_chat_participant = Field()  # in some messages but not in the doc
     left_chat_member = Field()
+    left_chat_participant = Field()
     new_chat_title = Field()
     new_chat_photo = Field()
     delete_chat_photo = Field()
@@ -114,6 +115,7 @@ class Message(TelegramStructure):
                  new_chat_members: User = None,
                  new_chat_member: User = None,
                  new_chat_participant: User = None,
+                 left_chat_participant: User = None,
                  left_chat_member: User = None,
                  new_chat_title: str = None,
                  new_chat_photo: List[PhotoSize] = None,
@@ -228,6 +230,9 @@ class Message(TelegramStructure):
 
         self.new_chat_participant = \
             Field(new_chat_participant, [User])
+
+        self.left_chat_participant = \
+            Field(left_chat_participant, [User])
 
         self.left_chat_member = \
             Field(left_chat_member, [User])
