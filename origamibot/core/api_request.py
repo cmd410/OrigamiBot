@@ -1425,7 +1425,7 @@ def delete_message(token: str,
         'deleteMessage',
         {
             'chat_id': chat_id,
-            'messsage_id': message_id
+            'message_id': message_id
         }
     )
 

@@ -116,6 +116,7 @@ class OrigamiBot:
         self.interval = 0.1
         self.safe_poll = True
         self._name = None
+        self.first_only_command = True
 
         self._listen_thread = StoppableThread(
             name='Listen thread',
@@ -1382,7 +1383,7 @@ class OrigamiBot:
                     gevent.spawn(self.callback_container.call, query)
             self.has_callback.clear()
 
-    def _handle_commands(self, message: Message, first_only=False) -> bool:
+    def _handle_commands(self, message: Message) -> bool:
         """Check message for commands in it.
 
         If there are commands, returns True and tries execute them
@@ -1406,7 +1407,7 @@ class OrigamiBot:
             (text[e.offset:e.offset+e.length], e.offset, e.offset+e.length)
             for e in entities
             if e.type == 'bot_command'
-            and (e.offset == 0 or not first_only)
+            and (e.offset == 0 or not self.first_only_command)
             ])
 
         if not commands:
