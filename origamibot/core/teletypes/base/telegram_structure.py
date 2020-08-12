@@ -1,4 +1,4 @@
-from .field import Field, FieldTypeError
+from .field import Field
 import json
 
 
@@ -25,7 +25,7 @@ class TelegramStructure:
     def __repr__(self):
         s = f'{self.__class__.__name__}('
         s += ', '.join([
-            f'{key}={value.value}'
+            f'{key}={repr(value.value)}'
             for key, value in self.raw_fields().items()
             if value.value is not None])
         s += ')'
