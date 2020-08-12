@@ -9,7 +9,6 @@ from time import sleep
 
 from .sthread import StoppableThread
 from .teletypes import (
-    native_type,
     Update,
     Message,
     ReplyMarkup,
@@ -19,10 +18,13 @@ from .teletypes import (
     Chat,
     ChatMember,
     BotCommand,
-    InlineQueryResult,
     WebhookInfo,
     InputMedia,
-    Poll)
+    Poll,
+    User
+    )
+
+from .teletypes.inline_query_result import InlineQueryResult
 
 from .commands import CommandContainer
 from .callbacks import Callbacks
@@ -92,13 +94,12 @@ try:
     import gevent
     from gevent.monkey import is_module_patched
     if any([
-        is_module_patched('socket'),
-        is_module_patched('threading'),
-        is_module_patched('time')
-        ]):
+            is_module_patched('socket'),
+            is_module_patched('threading'),
+            is_module_patched('time')
+            ]):
         using_greenlets = True
     else:
-        print('no gevent this time')
         del gevent
 except ImportError:
     pass
@@ -114,6 +115,7 @@ class OrigamiBot:
         self.callback = deque()
         self.interval = 0.1
         self.safe_poll = True
+        self._name = None
         self.first_only_command = True
 
         self._listen_thread = StoppableThread(
@@ -151,6 +153,12 @@ class OrigamiBot:
         self.inline_container = Callbacks()
         self.callback_container = Callbacks()
         self.listeners = []
+
+    @property
+    def name(self):
+        if self._name is None:
+            self._name = self.get_me().username
+        return self._name
 
     def start(self,
               webhook=False,
@@ -191,6 +199,7 @@ class OrigamiBot:
     def process_update(self, update: Update):
         """Process a single update."""
         if update.message is not None:
+            update.message.bot = self
             self._call_listeners(
                 'on_message',
                 update.message)
@@ -241,7 +250,7 @@ class OrigamiBot:
 
     def remove_inline(self, obj):
         self.inline_container.remove(obj)
-    
+
     def add_callback(self, obj):
         self.callback_container.add(obj)
 
@@ -270,7 +279,7 @@ class OrigamiBot:
             self._last_update_id = updates[-1].update_id
         return updates
 
-    def get_me(self):
+    def get_me(self) -> User:
         return get_me(self.token)
 
     def send_message(self,
@@ -1406,6 +1415,10 @@ class OrigamiBot:
 
         while commands:
             command, start, end = commands.popleft()
+            if '@' in command:
+                command, bot_name = command.split('@', 1)
+                if bot_name != self.name:
+                    continue
 
             # Parse arguments for each command
             if commands:
@@ -1424,7 +1437,11 @@ class OrigamiBot:
                     if not using_greenlets:
                         method(*bound_args.args, **bound_args.kwargs)
                     else:
-                        gevent.spawn(method, *bound_args.args, **bound_args.kwargs)
+                        gevent.spawn(
+                            method,
+                            *bound_args.args,
+                            **bound_args.kwargs
+                            )
                 except Exception as err:
                     self._call_listeners('on_command_failure', message, err)
         return True
@@ -1463,7 +1480,7 @@ class OrigamiBot:
                 self._set_headers()
                 content_len = int(self.headers.get('content-length', 0))
                 post_body = self.rfile.read(content_len).decode()
-                update = native_type(json.loads(post_body))
+                update = Update.from_json(post_body)
                 HandleUpdates.bot.process_update(update)
 
         HTTPServer((self.webhook, 443), HandleUpdates).serve_forever()
