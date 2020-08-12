@@ -33,6 +33,7 @@ class Message(TelegramStructure):
     forward_from_message_id = Field()
     forward_date = Field()
     reply_to_message = Field()
+    via_bot = Field()
     edit_date = Field()
     text = Field()
     entities = Field()
@@ -75,6 +76,7 @@ class Message(TelegramStructure):
                  forward_from_message_id: int = None,
                  forward_date: int = None,
                  reply_to_message: 'Message' = None,
+                 via_bot: User = None,
                  edit_date: int = None,
                  text: str = None,
                  entities: List[MessageEntity] = None,
@@ -133,6 +135,9 @@ class Message(TelegramStructure):
 
         self.reply_to_message = \
             Field(reply_to_message, [Message])
+
+        self.via_bot = \
+            Field(via_bot, [User])
 
         self.edit_date = \
             Field(edit_date, [int])
