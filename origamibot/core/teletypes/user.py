@@ -9,6 +9,7 @@ class User(TelegramStructure):
     is_bot = Field()
     first_name = Field()
     last_name = Field()
+    username = Field()
     language_code = Field()
     can_join_groups = Field()
     can_read_all_group_messages = Field()
@@ -35,6 +36,9 @@ class User(TelegramStructure):
 
         self.last_name = \
             Field(last_name, [str])
+
+        self.username = \
+            Field(username, [str])
 
         self.language_code = \
             Field(language_code, [str])

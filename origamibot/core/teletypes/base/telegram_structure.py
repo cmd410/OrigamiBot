@@ -89,7 +89,7 @@ class TelegramStructure:
             if d_keys.issubset(fields):
                 try:
                     return c(**d)
-                except FieldTypeError:
+                except TypeError:
                     pass
         raise ValueError(f'Could not map dict: {d} to any type')
 
