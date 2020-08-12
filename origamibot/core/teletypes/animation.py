@@ -12,6 +12,9 @@ class Animation(TelegramStructure):
 
     file_id = Field()
     file_unique_id = Field()
+    width = Field()
+    height = Field()
+    duration = Field()
     thumb = Field()
     file_name = Field()
     mime_type = Field()
@@ -20,6 +23,9 @@ class Animation(TelegramStructure):
     def __init__(self,
                  file_id: str,
                  file_unique_id: str,
+                 width: int,
+                 height: int,
+                 duration: int,
                  thumb: PhotoSize = None,
                  file_name: str = None,
                  mime_type: str = None,
@@ -30,6 +36,15 @@ class Animation(TelegramStructure):
 
         self.file_unique_id = \
             Field(file_unique_id, [str])
+
+        self.width = \
+            Field(width, [int])
+
+        self.height = \
+            Field(height, [int])
+
+        self.duration = \
+            Field(duration, [int])
 
         self.thumb = \
             Field(thumb, [PhotoSize])
