@@ -13,6 +13,10 @@ from .location import Location
 from .venue import Venue
 from .message_entity import MessageEntity
 from .photo_size import PhotoSize
+from .invoice import Invoice
+from .successful_payment import SuccessfulPayment
+from .passport_data import PassportData
+from .inline_keyboard_markup import InlineKeyboardMarkup
 
 
 class Message(TelegramStructure):
@@ -40,6 +44,7 @@ class Message(TelegramStructure):
     video = Field()
     voice = Field()
     caption = Field()
+    caption_entities = Field()
     contact = Field()
     location = Field()
     venue = Field()
@@ -54,6 +59,11 @@ class Message(TelegramStructure):
     migrate_to_chat_id = Field()
     migrate_from_chat_id = Field()
     pinned_message = Field()
+    invoice = Field()
+    successful_payment = Field()
+    connected_website = Field()
+    passport_data = Field()
+    reply_markup = Field()
 
     def __init__(self,
                  message_id: int,
@@ -76,6 +86,7 @@ class Message(TelegramStructure):
                  video: Video = None,
                  voice: Voice = None,
                  caption: str = None,
+                 caption_entities: List[MessageEntity] = None,
                  contact: Contact = None,
                  location: Location = None,
                  venue: Venue = None,
@@ -90,6 +101,11 @@ class Message(TelegramStructure):
                  migrate_to_chat_id: int = None,
                  migrate_from_chat_id: int = None,
                  pinned_message: 'Message' = None,
+                 invoice: Invoice = None,
+                 successful_payment: SuccessfulPayment = None,
+                 connected_website: str = None,
+                 passport_data: PassportData = None,
+                 reply_markup: InlineKeyboardMarkup = None
                  ):
         self.message_id = \
             Field(message_id, [int])
@@ -151,6 +167,9 @@ class Message(TelegramStructure):
         self.caption = \
             Field(caption, [str])
 
+        self.caption_entities = \
+            ListField(caption_entities, [MessageEntity])
+
         self.contact = \
             Field(contact, [Contact])
 
@@ -192,6 +211,23 @@ class Message(TelegramStructure):
 
         self.pinned_message = \
             Field(pinned_message, [Message])
+
+        self.invoice = \
+            Field(invoice, [Invoice])
+
+        self.successful_payment = \
+            Field(successful_payment, [SuccessfulPayment])
+
+        self.connected_website = \
+            Field(connected_website, [str])
+
+        self.passport_data = \
+            Field(passport_data, [PassportData])
+
+        self.reply_markup = \
+            Field(reply_markup, [InlineKeyboardMarkup])
+
+
 
 
 from .chat import Chat  # NOQA

@@ -11,16 +11,21 @@ class File(TelegramStructure):
     """
 
     file_id = Field()
+    file_unique_id = Field()
     file_size = Field()
     file_path = Field()
 
     def __init__(self,
                  file_id: str,
+                 file_unique_id: str,
                  file_size: int = None,
                  file_path: str = None,
                  ):
         self.file_id = \
             Field(file_id, [str])
+
+        self.file_unique_id = \
+            Field(file_unique_id, [str])
 
         self.file_size = \
             Field(file_size, [int])
