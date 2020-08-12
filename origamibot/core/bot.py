@@ -160,6 +160,17 @@ class OrigamiBot:
             self._name = self.get_me().username
         return self._name
 
+    @property
+    def is_alive(self):
+        return all(
+            [
+                self._listen_thread.is_alive(),
+                self._process_thread.is_alive(),
+                self._callback_thread.is_alive(),
+                self._inline_thread.is_alive()
+            ]
+        )
+
     def start(self,
               webhook=False,
               poll=True, 
