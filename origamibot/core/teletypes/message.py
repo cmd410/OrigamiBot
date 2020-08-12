@@ -10,6 +10,7 @@ from .poll import Poll
 from .game import Game
 from .sticker import Sticker
 from .video import Video
+from .video_note import VideoNote
 from .voice import Voice
 from .contact import Contact
 from .location import Location
@@ -106,6 +107,7 @@ class Message(TelegramStructure):
                  photo: List[PhotoSize] = None,
                  sticker: Sticker = None,
                  video: Video = None,
+                 video_note: VideoNote = None,
                  voice: Voice = None,
                  caption: str = None,
                  caption_entities: List[MessageEntity] = None,
@@ -203,6 +205,9 @@ class Message(TelegramStructure):
 
         self.video = \
             Field(video, [Video])
+
+        self.video_note = \
+            Field(video_note, [VideoNote])
 
         self.voice = \
             Field(voice, [Voice])
