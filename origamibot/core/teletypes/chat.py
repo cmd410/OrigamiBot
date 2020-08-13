@@ -36,7 +36,7 @@ class Chat(TelegramStructure):
                  permissions: ChatPermissions = None,
                  slow_mode_delay: int = None,
                  sticker_set_name: str = None,
-                 can_set_sticker_set: bool = None
+                 can_set_sticker_set: bool = None,
                  all_members_are_administrators: bool = None
                  ):
         self.id = \
