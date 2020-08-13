@@ -49,16 +49,19 @@ def request(token,
         for key, value in files.items()
         if value is not None
     }
-    json_data = json.dumps(data, ensure_ascii=True)
-    headers = {'Content-type': 'application/json'}
-    responce = requests.post(url, data=json_data, files=files, headers=headers)
+    if files:
+        response = requests.post(url, params=data, files=files)
+    else:
+        json_data = json.dumps(data, ensure_ascii=True)
+        headers = {'Content-type': 'application/json'}
+        response = requests.post(url, data=json_data, headers=headers)
 
-    if responce.status_code != 200:
+    if response.status_code != 200:
         description = \
-            json.loads(responce.text).get('description', 'No description')
-        raise TelegramAPIError(f'[{responce.status_code}] {description}')
+            json.loads(response.text).get('description', 'No description')
+        raise TelegramAPIError(f'[{response.status_code}] {description}')
 
-    data = json.loads(responce.text)['result']
+    data = json.loads(response.text)['result']
 
     if isinstance(data, dict):
         return TelegramStructure.from_dict(data)
