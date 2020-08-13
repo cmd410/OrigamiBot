@@ -53,8 +53,7 @@ class TelegramStructure:
         """
         d = dict()
         for key, value in self.__dict__.items():
-            value_type = type(value)
-            if value_type != Field:
+            if not isinstance(value, Field):
                 continue
             if value.value is not None:
                 d[key] = value.unfold()
