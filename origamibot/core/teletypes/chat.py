@@ -20,6 +20,7 @@ class Chat(TelegramStructure):
     slow_mode_delay = Field()
     sticker_set_name = Field()
     can_set_sticker_set = Field()
+    all_members_are_administrators = Field()
 
     def __init__(self,
                  id: int,
@@ -36,6 +37,7 @@ class Chat(TelegramStructure):
                  slow_mode_delay: int = None,
                  sticker_set_name: str = None,
                  can_set_sticker_set: bool = None
+                 all_members_are_administrators: bool = None
                  ):
         self.id = \
             Field(id, [int])
@@ -78,6 +80,9 @@ class Chat(TelegramStructure):
 
         self.can_set_sticker_set = \
             Field(can_set_sticker_set, [bool])
+
+        self.all_members_are_administrators = \
+            Field(all_members_are_administrators, [bool])
 
 
 from .message import Message  # NOQA
