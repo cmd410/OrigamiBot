@@ -73,6 +73,7 @@ def request(token,
 def get_updates(token: str,
                 offset: int = 0,
                 limit: int = 100,
+                timeout: int = 0,
                 allowed_updates: list = []) -> List[Update]:
     """Make getUpdate request to telegram API. Return list of updates"""
 
@@ -82,7 +83,9 @@ def get_updates(token: str,
         data={
             'offset': offset + 1,
             'limit': limit,
-            'allowed_updates': allowed_updates},
+            'allowed_updates': allowed_updates,
+            'timeout': timeout
+            },
         excpect='update'
         )
     return updates
