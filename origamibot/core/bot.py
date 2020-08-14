@@ -116,8 +116,12 @@ class OrigamiBot:
         self.updates = deque()
         self.inline = deque()
         self.callback = deque()
-        self.interval = 0.1
+        
+        self.interval = 10
+        self.update_limit = 100
+        self.allowed_updates = []
         self.safe_poll = True
+
         self._name = None
         self.first_only_command = True
 
@@ -135,12 +139,12 @@ class OrigamiBot:
             name='Update process thread',
             target=self._process_updates_loop,
             daemon=True)
-        
+
         self._inline_thread = StoppableThread(
             name='Inline thread',
             target=self._inline_loop,
             daemon=True)
-        
+
         self._callback_thread = StoppableThread(
             name='Inline thread',
             target=self._callback_loop,
@@ -283,14 +287,32 @@ class OrigamiBot:
         """Remove all commands"""
         self.command_container.clear()
 
-    def get_updates(self) -> List[Update]:
+    def get_updates(self,
+                    limit: int = -1,
+                    timeout: int = -1,
+                    allowed_updates: list = None
+                    ) -> List[Update]:
         """Make getUpdate request to telegram API. Return list of updates"""
+        if timeout == -1:
+            timeout = self.interval
+
+        if limit == -1:
+            limit = self.update_limit
+
+        if allowed_updates is None:
+            allowed_updates = self.allowed_updates
+
         updates = get_updates(
             self.token,
             self._last_update_id,
+            limit=limit,
+            timeout=timeout,
+            allowed_updates=allowed_updates
         )
+
         if updates:
             self._last_update_id = updates[-1].update_id
+
         return updates
 
     def get_me(self) -> User:
@@ -1352,25 +1374,24 @@ class OrigamiBot:
 
         In main thread does nothing. And does not need to.
         """
-        if current_thread().__class__.__name__ != '_MainThread':
-            while True:
-                if current_thread().stopped:
-                    break
-                if self.safe_poll:
-                    try:
-                        updates = self.get_updates()
-                    except (IOError, ConnectionError) as err:
-                        logger.exception('Exception while polling')
-                        self._call_listeners('on_poll_error', err)
-                        sleep(self.interval)
-                        continue
-                else:
-                    updates = self.get_updates()
+        while True:
+            if current_thread().stopped:
+                break
 
-                if updates:
-                    self.updates.extend(updates)
-                    self.has_updates.set()
-                sleep(self.interval)
+            if self.safe_poll:
+                try:
+                    updates = self.get_updates()
+                except (IOError, ConnectionError) as err:
+                    logger.exception('Exception while polling')
+                    self._call_listeners('on_poll_error', err)
+                    sleep(2)
+                    continue
+            else:
+                updates = self.get_updates()
+
+            if updates:
+                self.updates.extend(updates)
+                self.has_updates.set()
 
     def _inline_loop(self):
         while True:
