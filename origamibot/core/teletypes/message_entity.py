@@ -13,6 +13,7 @@ class MessageEntity(TelegramStructure):
     length = Field()
     url = Field()
     user = Field()
+    language = Field()
 
     def __init__(self,
                  type: str,
@@ -20,6 +21,7 @@ class MessageEntity(TelegramStructure):
                  length: int,
                  url: str = None,
                  user: User = None,
+                 language: str = None
                  ):
         self.type = \
             Field(type, [str])
@@ -35,3 +37,6 @@ class MessageEntity(TelegramStructure):
 
         self.user = \
             Field(user, [User])
+        
+        self.language = \
+            Field(language, [str])
