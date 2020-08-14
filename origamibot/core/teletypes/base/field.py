@@ -28,6 +28,15 @@ class Field:
 
     def __init__(self, value=None, data_types=[]):
         self.data_types = set(data_types)
+
+        # Add subclasses also
+        for t in data_types:
+            scls = t.__subclasses__()
+            if not scls:
+                continue
+            for i in scls:
+                self.data_types.add(i)
+
         self.structures = [
             i
             for i in data_types
