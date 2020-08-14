@@ -1309,7 +1309,9 @@ def edit_message_text(token: str,
             'inline_message_id': inline_message_id,
             'parse_mode': parse_mode,
             'disable_web_page_preview': disable_web_page_preview,
-            'reply_markup': reply_markup.unfold()
+            'reply_markup': (reply_markup.unfold()
+                             if reply_markup is not None
+                             else None)
         }
     )
 
