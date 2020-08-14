@@ -6,7 +6,14 @@ class InputMessageContent(TelegramStructure):
         if cls != InputMessageContent:
             return super(InputMessageContent, cls).__new__(cls)
         keys = set(kwargs.keys())
-        for i in InputMessageContent.__subclasses__():
+
+        classes = InputMessageContent.__subclasses__()
+        classes = sorted(
+            classes,
+            key=lambda item: len(item.fields_names()),
+            reverse=True
+            )
+        for i in classes:
             if not keys.issubset(i.fields_names()):
                 continue
             return super(InputMessageContent, i).__new__(i)

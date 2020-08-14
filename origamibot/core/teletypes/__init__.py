@@ -61,6 +61,7 @@ from .input_file import InputFile
 from .input_location_message_content import InputLocationMessageContent
 from .input_text_message_content import InputTextMessageContent
 from .input_contact_message_content import InputContactMessageContent
+from .input_venue_message_content import InputVenueMessageContent
 
 from .input_media_animation import InputMediaAnimation
 from .input_media_audio import InputMediaAudio
