@@ -1,4 +1,5 @@
 from .base import TelegramStructure, Field
+from .photo_size import PhotoSize
 
 
 class Audio(TelegramStructure):
@@ -14,6 +15,7 @@ class Audio(TelegramStructure):
     title = Field()
     mime_type = Field()
     file_size = Field()
+    thumb = Field()
 
     def __init__(self,
                  file_id: str,
@@ -23,6 +25,7 @@ class Audio(TelegramStructure):
                  title: str = None,
                  mime_type: str = None,
                  file_size: int = None,
+                 thumb: PhotoSize = None,
                  ):
         self.file_id = \
             Field(file_id, [str])
@@ -44,3 +47,6 @@ class Audio(TelegramStructure):
 
         self.file_size = \
             Field(file_size, [int])
+        
+        self.thumb = \
+            Field(thumb, [PhotoSize])
