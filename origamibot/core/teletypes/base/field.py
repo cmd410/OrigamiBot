@@ -17,11 +17,15 @@ class Field:
     __slots__ = ('_value', 'data_types', 'structures')
 
     def unfold(self):
-        if isinstance(self.value, list):
+        def unfold_list(l):
             return [
-                i.unfold()
-                for i in self.value
+                unfold_list(i)
+                if isinstance(i, list)
+                else i.unfold()
+                for i in l
             ]
+        if isinstance(self.value, list):
+            return unfold_list(self.value)
         elif isinstance(self.value, TelegramStructure):
             return self.value.unfold()
         return self.value
