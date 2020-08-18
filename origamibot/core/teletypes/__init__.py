@@ -1,4 +1,4 @@
-from .base import TelegramStructure
+from .base import TelegramStructure, InlineQueryResult, InputMessageContent
 
 from .animation import Animation
 from .audio import Audio
