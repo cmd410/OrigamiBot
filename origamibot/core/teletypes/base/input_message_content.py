@@ -2,11 +2,13 @@ from .telegram_structure import TelegramStructure
 
 
 class InputMessageContent(TelegramStructure):
-    def __new__(cls, **kwargs):
+    def __new__(cls, *args, **kwargs):
         if cls != InputMessageContent:
             return super(InputMessageContent, cls).__new__(cls)
         keys = set(kwargs.keys())
 
+        if not kwargs:
+            raise ValueError('No keyword argumets given to determine type')
         classes = InputMessageContent.__subclasses__()
         classes = sorted(
             classes,
