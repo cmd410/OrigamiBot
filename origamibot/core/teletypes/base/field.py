@@ -1,6 +1,6 @@
 from logging import getLogger
 
-logger = getLogger(__name__)
+logger = getLogger('origamibot')
 
 
 class FieldTypeError(TypeError):
@@ -75,7 +75,7 @@ class Field:
                 # Map dict to structures
                 for struct in self.structures:
                     try:
-                        return struct(**value)
+                        return struct.from_dict(value)
                         break
                     except TypeError as err:
                         logger.debug(

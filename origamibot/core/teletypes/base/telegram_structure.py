@@ -1,6 +1,10 @@
 import json
+from logging import getLogger
+from types import SimpleNamespace
 
 from .field import Field
+
+logger = getLogger('origamibot')
 
 
 class TelegramStructure:
@@ -91,16 +95,19 @@ class TelegramStructure:
                     return c(**d)
                 except TypeError:
                     pass
-        raise ValueError(f'Could not map dict: {d} to any type')
+        logger.warning(f'Could not map dict: {d} to any type')
+        return SimpleNamespace(**d)
 
     @classmethod
     def from_list(cls, l: list):  # NOQA
         new_list = []
         for i in l:
             if isinstance(i, dict):
-                new_list.append(cls.from_dict(i))
+                obj = cls.from_dict(i)
+                new_list.append(obj)
             elif isinstance(i, list):
-                new_list.append(cls.from_list(i))
+                obj = cls.from_list(i)
+                new_list.append(obj)
             else:
                 new_list.append(i)
         return new_list

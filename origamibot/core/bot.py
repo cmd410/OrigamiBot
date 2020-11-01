@@ -105,7 +105,7 @@ except ImportError:
     pass
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('origamibot')
 
 
 class OrigamiBot:

@@ -3,7 +3,7 @@ from inspect import getmembers
 from collections import deque
 from logging import getLogger
 
-logger = getLogger(__name__)
+logger = getLogger('origamibot')
 
 
 class Callbacks:
