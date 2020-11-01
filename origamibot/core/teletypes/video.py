@@ -9,6 +9,7 @@ class Video(TelegramStructure):
 
     file_id = Field()
     file_unique_id = Field()
+    file_name = Field()
     width = Field()
     height = Field()
     duration = Field()
@@ -25,12 +26,16 @@ class Video(TelegramStructure):
                  thumb: PhotoSize = None,
                  mime_type: str = None,
                  file_size: int = None,
+                 file_name: str = None
                  ):
         self.file_id = \
             Field(file_id, [str])
 
         self.file_unique_id = \
             Field(file_unique_id, [str])
+
+        self.file_name = \
+            Field(file_name, [str])
 
         self.width = \
             Field(width, [int])
