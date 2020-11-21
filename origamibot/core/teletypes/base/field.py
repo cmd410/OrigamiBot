@@ -14,7 +14,7 @@ class Field:
     Usual user does not interact with this class directly
     """
 
-    __slots__ = ('_value', 'data_types', 'structures')
+    __slots__ = ('_value', 'data_types', 'structures', 'possible_fields')
 
     def unfold(self):
         def unfold_list(l):
@@ -46,6 +46,12 @@ class Field:
             for i in data_types
             if issubclass(i, TelegramStructure)
             ]
+
+        self.possible_fields = {
+            field_name
+            for tg_struct in self.structures
+            for field_name in tg_struct.fields_names()
+        }
         value = self.validate_value(value)
         self._value = value
 
@@ -66,21 +72,24 @@ class Field:
             return value
         if not self.data_types:
             return value
-
         value_type = type(value)
         if value_type not in self.data_types:
             if value_type == dict and self.structures:
                 if 'from' in value.keys():
                     value['from_user'] = value.pop('from')
                 # Map dict to structures
+                value = {
+                    key: value
+                    for key, value in value.items()
+                    if key in self.possible_fields
+                }
                 for struct in self.structures:
                     try:
-                        return struct.from_dict(value)
+                        return struct.from_dict(value, value)
                         break
                     except TypeError as err:
                         logger.debug(
-                            f'Error in Field, unpacking {struct}:\n\t{err}'
-                            )
+                            f'Error in Field, unpacking {struct}:\n\t{err}')
                         pass
             raise FieldTypeError(
                 f'''Got wrong type: {

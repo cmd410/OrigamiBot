@@ -69,7 +69,7 @@ class TelegramStructure:
         return json.dumps(self.unfold())
 
     @classmethod
-    def from_dict(cls, d: dict):
+    def from_dict(cls, d: dict, valid_params = None):
         if 'from' in d.keys():
             d['from_user'] = d.pop('from')
 
@@ -85,16 +85,27 @@ class TelegramStructure:
             key=lambda item: len(item[1]),
             reverse=True
             )
+        if valid_params is None:
+            if cls != TelegramStructure:
+                classes.append((cls, cls.fields_names()))
+
+            valid_params = {
+                            key: value
+                            for c in classes
+                            for key, value in d.items()
+                            if key in c[1]
+            }
+
         if cls != TelegramStructure:
             classes.append((cls, cls.fields_names()))
 
-        d_keys = set(d.keys())
+        d_keys = set(valid_params.keys())
         for c, fields in classes:
             if d_keys.issubset(fields):
                 try:
-                    return c(**d)
+                    return c(**valid_params)
                 except TypeError:
-                    pass
+                    raise
         logger.warning(f'Could not map dict: {d} to any type')
         return SimpleNamespace(**d)
 
