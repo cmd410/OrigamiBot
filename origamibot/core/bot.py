@@ -1464,7 +1464,7 @@ class OrigamiBot:
                 else:
                     args = [message] + shlex.split(text[end:])
             except ValueError:
-                args = [message, text]
+                args = [message, text[end:]]
 
             found = self.command_container.find_command(command)
             for method in found:
