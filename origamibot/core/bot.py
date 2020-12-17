@@ -1457,11 +1457,14 @@ class OrigamiBot:
                     continue
 
             # Parse arguments for each command
-            if commands:
-                _, nxt_c, _ = commands[0]
-                args = [message] + shlex.split(text[end:nxt_c])
-            else:
-                args = [message] + shlex.split(text[end:])
+            try:
+                if commands:
+                    _, nxt_c, _ = commands[0]
+                    args = [message] + shlex.split(text[end:nxt_c])
+                else:
+                    args = [message] + shlex.split(text[end:])
+            except ValueError:
+                args = [message, text]
 
             found = self.command_container.find_command(command)
             for method in found:
