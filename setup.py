@@ -1,13 +1,21 @@
+from origamibot import __version__
 import setuptools
+
 
 with open('README.md', 'r') as file:
     long_description = file.read()
 
-requires = ['requests']
+# Read dependencies from requirements.txt
+with open('requirements.txt', 'r') as file:
+    requires = [
+        i
+        for i in file.read().split('\n')
+        if i
+    ]
 
 setuptools.setup(
     name='origamibot',
-    version='2.0.20',
+    version=__version__,
     author='Crystal Melting Dot',
     author_email='stresspassing@gmail.com',
     description='Library for creating bots for telegram with Python.',

@@ -1,1 +1,1 @@
-from .core.bot import OrigamiBot  # NOQA
+__version__ = '3.0.0'
