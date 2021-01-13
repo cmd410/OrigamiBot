@@ -1,0 +1,2 @@
+class TelegramAPIError(RuntimeError):
+    pass
