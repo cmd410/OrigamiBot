@@ -21,7 +21,7 @@ class APIRequest(Callable):
         assert method, "Attempt to create API method without method string"
         cls.method = method
 
-    def __init__(self, host: str=DEFAULT_API_HOST):
+    def __init__(self, host: str = DEFAULT_API_HOST):
         self.host = host
 
     def get_request_url(self,
@@ -29,13 +29,17 @@ class APIRequest(Callable):
                         ) -> str:
         return f'{self.host}/bot{token}/{self.method}'
 
-    def send_data(self, token: str, data: dict = {}, files: dict = {}) -> Response:
+    def send_data(self,
+                  token: str,
+                  data: dict = {},
+                  files: dict = {}
+                  ) -> Response:
         url = self.get_request_url(token)
         if files:
             # TODO sending files
             raise NotImplementedError('Sending files is not supported yet')
         return post(url, data=data).result()
-    
+
     @staticmethod
     def purify_args(data: dict) -> dict:
         return {
@@ -50,7 +54,7 @@ class APIRequest(Callable):
         data = responce.body
 
         json_obj = loads(data)
-        
+
         assert isinstance(json_obj, dict)
         assert 'ok' in json_obj
 
@@ -58,10 +62,14 @@ class APIRequest(Callable):
             return json_obj['result']
         else:
             raise TelegramAPIError(
-                f'[{responce.status_code}]' + json_obj.get('description', 'No description'))
+                f'[{responce.status_code}]'
+                f'{json_obj.get("description", "No description")}'
+            )
 
     @staticmethod
-    def map_data(data: Union[dict, list], type=TelegramType) -> Union[TelegramType, List[TelegramType]]:
+    def map_data(data: Union[dict, list],
+                 type=TelegramType
+                 ) -> Union[TelegramType, List[TelegramType]]:
         return type.from_data(data)
 
     @classmethod

@@ -8,7 +8,7 @@ class Message(TelegramType):
     message_id = Field(int)
     date       = Field(int)
     chat       = Field('Chat')
-    
+
     # Optional
     from_user              = OptionalField('User', alias='from')
     sender_chat            = OptionalField('Chat')

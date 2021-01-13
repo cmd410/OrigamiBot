@@ -7,7 +7,7 @@ class Chat(TelegramType):
     # Required
     id   = Field(int)
     type = Field(str)
-    
+
     # Optional
     title               = OptionalField(str)
     username            = OptionalField(str)

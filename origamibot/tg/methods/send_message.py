@@ -31,7 +31,7 @@ class SendMessage(APIRequest, method='sendMessage'):
         responce = self.send_data(token,
                                   self.purify_args(data)
                                   )
-        
+
         message = self.unwrap_result(responce)
 
         return Message.from_dict(message)

@@ -9,7 +9,7 @@ class Animation(TelegramType):
     width          = Field(int)
     height         = Field(int)
     duration       = Field(int)
-    
+
     thumb          = OptionalField('PhotoSize')
     file_name      = OptionalField(str)
     mime_type      = OptionalField(str)
