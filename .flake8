@@ -1,6 +1,7 @@
 [flake8]
 ignore = D203
 exclude = .git,
+    .venv,
     __pycache__,
     docs/source/conf.py,
     old,
