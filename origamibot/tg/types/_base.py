@@ -2,4 +2,4 @@ from flowerfield import Scheme
 
 
 class TelegramType(Scheme, root=True):
-    pass
+    _bot = None  # Bot that owns this object

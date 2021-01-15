@@ -1,3 +1,3 @@
-from typing import Union
+from genki.http.url import URL
 
-ChatID = Union[int, str]
+DEFAULT_API_SERVER = URL("https://api.telegram.org/")

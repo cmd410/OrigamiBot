@@ -12,4 +12,4 @@ class Audio(TelegramType):
     file_name      = OptionalField(str)
     mime_type      = OptionalField(str)
     file_size      = OptionalField(int)
-    thumb          = OptionalField('PhotoSize')
+    thumb          = OptionalField("PhotoSize")
