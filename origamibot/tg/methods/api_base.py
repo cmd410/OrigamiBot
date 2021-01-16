@@ -6,7 +6,7 @@ from genki import post, Response
 from genki.http.url import URL
 from flowerfield import Scheme
 
-from . import DEFAULT_API_SERVER
+from .util import DEFAULT_API_SERVER
 from ..exceptions import TelegramAPIError
 
 
@@ -45,9 +45,12 @@ class APIBase(ABC):
 
     def _send_request(self, method: str, data: dict = {}, files: dict = {}) -> Response:
         """Sends request to server, returns Reponce object"""
+        timeout = data.get('timeout')
+        if timeout is not None:
+            timeout += 2
         if files:
             raise NotImplementedError("Sending files is not supported yet.")
-        return post(self.url_for(method), data=data).result()
+        return post(self.url_for(method), data=data, timeout=timeout).result()
 
     def _purify_data(self, data: dict) -> dict:
         """Returns dict with no None fields

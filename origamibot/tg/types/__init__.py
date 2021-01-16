@@ -20,3 +20,5 @@ from .input_media import (InputFile,
                           InputMediaAnimation,
                           InputMediaAudio,
                           InputMediaDocument)
+
+from .update import Update
