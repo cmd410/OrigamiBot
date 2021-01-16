@@ -35,6 +35,7 @@ class InlineKeyboardMarkup(TelegramType):
 
     def add_button(self,
                    text: str,
+                   callback_data: str,
                    url: Optional[str] = None,
                    login_url: Optional[LoginUrl] = None,
                    switch_inline_query: Optional[str] = None,

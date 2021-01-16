@@ -4,6 +4,7 @@ from abc import ABC
 
 from genki import post, Response
 from genki.http.url import URL
+from flowerfield import Scheme
 
 from . import DEFAULT_API_SERVER
 from ..exceptions import TelegramAPIError
@@ -53,11 +54,11 @@ class APIBase(ABC):
         and removes self from it, usually used with locals() in methods
         """
         return {
-            key: (
-                self._purify_data(value)
-                if isinstance(value, dict)
-                else value
-                )
+            key: (self._purify_data(value)
+                  if isinstance(value, dict)
+                  else value.as_dict()
+                  if isinstance(value, Scheme)
+                  else value)
             for key, value in data.items()
             if value is not None and key != "self"
         }

@@ -79,7 +79,7 @@ class ChatAPI(APIBase):
                            message_id: Optional[int] = None,
                            inline_message_id: Optional[str] = None,
                            reply_markup: Optional[InlineKeyboardMarkup] = None
-                           ):
+                           ) -> Union[Message, bool]:
         """Use this method to edit animation,
         audio, document, photo, or video messages.
 
@@ -99,6 +99,24 @@ class ChatAPI(APIBase):
         """
         assert (chat_id and message_id) or inline_message_id
         result = self._simple_request("editMessageMedia", locals())
+        if isinstance(result, dict):
+            return Message.from_dict(result)
+        else:
+            return result
+
+    def edit_message_reply_markup(self,
+                                  chat_id: Optional[ChatID] = None,
+                                  message_id: Optional[int] = None,
+                                  inline_message_id: Optional[str] = None,
+                                  reply_markup: Optional[InlineKeyboardMarkup] = None
+                                  ) -> Union[Message, bool]:
+        """Use this method to edit only the reply markup of messages.
+
+        On success, if the edited message is not an inline message,
+        the edited Message is returned, otherwise True is returned.
+        """
+        assert (chat_id and message_id) or inline_message_id
+        result = self._simple_request("editMessageReplyMarkup", locals())
         if isinstance(result, dict):
             return Message.from_dict(result)
         else:

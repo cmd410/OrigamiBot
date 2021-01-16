@@ -1,9 +1,10 @@
-from typing import Optional, List
+from typing import Optional, List, Union
 
 from flowerfield import Field, ListField, OptionalField
 
 from ._base import TelegramType
 from .inline_keyboard import InlineKeyboardMarkup
+from .input_media import InputMedia
 
 
 class Message(TelegramType):
@@ -33,7 +34,7 @@ class Message(TelegramType):
     document               = OptionalField("Document")
     photo                  = ListField("PhotoSize")
     sticker                = OptionalField("Sticker")
-    reply_markup           = OptionalField("ReplyMarkup")
+    reply_markup           = OptionalField(InlineKeyboardMarkup)
     # TODO fields:
     # video
     # video_note
@@ -68,7 +69,7 @@ class Message(TelegramType):
                   parse_mode: Optional[str] = None,
                   disable_web_page_preview: Optional[bool] = None,
                   reply_markup: Optional[InlineKeyboardMarkup] = None
-                  ) -> "Message":
+                  ) -> Union["Message", bool]:
         """Change text of current message
         """
         assert self._bot is not None
@@ -81,6 +82,32 @@ class Message(TelegramType):
             reply_markup=reply_markup
         )
 
+    def edit_media(self,
+                   media: InputMedia,
+                   reply_markup: Optional[InlineKeyboardMarkup] = None
+                   ) -> Union["Message", bool]:
+        """Change media of current message
+        """
+        assert self._bot is not None
+        return self._bot.edit_message_media(
+            chat_id=self.chat.id,
+            message_od=self.message_id,
+            media=media,
+            reply_markup=reply_markup
+        )
+
+    def edit_reply_markup(self,
+                          reply_markup: Optional[InlineKeyboardMarkup] = None
+                          ) -> Union["Message", bool]:
+        """Change reply markup of this message
+        """
+        assert self._bot is not None
+        return self._bot.edit_message_reply_markup(
+            chat_id=self.chat.id,
+            message_id=self.message_id,
+            reply_markup=reply_markup
+        )
+
     def reply(self,
               text: str,
               parse_mode: Optional[str] = None,
@@ -88,8 +115,8 @@ class Message(TelegramType):
               disable_web_page_preview: Optional[bool] = None,
               disable_notification: Optional[bool] = None,
               allow_sending_without_reply: Optional[bool] = None,
-              reply_markup: Optional = None
-              ) -> "Message":
+              reply_markup: Optional[InlineKeyboardMarkup] = None
+              ) -> Union["Message", bool]:
         """Send a reply to this message
         """
         assert self._bot is not None
