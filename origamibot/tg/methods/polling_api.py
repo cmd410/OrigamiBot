@@ -14,4 +14,4 @@ class PollingAPI(APIBase):
                     timeout: Optional[int] = 30,
                     allowed_updates: Optional[List[str]] = None
                     ) -> List[Update]:
-        return Update.from_list(self._simple_request('getUpdates', locals()))
+        return self._own(Update.from_list(self._simple_request('getUpdates', locals())))

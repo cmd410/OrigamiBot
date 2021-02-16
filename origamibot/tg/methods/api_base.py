@@ -22,6 +22,10 @@ class APIBase(ABC):
         """
         return f"{str(self.host)}bot{self.token}/{method}"
 
+    def _own(self, result):
+        setattr(result, '_bot', self)
+        return result
+
     def _unwrap_result(self, responce: Response) -> Union[dict, list]:
         is_ok = False
         result = None
@@ -77,7 +81,7 @@ class APIBase(ABC):
             if value is not None and key != "self"
         }
 
-    def _simple_request(self, method: str, data: dict) -> Union[dict, list]:
+    def _simple_request(self, method: str, data: dict) -> Union[dict, list, bool]:
         """Helper method for simple requests
         sends data dict and returns result field from server.
         """

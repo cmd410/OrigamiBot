@@ -1,7 +1,6 @@
 from typing import Optional, List, Union
 
 from .api_base import APIBase
-from .util import own_result
 from ..common_typings import ChatID
 from ..types import (Message,
                      MessageEntity,
@@ -14,7 +13,6 @@ class ChatAPI(APIBase):
     Sending and editing messages
     """
 
-    @own_result
     def send_message(self,
                      chat_id: ChatID,
                      text: str,
@@ -29,9 +27,8 @@ class ChatAPI(APIBase):
         """Use this method to send text messages.
         On success, the sent Message is returned.
         """
-        return Message.from_dict(self._simple_request("sendMessage", locals()))
+        return self._own(Message.from_dict(self._simple_request("sendMessage", locals())))
 
-    @own_result
     def edit_message_text(self,
                           text: str,
                           chat_id: Optional[ChatID] = None,
@@ -49,7 +46,7 @@ class ChatAPI(APIBase):
         assert (chat_id and message_id) or inline_message_id
         result = self._simple_request("editMessageText", locals())
         if isinstance(result, dict):
-            return Message.from_dict(result)
+            return self._own(Message.from_dict(result))
         else:
             return result
 
@@ -69,7 +66,7 @@ class ChatAPI(APIBase):
         assert (chat_id and message_id) or inline_message_id
         result = self._simple_request("editMessageCaption", locals())
         if isinstance(result, dict):
-            return Message.from_dict(result)
+            return self._own(Message.from_dict(result))
         else:
             return result
 
@@ -100,7 +97,7 @@ class ChatAPI(APIBase):
         assert (chat_id and message_id) or inline_message_id
         result = self._simple_request("editMessageMedia", locals())
         if isinstance(result, dict):
-            return Message.from_dict(result)
+            return self._own(Message.from_dict(result))
         else:
             return result
 
@@ -118,6 +115,6 @@ class ChatAPI(APIBase):
         assert (chat_id and message_id) or inline_message_id
         result = self._simple_request("editMessageReplyMarkup", locals())
         if isinstance(result, dict):
-            return Message.from_dict(result)
+            return self._own(Message.from_dict(result))
         else:
             return result
