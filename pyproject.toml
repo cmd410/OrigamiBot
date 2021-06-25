@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "origamibot"
+version = "2.0.21"
+description = "Library for creating bots for telegram with Python."
+authors = ["Crystal Melting Dot <stresspassing@gmail.com>"]
+license = "MIT"
+repository = 'https://github.com/cmd410/OrigamiBot'
+readme = 'README.md'
+
+[tool.poetry.dependencies]
+python = "^3.7"
+requests = "^2.25.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
