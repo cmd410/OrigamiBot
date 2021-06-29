@@ -1,9 +1,0 @@
-from functools import wraps
-from typing import Callable, Union
-
-from genki.http.url import URL
-
-DEFAULT_API_SERVER = URL("https://api.telegram.org/")
-
-
-addr = Union[URL, str]

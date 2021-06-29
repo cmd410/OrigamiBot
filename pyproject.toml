@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "origamibot"
-version = "2.0.21"
+version = "3.0.0"
 description = "Library for creating bots for telegram with Python."
 authors = ["Crystal Melting Dot <stresspassing@gmail.com>"]
 license = "MIT"
@@ -9,9 +9,13 @@ readme = 'README.md'
 
 [tool.poetry.dependencies]
 python = "^3.7"
-requests = "^2.25.1"
+httpx = "^0.18.2"
+yarl = "^1.6.3"
 
 [tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+pytest-asyncio = "^0.15.1"
+python-dotenv = "^0.18.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
