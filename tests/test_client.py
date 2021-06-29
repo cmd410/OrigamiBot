@@ -1,6 +1,6 @@
 import pytest
 
-from origamibot.core.client import TelegramClient, method_var, token_var
+from origamibot.core.client import TelegramClient
 
 from . import token, private_cid, image_file
 

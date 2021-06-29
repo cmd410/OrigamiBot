@@ -11,6 +11,7 @@ readme = 'README.md'
 python = "^3.7"
 httpx = "^0.18.2"
 yarl = "^1.6.3"
+pydantic = "^1.8.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"

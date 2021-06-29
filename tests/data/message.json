@@ -1,0 +1,13 @@
+{"chat": {"first_name": "Someone",
+    "id": 2151515,
+    "type": "private",
+    "username": "someone"},
+"date": 12536433,
+"entities": [{"length": 4, "offset": 0, "type": "bot_command"}],
+"from": {"first_name": "Someone",
+    "id": 125126465,
+    "is_bot": false,
+    "language_code": "en",
+    "username": "someone"},
+"message_id": 54,
+"text": "/dbg"}
