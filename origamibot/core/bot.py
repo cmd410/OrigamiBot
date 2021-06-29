@@ -1,5 +1,7 @@
+from origamibot.core.teletypes.command_scope import BotCommandScope
 import shlex
 import logging
+from tests import bot, token
 
 from typing import List, Optional, Union, IO, Callable
 from collections import deque
@@ -84,7 +86,9 @@ from .api_request import (
     edit_message_reply_markup,
     stop_poll,
     delete_message,
-    send_media_group)
+    send_media_group,
+    delete_my_commands
+    )
 
 from ..listener import Listener
 
@@ -1149,7 +1153,9 @@ class OrigamiBot:
         )
 
     def set_my_commands(self,
-                        commands: List[BotCommand]
+                        commands: List[BotCommand],
+                        scope: Optional[BotCommandScope] = None,
+                        language_code: Optional[str] = None
                         ) -> bool:
         """Use this method to change the list of the bot's commands.
 
@@ -1160,12 +1166,24 @@ class OrigamiBot:
             commands
         )
 
-    def get_my_commands(self) -> List[BotCommand]:
+    def get_my_commands(self,
+                        language_code: Optional[str] = None
+                        ) -> List[BotCommand]:
         """Use this method to get the current list of the bot's commands.
 
         Returns Array of BotCommand on success.
         """
         return get_my_commands(self.token)
+    
+    def delete_my_commands(self,
+                           scope: Optional[BotCommandScope] = None,
+                           language_code: Optional[str] = None
+                           ) -> bool:
+        return delete_my_commands(
+            token=self.token,
+            scope=scope,
+            language_code=language_code
+        )
 
     def answer_inline_query(self,
                             inline_query_id: str,
