@@ -46,7 +46,11 @@ class TelegramClient:
                        endpoint: str,
                        data=None,
                        files=None
-                       ):  
+                       ):
+        """Send request asynchronously.
+        
+        Takes bot token, endpoint and optionally data and files.
+        """
         payload = {
             'url': str(self.url_for(token, endpoint))
         }
