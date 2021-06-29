@@ -68,6 +68,16 @@ from .input_media_audio import InputMediaAudio
 from .input_media_document import InputMediaDocument
 from .input_media_photo import InputMediaPhoto
 from .input_media_video import InputMediaVideo
+from .command_scope import (
+    BotCommandScope,
+    BotCommandScopeAllChatAdministrators,
+    BotCommandScopeAllGroupChats,
+    BotCommandScopeAllPrivateChats,
+    BotCommandScopeChat,
+    BotCommandScopeChatAdministrators,
+    BotCommandScopeChatMember,
+    BotCommandScopeDefault
+)
 
 from typing import Union
 

@@ -18,7 +18,9 @@ from .teletypes import (
     BotCommand,
     WebhookInfo,
     InputMedia,
-    Poll)
+    Poll,
+    BotCommandScope
+)
 
 from .teletypes.inline_query_result import InlineQueryResult
 
@@ -1180,7 +1182,9 @@ def answer_callback_query(token: str,
 
 
 def set_my_commands(token: str,
-                    commands: List[BotCommand]
+                    commands: List[BotCommand],
+                    scope: Optional[BotCommandScope] = None,
+                    language_code: Optional[str] = None
                     ) -> bool:
     """Use this method to change the list of the bot's commands.
 
@@ -1190,19 +1194,49 @@ def set_my_commands(token: str,
         token,
         'setMyCommands',
         {
-            'commands': [i.unfold() for i in commands]
+            'commands': [i.unfold() for i in commands],
+            'scope': scope.unfold() if scope else None,
+            'language_code': language_code
         }
     )
 
 
-def get_my_commands(token: str) -> List[BotCommand]:
+def get_my_commands(token: str,
+                    scope: Optional[BotCommandScope] = None,
+                    language_code: Optional[str] = None
+                    ) -> List[BotCommand]:
     """Use this method to get the current list of the bot's commands.
 
     Returns Array of BotCommand on success.
     """
     return request(
         token,
-        'getMyCommands'
+        'getMyCommands',
+        {
+            'scope': scope.unfold() if scope else None,
+            'language_code': language_code
+        }
+    )
+
+
+def delete_my_commands(token: str,
+                       scope: Optional[BotCommandScope] = None,
+                       language_code: Optional[str] = None
+                       ) -> bool:
+    """Use this method to delete the list of the bot's
+    commands for the given scope and user language.
+    After deletion, higher level commands will be shown
+    to affected users.
+    
+    Returns True on success.
+    """
+    return request(
+        token,
+        'deleteMyCommands',
+        {
+            'scope': scope.unfold() if scope else None,
+            'language_code': language_code
+        }
     )
 
 
