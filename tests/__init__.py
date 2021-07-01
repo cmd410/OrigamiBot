@@ -7,6 +7,13 @@ import pytest
 load_dotenv()
 
 
+@pytest.fixture
+def webhook():
+    wh = getenv('TEST_WEBHOOK')
+    if not wh:
+        pytest.skip('test webhook required for this test, yet no found in ENV (TEST_WEBHOOK)')
+    return wh
+
 
 @pytest.fixture
 def token():
