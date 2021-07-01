@@ -1,13 +1,12 @@
 import asyncio
-from typing import Union
+from typing import Optional
 import weakref
 
 from yarl import URL
-from httpx import Client, AsyncClient
+from httpx import AsyncClient
 from httpx._types import ProxiesTypes
 
-
-URLTypes = Union[URL, str]
+from .._hints import URLTypes, JSON
 
 
 class TelegramClient:
@@ -24,7 +23,6 @@ class TelegramClient:
             self.host = URL(host)
         
         self._aclient = AsyncClient(proxies=proxies)
-        self._loop = asyncio.get_event_loop()
         
         weakref.finalize(self, self.close)
     
@@ -44,9 +42,9 @@ class TelegramClient:
     async def arequest(self,
                        token: str,
                        endpoint: str,
-                       data=None,
-                       files=None
-                       ):
+                       data: Optional[dict] = None,
+                       files: Optional[dict] = None
+                       ) -> JSON:
         """Send request asynchronously.
         
         Takes bot token, endpoint and optionally data and files.
