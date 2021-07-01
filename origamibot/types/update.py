@@ -1,14 +1,15 @@
 from ._base import TelegramObject
+from .message import Message
 
 
 class Update(TelegramObject):
     update_id: int
     
-    message: dict
-    edited_message: dict
+    message: Message
+    edited_message: Message
     
-    channel_post: dict
-    edited_channel_post: dict
+    channel_post: Message
+    edited_channel_post: Message
 
     inline_query: dict
     chosen_inline_result: dict
