@@ -1,12 +1,15 @@
 import asyncio
 from typing import Optional
 import weakref
+from _pytest.config import exceptions
 
 from yarl import URL
 from httpx import AsyncClient
 from httpx._types import ProxiesTypes
+from httpx._exceptions import RequestError
 
 from .._hints import URLTypes, JSON
+from ..exceptions import ClientError
 
 
 class TelegramClient:
@@ -61,7 +64,11 @@ class TelegramClient:
         elif data and files:
             payload['params'] = data
 
-        r = await self._aclient.post(
-            **payload
-        )
+        try:
+            r = await self._aclient.post(
+                **payload
+            )
+        except RequestError as e:
+            raise ClientError from e
+
         return r.json()
