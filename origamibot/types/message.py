@@ -3,6 +3,7 @@ from typing import List, Literal, Optional
 from pydantic.fields import Field
 
 from ._base import TelegramObject
+from .user import User
 
 
 class Message(TelegramObject):
@@ -11,11 +12,11 @@ class Message(TelegramObject):
     
     message_id: int
     
-    from_user: Optional[dict] = Field(alias='from')
+    from_user: Optional[User] = Field(alias='from')
     sender_chat: Optional[dict]
     date: Optional[int]
     
-    forward_from: Optional[dict]
+    forward_from: Optional[User]
     forward_from_chat: Optional[dict]
     forward_from_message_id: Optional[int]
     forward_signature: Optional[str]
@@ -23,7 +24,7 @@ class Message(TelegramObject):
     forward_date: Optional[int]
     
     reply_to_message: Optional['Message']
-    via_bot: Optional[dict]
+    via_bot: Optional[User]
     edit_date: Optional[int]
     media_group_id: Optional[str]
     author_signature: Optional[str]
@@ -49,8 +50,8 @@ class Message(TelegramObject):
     venue: Optional[dict]
     location: Optional[dict]
     
-    new_chat_members: Optional[List[dict]]
-    left_chat_member: Optional[dict]
+    new_chat_members: Optional[List[User]]
+    left_chat_member: Optional[User]
     
     new_chat_title: Optional[str]
     new_chat_photo: Optional[List[dict]]
