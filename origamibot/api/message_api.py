@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Literal, Optional
 
 from ._base import APIBase
 from .._hints import ChatID, ParseMode
@@ -9,9 +9,6 @@ class MessageAPI(APIBase):
     """API that implements sending,
     editing and deleting messages
     """
-    
-    def __init__(self, token: str, **params) -> None:
-        super().__init__(token, **params)
 
     async def send_message(self,
                            chat_id: ChatID,
@@ -49,24 +46,61 @@ class MessageAPI(APIBase):
             to remove reply keyboard or to force a reply from the user.
         """
         
-        data = {
-            'chat_id': chat_id,
-            'text': text,
-            'parse_mode': parse_mode,
-            'entities': entities,
-            'disable_web_page_preview': disable_web_page_preview,
-            'disable_notification': disable_notification,
-            'reply_to_message_id': reply_to_message_id,
-            'allow_sending_without_reply': allow_sending_without_reply,
-            'reply_markup': reply_markup
-        }
-        
-        return Message.construct(
+        return Message(
             **self._extract_request_result(
                 await self._send_request(
                     'sendMessage',
-                    data=data
+                    data={
+                        'chat_id': chat_id,
+                        'text': text,
+                        'parse_mode': parse_mode,
+                        'entities': entities,
+                        'disable_web_page_preview': disable_web_page_preview,
+                        'disable_notification': disable_notification,
+                        'reply_to_message_id': reply_to_message_id,
+                        'allow_sending_without_reply': allow_sending_without_reply,
+                        'reply_markup': reply_markup
+                    }
                 )
             )
         )
     
+    async def delete_message(self,
+                             chat_id: ChatID,
+                             message_id: int
+                             ) -> Literal[True]:
+        """Use this method to delete a message,
+        including service messages, with the
+        following limitations:
+        
+        * A message can only be deleted if it
+            was sent less than 48 hours ago.
+        * A dice message in a private chat can
+            only be deleted if it was sent more
+            than 24 hours ago.
+        * Bots can delete outgoing messages in
+            private chats, groups, and supergroups.
+        * Bots can delete incoming messages in
+            private chats.
+        * Bots granted can_post_messages permissions
+            can delete outgoing messages in channels.
+        * If the bot is an administrator of a
+            group, it can delete any message there.
+        * If the bot has can_delete_messages
+            permission in a supergroup or a channel,
+            it can delete any message there.
+
+        Returns True on success.
+        
+        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format ``@channelusername``)
+        :param message_id: Identifier of the message to delete
+        """
+        return self._extract_request_result(
+            await self._send_request(
+                'deleteMessage',
+                data={
+                    'chat_id': chat_id,
+                    'message_id': message_id
+                }
+            )
+        )
