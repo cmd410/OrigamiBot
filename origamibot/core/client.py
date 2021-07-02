@@ -59,6 +59,13 @@ class TelegramClient:
         if files:
             payload['files'] = files
         
+        if data:
+            data = {
+                key: value
+                for key, value in data.items()
+                if value is not None
+            }
+        
         if data and not files:
             payload['json'] = data
         elif data and files:
