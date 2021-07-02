@@ -3,6 +3,14 @@ from typing import Dict, List, Literal, Union
 from yarl import URL
 
 
+ChatID = Union[str, int]
+
+ParseMode = Literal[
+    'Markdown',
+    'MarkdownV2',
+    'HTML'
+]
+
 URLTypes = Union[URL, str]
 
 
