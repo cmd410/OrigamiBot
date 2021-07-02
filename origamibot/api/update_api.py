@@ -58,7 +58,7 @@ class UpdateAPI(APIBase):
         result = self._extract_request_result(response)
         assert isinstance(result, list)
         
-        return [Update.construct(**i) for i in result]
+        return [Update(**i) for i in result]
     
     async def set_webhook(self,
                           url: URLTypes,
@@ -137,7 +137,7 @@ class UpdateAPI(APIBase):
         If the bot is using getUpdates, will return
         an object with the url field empty.
         """
-        return WebhookInfo.construct(
+        return WebhookInfo(
             **self._extract_request_result(
                 await self._send_request('getWebhookInfo')
             )
