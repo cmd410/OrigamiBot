@@ -1,3 +1,4 @@
+from typing import Optional
 from ._base import TelegramObject
 from .message import Message
 
@@ -5,21 +6,21 @@ from .message import Message
 class Update(TelegramObject):
     update_id: int
     
-    message: Message
-    edited_message: Message
+    message: Optional[Message]
+    edited_message: Optional[Message]
     
-    channel_post: Message
-    edited_channel_post: Message
+    channel_post: Optional[Message]
+    edited_channel_post: Optional[Message]
 
-    inline_query: dict
-    chosen_inline_result: dict
-    callback_query: dict
+    inline_query: Optional[dict]
+    chosen_inline_result: Optional[dict]
+    callback_query: Optional[dict]
     
-    shipping_query: dict
-    pre_checkout_query: dict
+    shipping_query: Optional[dict]
+    pre_checkout_query: Optional[dict]
 
-    poll: dict
-    poll_answer: dict
+    poll: Optional[dict]
+    poll_answer: Optional[dict]
     
-    my_chat_member: dict
-    chat_member: dict
+    my_chat_member: Optional[dict]
+    chat_member: Optional[dict]
