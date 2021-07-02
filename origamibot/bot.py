@@ -3,11 +3,11 @@ from typing import List, Optional
 from httpx._types import ProxiesTypes
 
 from ._hints import URLTypes, UpdateTypeStr
-from .api import UpdateAPI
+from .api import UpdateAPI, MessageAPI
 
 
 
-class Bot(UpdateAPI):
+class Bot(UpdateAPI, MessageAPI):
     def __init__(self,
                  token: str,
                  *,
