@@ -22,3 +22,6 @@ class Chat(TelegramObject):
     can_set_sticker_set: Optional[bool]
     linked_chat_id: Optional[int]
     location: Optional[dict]
+
+
+from .message import Message

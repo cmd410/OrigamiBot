@@ -4,7 +4,6 @@ from pydantic.fields import Field
 
 from ._base import TelegramObject
 from .user import User
-from .chat import Chat
 
 
 class Message(TelegramObject):
@@ -13,13 +12,13 @@ class Message(TelegramObject):
     
     message_id: int
     date: int
-    chat: Chat
+    chat: 'Chat'
     
     from_user: Optional[User] = Field(alias='from')
-    sender_chat: Optional[Chat]
+    sender_chat: Optional['Chat']
     
     forward_from: Optional[User]
-    forward_from_chat: Optional[Chat]
+    forward_from_chat: Optional['Chat']
     forward_from_message_id: Optional[int]
     forward_signature: Optional[str]
     forward_sender_name: Optional[str]
@@ -67,7 +66,7 @@ class Message(TelegramObject):
     migrate_to_chat_id: Optional[int]
     migrate_from_chat_id: Optional[int]
     
-    pinned_message: Optional[dict]
+    pinned_message: Optional['Message']
     
     invoice: Optional[dict]
     successful_payment: Optional[dict]
@@ -83,4 +82,6 @@ class Message(TelegramObject):
     voice_chat_participants_invited: Optional[dict]
     
     reply_markup: Optional[dict]
-    
+
+
+from .chat import Chat
