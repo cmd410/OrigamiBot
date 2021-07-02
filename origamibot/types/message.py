@@ -85,3 +85,5 @@ class Message(TelegramObject):
 
 
 from .chat import Chat
+
+Message.update_forward_refs()
