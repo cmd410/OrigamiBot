@@ -11,6 +11,7 @@ def client():
 
 
 @pytest.mark.asyncio
+@pytest.mark.skip(reason="APIBase test already covers it")
 async def test_client_get_me(client, token):
     """Test we can send requsets
     """
@@ -18,6 +19,7 @@ async def test_client_get_me(client, token):
 
 
 @pytest.mark.asyncio
+@pytest.mark.skip(reason="MessageAPI test already covers it")
 async def test_client_send_message(client, token, private_cid):
     """Test we request data is encoded correctly
     """
