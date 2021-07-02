@@ -4,7 +4,7 @@ import pytest
 from origamibot.api import UpdateAPI
 from origamibot.types import Update
 
-from . import token, webhook
+from .. import token, webhook
 
 
 @pytest.fixture

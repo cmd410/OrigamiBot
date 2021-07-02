@@ -1,6 +1,7 @@
 from ..core.client import TelegramClient
 from .._hints import JSON
 from ..exceptions import TelegramAPIError
+from ..types import User
 
 
 class APIBase:
@@ -35,3 +36,17 @@ class APIBase:
             code = response['error_code']
             description = response['description']
             raise TelegramAPIError(f'[{code}] {description}')
+
+    async def get_me(self) -> User:
+        """A simple method for testing your bot's auth token.
+        
+        Requires no parameters.
+        Returns basic information about the bot in
+        form of a User object.
+        """
+        return User.construct(
+            **self._extract_request_result(
+                await self._send_request('getMe')
+                )
+            )
+    
