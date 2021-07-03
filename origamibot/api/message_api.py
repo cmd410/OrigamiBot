@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional
+from typing import List, Literal, Optional, Union
 
 from ._base import APIBase
 from .._hints import ChatID, ParseMode
@@ -104,3 +104,58 @@ class MessageAPI(APIBase):
                 }
             )
         )
+
+    async def edit_message_text(self,
+                                text: str,
+                                chat_id: Optional[ChatID] = None,
+                                message_id: Optional[int] = None,
+                                inline_message_id: Optional[str] = None,
+                                parse_mode: Optional[ParseMode] = None,
+                                entities: Optional[dict] = None,
+                                disable_web_page_preview: Optional[bool] = None,
+                                reply_markup: Optional[dict] = None
+                                ) -> Union[Message, Literal[True]]:
+        """Use this method to edit text and game messages.
+        
+        On success, if the edited message is not
+        an inline message, the edited Message is returned,
+        otherwise True is returned.
+        
+        :param chat_id: Required if inline_message_id is
+            not specified. Unique identifier for the target
+            chat or username of the target channel(in the
+            format @channelusername)
+        :param message_id: Required if inline_message_id
+            is not specified. Identifier of the message to edit
+        :param inline_message_id: Required if chat_id and message_id
+            are not specified. Identifier of the inline message
+        :param text: New text of the message, 1-4096 characters
+            after entities parsing
+        :param parse_mode: Mode for parsing entities in the message text
+        :param entities: List of special entities that appear in message
+            text, which can be specified instead of parse_mode
+        :param disable_web_page_preview: Disables link previews
+            for links in this message
+        :param reply_markup: A JSON-serialized object for an inline keyboard.
+        """
+
+        responce = self._extract_request_result(
+            await self._send_request(
+                'editMessageText',
+                data={
+                    'text': text,
+                    'chat_id': chat_id,
+                    'message_id': message_id,
+                    'inline_message_id': inline_message_id,
+                    'parse_mode': parse_mode,
+                    'entities': entities,
+                    'disable_web_page_preview': disable_web_page_preview,
+                    'reply_markup': reply_markup
+                }
+            )
+        )
+        
+        if responce == True:
+            return True
+        else:
+            return Message(**responce)
