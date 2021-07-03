@@ -3,7 +3,7 @@ name = "origamibot"
 version = "3.0.0"
 description = "Library for creating bots for telegram with Python."
 authors = ["Crystal Melting Dot <stresspassing@gmail.com>"]
-license = "MIT"
+license = "LGPL-3.0-only"
 repository = 'https://github.com/cmd410/OrigamiBot'
 readme = 'README.md'
 
