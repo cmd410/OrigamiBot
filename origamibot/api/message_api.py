@@ -5,6 +5,7 @@ from attr import resolve_types
 from ._base import APIBase
 from .._hints import ChatID, ParseMode
 from ..types.message import Message
+from ..types.message_id import MessageId
 
 
 class MessageAPI(APIBase):
@@ -231,6 +232,77 @@ class MessageAPI(APIBase):
                         'from_chat_id': from_chat_id,
                         'message_id': message_id,
                         'disable_notification': disable_notification
+                    }
+                )
+            )
+        )
+
+    async def copy_message(self,
+                           chat_id: ChatID,
+                           from_chat_id: ChatID,
+                           message_id: int,
+                           caption: Optional[str] = None,
+                           parse_mode: Optional[ParseMode] = None,
+                           caption_entities: Optional[List[dict]] = None,
+                           disable_notification: Optional[bool] = None,
+                           reply_to_message_id: Optional[int] = None,
+                           allow_sending_without_reply: Optional[bool] = None,
+                           reply_markup: Optional[dict] = None
+                           ) -> MessageId:
+        """Use this method to copy messages of any kind.
+        
+        Service messages and invoice messages can't be copied.
+        
+        The method is analogous to the method forward_message,
+        but the copied message doesn't have a link to the
+        original message.
+        
+        Returns the MessageId of the sent message on success.
+        
+        :param chat_id: Unique identifier for the target chat
+            or username of the target channel (in the format
+            @channelusername)
+        :param from_chat_id: Unique identifier for the chat
+            where the original message was sent (or channel
+            username in the format @channelusername)
+        :param message_id: Message identifier in the chat
+            specified in from_chat_id
+        :param caption: New caption for media, 0-1024
+            characters after entities parsing. If not specified,
+            the original caption is kept
+        :param parse_mode: Mode for parsing entities in the new
+            caption. See formatting options for more details.
+        :param caption_entities: List of special entities that
+            appear in the new caption, which can be specified
+            instead of parse_mode
+        :param disable_notification: Sends the message silently.
+            Users will receive a notification with no sound.
+        :param reply_to_message_id: If the message is a reply,
+            ID of the original message
+        :param allow_sending_without_reply: Pass True, if the
+            message should be sent even if the specified
+            replied-to message is not found
+        :param reply_markup: Additional interface options.
+            A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove
+            reply keyboard or to force a reply from the user.
+        """
+
+        return MessageId(
+                **self._extract_request_result(
+                await self._send_request(
+                    'copyMessage',
+                    data={
+                        'chat_id': chat_id,
+                        'from_chat_id': from_chat_id,
+                        'message_id': message_id,
+                        'caption': caption,
+                        'parse_mode': parse_mode,
+                        'caption_entities': caption_entities,
+                        'disable_notification': disable_notification,
+                        'reply_to_message_id': reply_to_message_id,
+                        'allow_sending_without_reply': allow_sending_without_reply,
+                        'reply_markup': reply_markup
                     }
                 )
             )

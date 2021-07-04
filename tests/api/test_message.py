@@ -2,7 +2,7 @@ from typing import List
 import pytest
 
 from origamibot.api.message_api import MessageAPI
-from origamibot.types import Message, Chat
+from origamibot.types import Message, Chat, MessageId
 
 from .. import token, private_cid
 
@@ -53,6 +53,16 @@ async def test_forward_message(api: MessageAPI):
     new_msg = await api.forward_message(m.chat.id, m.chat.id, m.message_id)
     assert isinstance(new_msg, Message)
     sent_messages.append(new_msg)
+
+
+@pytest.mark.asyncio
+@pytest.mark.order(after='test_send_message')
+async def test_copy_message(api: MessageAPI):
+    if not sent_messages:
+        pytest.skip('No messages to copy')
+    m = sent_messages[0]
+    new_msg_id = await api.copy_message(m.chat.id, m.chat.id, m.message_id)
+    assert isinstance(new_msg_id, MessageId)
 
 
 @pytest.mark.asyncio
