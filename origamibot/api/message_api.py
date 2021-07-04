@@ -1,5 +1,7 @@
 from typing import List, Literal, Optional, Union
 
+from attr import resolve_types
+
 from ._base import APIBase
 from .._hints import ChatID, ParseMode
 from ..types.message import Message
@@ -159,3 +161,38 @@ class MessageAPI(APIBase):
             return True
         else:
             return Message(**responce)
+
+    async def edit_message_caption(self,
+                                   caption: str,
+                                   chat_id: Optional[ChatID] = None,
+                                   message_id: Optional[int] = None,
+                                   inline_message_id: Optional[str] = None,
+                                   parse_mode: Optional[ParseMode] = None,
+                                   caption_entities: Optional[dict] = None,
+                                   reply_markup: Optional[dict] = None
+                                   ) -> Union[Message, Literal[True]]:
+        """Use this method to edit captions of messages.
+        
+        On success, if the edited message is not an inline
+        message, the edited Message is returned,
+        otherwise True is returned.
+        """
+
+        response = self._extract_request_result(
+            await self._send_request(
+                data={
+                    'caption': caption,
+                    'chat_id': chat_id,
+                    'message_id': message_id,
+                    'inline_message_id': inline_message_id,
+                    'parse_mode': parse_mode,
+                    'caption_entities': caption_entities,
+                    'reply_markup': reply_markup
+                }
+            )
+        )
+        
+        if response == True:
+            return True
+        else:
+            return Message(**response)
