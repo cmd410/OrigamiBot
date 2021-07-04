@@ -7,7 +7,7 @@ from origamibot.types import Update
 from .. import token, webhook
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def api(token):
     return UpdateAPI(token=token)
 
