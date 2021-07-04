@@ -197,3 +197,41 @@ class MessageAPI(APIBase):
             return True
         else:
             return Message(**response)
+
+    async def forward_message(self,
+                              chat_id: ChatID,
+                              from_chat_id: ChatID,
+                              message_id: int,
+                              disable_notification: Optional[bool] = None
+                              ) -> Message:
+        """Use this method to forward messages of any kind.
+        
+        Service messages can't be forwarded.
+        
+        On success, the sent Message is returned.
+        
+        :param chat_id: Unique identifier for the target
+            chat or username of the target channel
+            (in the format @channelusername)
+        :param from_chat_id: Unique identifier for the
+            chat where the original message was sent
+            (or channel username in the format @channelusername)
+        :param message_id:Message identifier in the chat
+            specified in from_chat_id
+        :param disable_notification: Sends the message silently.
+            Users will receive a notification with no sound.
+        """
+        
+        return Message(
+            **self._extract_request_result(
+                await self._send_request(
+                    'forwardMessage',
+                    data={
+                        'chat_id': chat_id,
+                        'from_chat_id': from_chat_id,
+                        'message_id': message_id,
+                        'disable_notification': disable_notification
+                    }
+                )
+            )
+        )

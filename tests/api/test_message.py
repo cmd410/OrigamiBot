@@ -45,6 +45,17 @@ async def test_update_message_caption(api: MessageAPI):
 
 
 @pytest.mark.asyncio
+@pytest.mark.order(after='test_send_message')
+async def test_forward_message(api: MessageAPI):
+    if not sent_messages:
+        pytest.skip('No messages to forward')
+    m = sent_messages[0]
+    new_msg = await api.forward_message(m.chat.id, m.chat.id, m.message_id)
+    assert isinstance(new_msg, Message)
+    sent_messages.append(new_msg)
+
+
+@pytest.mark.asyncio
 @pytest.mark.order('last')
 async def test_delete_message(api: MessageAPI):
     for m in sent_messages:
