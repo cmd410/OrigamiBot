@@ -180,6 +180,7 @@ class MessageAPI(APIBase):
 
         response = self._extract_request_result(
             await self._send_request(
+                'editMessageCaption',
                 data={
                     'caption': caption,
                     'chat_id': chat_id,
