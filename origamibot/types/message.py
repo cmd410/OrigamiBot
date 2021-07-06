@@ -4,6 +4,7 @@ from pydantic.fields import Field
 
 from ._base import TelegramObject
 from .user import User
+from .reply_markup import InlineKeyboardMarkup
 
 
 class Message(TelegramObject):
@@ -81,7 +82,7 @@ class Message(TelegramObject):
     voice_chat_ended: Optional[dict]
     voice_chat_participants_invited: Optional[dict]
     
-    reply_markup: Optional[dict]
+    reply_markup: Optional[InlineKeyboardMarkup]
 
 
 from .chat import Chat

@@ -3,7 +3,7 @@ from typing import List, Literal, Optional, Union
 from attr import resolve_types
 
 from ._base import APIBase
-from .._hints import ChatID, ParseMode
+from .._hints import ChatID, ParseMode, ReplyMarkup
 from ..types.message import Message
 from ..types.message_id import MessageId
 
@@ -22,7 +22,7 @@ class MessageAPI(APIBase):
                            disable_notification: Optional[bool] = None,
                            reply_to_message_id: Optional[int] = None,
                            allow_sending_without_reply: Optional[bool] = None,
-                           reply_markup: Optional[dict] = None  # TODO reply markup
+                           reply_markup: Optional[ReplyMarkup] = None  # TODO reply markup
                            ) -> Message:
         """Use this method to send text messages.
         
@@ -116,7 +116,7 @@ class MessageAPI(APIBase):
                                 parse_mode: Optional[ParseMode] = None,
                                 entities: Optional[dict] = None,
                                 disable_web_page_preview: Optional[bool] = None,
-                                reply_markup: Optional[dict] = None
+                                reply_markup: Optional[ReplyMarkup] = None
                                 ) -> Union[Message, Literal[True]]:
         """Use this method to edit text and game messages.
         
@@ -170,7 +170,7 @@ class MessageAPI(APIBase):
                                    inline_message_id: Optional[str] = None,
                                    parse_mode: Optional[ParseMode] = None,
                                    caption_entities: Optional[dict] = None,
-                                   reply_markup: Optional[dict] = None
+                                   reply_markup: Optional[ReplyMarkup] = None
                                    ) -> Union[Message, Literal[True]]:
         """Use this method to edit captions of messages.
         
@@ -247,7 +247,7 @@ class MessageAPI(APIBase):
                            disable_notification: Optional[bool] = None,
                            reply_to_message_id: Optional[int] = None,
                            allow_sending_without_reply: Optional[bool] = None,
-                           reply_markup: Optional[dict] = None
+                           reply_markup: Optional[ReplyMarkup] = None
                            ) -> MessageId:
         """Use this method to copy messages of any kind.
         

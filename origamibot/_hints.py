@@ -2,18 +2,6 @@ from typing import Dict, List, Literal, Union
 
 from yarl import URL
 
-
-ChatID = Union[str, int]
-
-ParseMode = Literal[
-    'Markdown',
-    'MarkdownV2',
-    'HTML'
-]
-
-URLTypes = Union[URL, str]
-
-
 UpdateTypeStr = Literal[
     "message",
     "edited_message",
@@ -30,6 +18,25 @@ UpdateTypeStr = Literal[
     "chat_member"
 ]
 
+from .types import (
+    KeyboardButton,
+    InlineKeyboardMarkup,
+    ReplyKeyboardMarkup,
+    ReplyKeyboardRemove,
+    ForceReply,
+)
+
+
+ChatID = Union[str, int]
+
+ParseMode = Literal[
+    'Markdown',
+    'MarkdownV2',
+    'HTML'
+]
+
+URLTypes = Union[URL, str]
+
 
 JSON = Union[
     None,
@@ -39,4 +46,14 @@ JSON = Union[
     str,
     Dict[str, 'JSON'],
     List['JSON']
+]
+
+
+KeyboardButton = Union[str, KeyboardButton]
+
+ReplyMarkup = Union[
+    InlineKeyboardMarkup,
+    ReplyKeyboardMarkup,
+    ReplyKeyboardRemove,
+    ForceReply
 ]
