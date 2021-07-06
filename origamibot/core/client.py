@@ -7,6 +7,7 @@ from yarl import URL
 from httpx import AsyncClient
 from httpx._types import ProxiesTypes
 from httpx._exceptions import RequestError
+from pydantic import BaseModel
 
 from .._hints import URLTypes, JSON
 from ..exceptions import ClientError
@@ -61,7 +62,7 @@ class TelegramClient:
         
         if data:
             data = {
-                key: value
+                key: value if not isinstance(value, BaseModel) else value.dict()
                 for key, value in data.items()
                 if value is not None
             }
