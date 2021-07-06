@@ -1,8 +1,8 @@
 import asyncio
 from typing import Optional
 import weakref
-from _pytest.config import exceptions
 
+import orjson
 from yarl import URL
 from httpx import AsyncClient
 from httpx._types import ProxiesTypes
@@ -68,7 +68,8 @@ class TelegramClient:
             }
         
         if data and not files:
-            payload['json'] = data
+            payload['content'] = orjson.dumps(data)
+            payload['headers'] = {'Content-Type': 'application/json'}
         elif data and files:
             payload['params'] = data
 
@@ -79,4 +80,4 @@ class TelegramClient:
         except RequestError as e:
             raise ClientError from e
 
-        return r.json()
+        return orjson.loads(r.content)
