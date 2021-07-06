@@ -4,7 +4,7 @@ import pytest
 from origamibot.api.message_api import MessageAPI
 from origamibot.types import Message, Chat, MessageId
 
-from .. import token, private_cid
+from .. import token, private_cid, image_file
 
 
 sent_messages: List[Message] = []
@@ -34,6 +34,18 @@ async def test_update_message_text(api: MessageAPI):
             continue
         assert await api.edit_message_text('Edited text', chat_id=m.chat.id, message_id=m.message_id)
 
+
+@pytest.mark.asyncio
+@pytest.mark.order(before='test_update_message_caption')
+async def test_send_photo(api: MessageAPI, private_cid, image_file):
+    m = await api.send_photo(
+        chat_id=private_cid,
+        photo=image_file,
+        caption='Test image from MessageAPI'
+    )
+    assert isinstance(m, Message)
+    sent_messages.append(m)
+    
 
 @pytest.mark.asyncio
 @pytest.mark.order(after='test_update_message_text')

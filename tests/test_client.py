@@ -34,6 +34,7 @@ async def test_client_send_message(client, token, private_cid):
 
 
 @pytest.mark.asyncio
+@pytest.mark.skip(reason="MessageAPI test already covers it")
 async def test_client_send_photo(client, token, private_cid, image_file):
     """Simple test of uploading a file with multipart
     """

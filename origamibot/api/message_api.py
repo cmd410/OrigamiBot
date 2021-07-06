@@ -1,6 +1,5 @@
 from typing import List, Literal, Optional, Union
-
-from attr import resolve_types
+from io import IOBase
 
 from ._base import APIBase
 from .._hints import ChatID, ParseMode, ReplyMarkup
@@ -304,6 +303,78 @@ class MessageAPI(APIBase):
                         'allow_sending_without_reply': allow_sending_without_reply,
                         'reply_markup': reply_markup
                     }
+                )
+            )
+        )
+
+    async def send_photo(self,
+                         chat_id: ChatID,
+                         photo: Union[IOBase, str],
+                         caption: Optional[str] = None,
+                         parse_mode: Optional[ParseMode] = None,
+                         caption_entities: Optional[List[dict]] = None,
+                         disable_notification: Optional[bool] = None,
+                         reply_to_message_id: Optional[int] = None,
+                         allow_sending_without_reply: Optional[bool] = None,
+                         reply_markup: Optional[ReplyMarkup] = None
+                         ) -> Message:
+        """Use this method to send photos.
+        
+        On success, the sent Message is returned.
+        
+        :param chat_id: Unique identifier for the target
+            chat or username of the target channel (in the
+            format @channelusername)
+        :param photo: Photo to send. Pass a file_id as String
+            to send a photo that exists on the Telegram servers
+            (recommended), pass an HTTP URL as a String for
+            Telegram to get a photo from the Internet, or
+            upload a new photo using multipart/form-data.
+        :param caption: Photo caption (may also be used when
+            resending photos by file_id), 0-1024 characters
+            after entities parsing
+        :param parse_mode: Mode for parsing entities in the
+            photo caption. See formatting options for more
+            details.
+        :param caption_entities: List of special entities
+            that appear in the caption, which can be specified
+            instead of parse_mode
+        :param disable_notification: Sends the message silently.
+            Users will receive a notification with no sound.
+        :param reply_to_message_id: If the message is a reply,
+            ID of the original message
+        :param allow_sending_without_reply: Pass True, if the
+            message should be sent even if the specified replied-to
+            message is not found
+        :param reply_markup: Additional interface options.
+            A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply
+            keyboard or to force a reply from the user.
+        """
+        
+        data = {
+            'chat_id': chat_id,
+            'caption': caption,
+            'parse_mode': parse_mode,
+            'caption_entities': caption_entities,
+            'disable_notification': disable_notification,
+            'reply_to_message_id': reply_to_message_id,
+            'allow_sending_without_reply': allow_sending_without_reply,
+            'reply_markup': reply_markup,
+        }
+        
+        if isinstance(photo, IOBase):
+            files = {'photo': photo}
+        else:
+            data['photo'] = photo
+            files = None
+
+        return Message(
+            **self._extract_request_result(
+                await self._send_request(
+                    'sendPhoto',
+                    data=data,
+                    files=files
                 )
             )
         )
