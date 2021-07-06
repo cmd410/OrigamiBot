@@ -42,7 +42,7 @@ class Message(TelegramObject):
     video_note: Optional[dict]
     voice: Optional[dict]
     
-    caption: Optional[dict]
+    caption: Optional[str]
     caption_entities: Optional[List[dict]]
     
     contact: Optional[dict]
