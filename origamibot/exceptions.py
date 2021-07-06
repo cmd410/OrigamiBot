@@ -1,5 +1,5 @@
 class OrigamiBaseException(RuntimeError):
-    """Base exception for all error raised in thi framework
+    """Base exception for all error raised in this framework
     """
 
 class TelegramAPIError(OrigamiBaseException):
