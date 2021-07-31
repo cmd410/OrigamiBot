@@ -1,4 +1,5 @@
 from typing import List, Literal, Optional, Union
+from collections.abc import AsyncGenerator
 from io import IOBase
 
 from ._base import APIBase
@@ -29,7 +30,7 @@ class UpdateAPI(APIBase):
                           limit: Optional[int] = None,
                           timeout: Optional[int] = None,
                           allowed_updates: Optional[List[UpdateTypeStr]] = None
-                          ) -> List[Update]:
+                          ) -> AsyncGenerator[Update]:
         """Get incoming updates from the server.
         
         Returns list of Update objects.
@@ -58,7 +59,8 @@ class UpdateAPI(APIBase):
         result = self._extract_request_result(response)
         assert isinstance(result, list)
         
-        return [Update(**i) for i in result]
+        for i in result:
+            yield Update(**i)
     
     async def set_webhook(self,
                           url: URLTypes,

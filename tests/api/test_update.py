@@ -16,9 +16,8 @@ def api(token):
 async def test_update_api(api: UpdateAPI):
     """Test UpdateAPI class
     """
-    updates = await api.get_updates(timeout=0)
-    assert isinstance(updates, list)
-    assert len(updates) == 0 or all(isinstance(i, Update) for i in updates)
+    async for upd in api.get_updates(timeout=0):
+        assert isinstance(upd, Update)
 
 
 
