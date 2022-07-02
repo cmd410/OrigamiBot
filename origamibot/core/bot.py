@@ -329,7 +329,9 @@ class OrigamiBot:
                      disable_web_page_preview: Optional[bool] = None,
                      disable_notification: Optional[bool] = None,
                      reply_to_message_id: Optional[int] = None,
-                     reply_markup: Optional[ReplyMarkup] = None) -> Message:
+                     reply_markup: Optional[ReplyMarkup] = None,
+                     protect_content: Optional[bool] = None
+                     ) -> Message:
         """Use this method to send text messages.
 
         On success, the sent Message is returned.
@@ -341,7 +343,8 @@ class OrigamiBot:
                             disable_web_page_preview,
                             disable_notification,
                             reply_to_message_id,
-                            reply_markup)
+                            reply_markup,
+                            protect_content)
 
     def reply_to(self, 
                  msg: Message,
@@ -349,7 +352,9 @@ class OrigamiBot:
                  parse_mode: Optional[str] = None,
                  disable_web_page_preview: Optional[bool] = None,
                  disable_notification: Optional[bool] = None,
-                 reply_markup: Optional[ReplyMarkup] = None) -> Message:
+                 reply_markup: Optional[ReplyMarkup] = None,
+                 protect_content: Optional[bool] = None
+                 ) -> Message:
         mid = msg.message_id
         cid = msg.chat.id
         return self.send_message(
@@ -359,24 +364,27 @@ class OrigamiBot:
             disable_web_page_preview=disable_web_page_preview,
             disable_notification=disable_notification,
             reply_to_message_id=mid,
-            reply_markup=reply_markup
+            reply_markup=reply_markup,
+            protect_content=protect_content
         )
 
     def forward_message(self,
                         chat_id: Union[int, str],
                         from_chat_id: Union[int, str],
                         message_id: int,
-                        disable_notification: Optional[bool] = None
+                        disable_notification: Optional[bool] = None,
+                        protect_content: Optional[bool] = None
                         ) -> Message:
         """Use this method to forward messages of any kind.
 
         On success, the sent Message is returned."""
         return forward_message(
-            self.token,
-            chat_id,
-            from_chat_id,
-            message_id,
-            disable_notification
+            token=self.token,
+            chat_id=chat_id,
+            from_chat_id=from_chat_id,
+            message_id=message_id,
+            disable_notification=disable_notification,
+            protect_content=protect_content
         )
 
     def send_photo(self,
@@ -386,20 +394,23 @@ class OrigamiBot:
                    parse_mode: Optional[str] = None,
                    disable_notification: Optional[bool] = None,
                    reply_to_message_id: Optional[int] = None,
-                   reply_markup: Optional[ReplyMarkup] = None) -> Message:
+                   reply_markup: Optional[ReplyMarkup] = None,
+                   protect_content: Optional[bool] = None
+                   ) -> Message:
         """Use this method to send photos.
 
         On success, the sent Message is returned.
         """
         return send_photo(
-            self.token,
-            chat_id,
-            photo,
-            caption,
-            parse_mode,
-            disable_notification,
-            reply_to_message_id,
-            reply_markup
+            token=self.token,
+            chat_id=chat_id,
+            photo=photo,
+            caption=caption,
+            parse_mode=parse_mode,
+            disable_notification=disable_notification,
+            reply_to_message_id=reply_to_message_id,
+            reply_markup=reply_markup,
+            protect_content=protect_content
         )
 
     def send_audio(self,
@@ -413,7 +424,8 @@ class OrigamiBot:
                    thumb: Optional[Union[str, IO]] = None,
                    disable_notification: Optional[bool] = None,
                    reply_to_message_id: Optional[int] = None,
-                   reply_markup: Optional[ReplyMarkup] = None
+                   reply_markup: Optional[ReplyMarkup] = None,
+                   protect_content: Optional[bool] = None
                    ) -> Message:
         """Use this method to send audio files.
 
@@ -421,18 +433,19 @@ class OrigamiBot:
         On success, the sent Message is returned.
         """
         return send_audio(
-            self.token,
-            chat_id,
-            audio,
-            caption,
-            parse_mode,
-            duration,
-            performer,
-            title,
-            thumb,
-            disable_notification,
-            reply_to_message_id,
-            reply_markup
+            token=self.token,
+            chat_id=chat_id,
+            audio=audio,
+            caption=caption,
+            parse_mode=parse_mode,
+            duration=duration,
+            performer=performer,
+            title=title,
+            thumb=thumb,
+            disable_notification=disable_notification,
+            reply_to_message_id=reply_to_message_id,
+            reply_markup=reply_markup,
+            protect_content=protect_content
         )
 
     def send_document(self,
@@ -443,22 +456,24 @@ class OrigamiBot:
                       parse_mode: Optional[str] = None,
                       disable_notification: Optional[bool] = None,
                       reply_to_message_id: Optional[int] = None,
-                      reply_markup: Optional[ReplyMarkup] = None
+                      reply_markup: Optional[ReplyMarkup] = None,
+                      protect_content: Optional[bool] = None
                       ) -> Message:
         """Use this method to send general files.
 
         On success, the sent Message is returned.
         """
         return send_document(
-            self.token,
-            chat_id,
-            document,
-            thumb,
-            caption,
-            parse_mode,
-            disable_notification,
-            reply_to_message_id,
-            reply_markup
+            token=self.token,
+            chat_id=chat_id,
+            document=document,
+            thumb=thumb,
+            caption=caption,
+            parse_mode=parse_mode,
+            disable_notification=disable_notification,
+            reply_to_message_id=reply_to_message_id,
+            reply_markup=reply_markup,
+            protect_content=protect_content
         )
 
     def send_video(self,
@@ -473,7 +488,8 @@ class OrigamiBot:
                    supports_streaming: Optional[bool] = None,
                    disable_notification: Optional[bool] = None,
                    reply_to_message_id: Optional[int] = None,
-                   reply_markup: Optional[ReplyMarkup] = None
+                   reply_markup: Optional[ReplyMarkup] = None,
+                   protect_content: Optional[bool] = None
                    ) -> Message:
         """Use this method to send video files.
 
@@ -482,19 +498,20 @@ class OrigamiBot:
         On success, the sent Message is returned.
         """
         return send_video(
-            self.token,
-            chat_id,
-            video,
-            duration,
-            width,
-            height,
-            thumb,
-            caption,
-            parse_mode,
-            supports_streaming,
-            disable_notification,
-            reply_to_message_id,
-            reply_markup
+            token=self.token,
+            chat_id=chat_id,
+            video=video,
+            duration=duration,
+            width=width,
+            height=height,
+            thumb=thumb,
+            caption=caption,
+            parse_mode=parse_mode,
+            supports_streaming=supports_streaming,
+            disable_notification=disable_notification,
+            reply_to_message_id=reply_to_message_id,
+            reply_markup=reply_markup,
+            protect_content=protect_content
         )
 
     def send_animation(self,
@@ -508,25 +525,27 @@ class OrigamiBot:
                        parse_mode: Optional[str] = None,
                        disable_notification: Optional[bool] = None,
                        reply_to_message_id: Optional[int] = None,
-                       reply_markup: Optional[ReplyMarkup] = None
+                       reply_markup: Optional[ReplyMarkup] = None,
+                       protect_content: Optional[bool] = None
                        ) -> Message:
         """Use this method to send animation files (GIF or video without sound).
 
         On success, the sent Message is returned.
         """
         return send_animation(
-            self.token,
-            chat_id,
-            animation,
-            duration,
-            width,
-            height,
-            thumb,
-            caption,
-            parse_mode,
-            disable_notification,
-            reply_to_message_id,
-            reply_markup
+            token=self.token,
+            chat_id=chat_id,
+            animation=animation,
+            duration=duration,
+            width=width,
+            height=height,
+            thumb=thumb,
+            caption=caption,
+            parse_mode=parse_mode,
+            disable_notification=disable_notification,
+            reply_to_message_id=reply_to_message_id,
+            reply_markup=reply_markup,
+            protect_content=protect_content
         )
 
     def send_voice(self,
@@ -537,7 +556,8 @@ class OrigamiBot:
                    duration: Optional[int] = None,
                    disable_notification: Optional[bool] = None,
                    reply_to_message_id: Optional[int] = None,
-                   reply_markup: Optional[ReplyMarkup] = None
+                   reply_markup: Optional[ReplyMarkup] = None,
+                   protect_content: Optional[bool] = None
                    ) -> Message:
         """Use this method to send audio files to display the file as a voice message.
 
@@ -545,15 +565,16 @@ class OrigamiBot:
         On success, the sent Message is returned.
         """
         return send_voice(
-            self.token,
-            chat_id,
-            voice,
-            caption,
-            parse_mode,
-            duration,
-            disable_notification,
-            reply_to_message_id,
-            reply_markup
+            token=self.token,
+            chat_id=chat_id,
+            voice=voice,
+            caption=caption,
+            parse_mode=parse_mode,
+            duration=duration,
+            disable_notification=disable_notification,
+            reply_to_message_id=reply_to_message_id,
+            reply_markup=reply_markup,
+            protect_content=protect_content
         )
 
     def send_video_note(self,
@@ -564,21 +585,23 @@ class OrigamiBot:
                         thumb: Optional[Union[str, IO]] = None,
                         disable_notification: Optional[bool] = None,
                         reply_to_message_id: Optional[int] = None,
-                        reply_markup: Optional[ReplyMarkup] = None
+                        reply_markup: Optional[ReplyMarkup] = None,
+                        protect_content: Optional[bool] = None
                         ) -> Message:
         """Use this method to send rounded square mp4 videos of up to 1 minute long.
 
         On success, the sent Message is returned."""
         return send_video_note(
-            self.token,
-            chat_id,
-            video_note,
-            duration,
-            length,
-            thumb,
-            disable_notification,
-            reply_to_message_id,
-            reply_markup
+            token=self.token,
+            chat_id=chat_id,
+            video_note=video_note,
+            duration=duration,
+            length=length,
+            thumb=thumb,
+            disable_notification=disable_notification,
+            reply_to_message_id=reply_to_message_id,
+            reply_markup=reply_markup,
+            protect_content=protect_content
         )
 
     def send_location(self,
@@ -588,21 +611,23 @@ class OrigamiBot:
                       live_period: Optional[int] = None,
                       disable_notification: Optional[bool] = None,
                       reply_to_message_id: Optional[int] = None,
-                      reply_markup: Optional[ReplyMarkup] = None
+                      reply_markup: Optional[ReplyMarkup] = None,
+                      protect_content: Optional[bool] = None
                       ) -> Message:
         """Use this method to send point on the map.
 
         On success, the sent Message is returned.
         """
         return send_location(
-            self.token,
-            chat_id,
-            latitude,
-            longitude,
-            live_period,
-            disable_notification,
-            reply_to_message_id,
-            reply_markup
+            token=self.token,
+            chat_id=chat_id,
+            latitude=latitude,
+            longitude=longitude,
+            live_period=live_period,
+            disable_notification=disable_notification,
+            reply_to_message_id=reply_to_message_id,
+            reply_markup=reply_markup,
+            protect_content=protect_content
         )
 
     def edit_message_live_location(self,
@@ -667,24 +692,26 @@ class OrigamiBot:
                    foursquare_type: Optional[str] = None,
                    disable_notification: Optional[bool] = None,
                    reply_to_message_id: Optional[int] = None,
-                   reply_markup: Optional[ReplyMarkup] = None
+                   reply_markup: Optional[ReplyMarkup] = None,
+                   protect_content: Optional[bool] = None
                    ) -> Message:
         """Use this method to send information about a venue.
 
         On success, the sent Message is returned.
         """
         return send_venue(
-            self.token,
-            chat_id,
-            latitude,
-            longitude,
-            title,
-            address,
-            foursquare_id,
-            foursquare_type,
-            disable_notification,
-            reply_to_message_id,
-            reply_markup
+            token=self.token,
+            chat_id=chat_id,
+            latitude=latitude,
+            longitude=longitude,
+            title=title,
+            address=address,
+            foursquare_id=foursquare_id,
+            foursquare_type=foursquare_type,
+            disable_notification=disable_notification,
+            reply_to_message_id=reply_to_message_id,
+            reply_markup=reply_markup,
+            protect_content=protect_content
         )
 
     def send_contact(self,
@@ -695,22 +722,24 @@ class OrigamiBot:
                      vcard: Optional[str] = None,
                      disable_notification: Optional[bool] = None,
                      reply_to_message_id: Optional[int] = None,
-                     reply_markup: Optional[ReplyMarkup] = None
+                     reply_markup: Optional[ReplyMarkup] = None,
+                     protect_content: Optional[bool] = None
                      ) -> Message:
         """Use this method to send phone contacts.
 
         On success, the sent Message is returned.
         """
         return send_contact(
-            self.token,
-            chat_id,
-            phone_number,
-            first_name,
-            last_name,
-            vcard,
-            disable_notification,
-            reply_to_message_id,
-            reply_markup
+            token=self.token,
+            chat_id=chat_id,
+            phone_number=phone_number,
+            first_name=first_name,
+            last_name=last_name,
+            vcard=vcard,
+            disable_notification=disable_notification,
+            reply_to_message_id=reply_to_message_id,
+            reply_markup=reply_markup,
+            protect_content=protect_content
         )
 
     def send_poll(self,
@@ -728,29 +757,31 @@ class OrigamiBot:
                   is_closed: Optional[bool] = None,
                   disable_notification: Optional[bool] = None,
                   reply_to_message_id: Optional[int] = None,
-                  reply_markup: Optional[ReplyMarkup] = None
+                  reply_markup: Optional[ReplyMarkup] = None,
+                  protect_content: Optional[bool] = None
                   ) -> Message:
         """Use this method to send a native poll.
 
         On success, the sent Message is returned.
         """
         return send_poll(
-            self.token,
-            chat_id,
-            question,
-            options,
-            is_anonymous,
-            type,
-            allows_multiple_answers,
-            correct_option_id,
-            explanation,
-            explanation_parse_mode,
-            open_period,
-            close_date,
-            is_closed,
-            disable_notification,
-            reply_to_message_id,
-            reply_markup
+            token=self.token,
+            chat_id=chat_id,
+            question=question,
+            options=options,
+            is_anonymous=is_anonymous,
+            type=type,
+            allows_multiple_answers=allows_multiple_answers,
+            correct_option_id=correct_option_id,
+            explanation=explanation,
+            explanation_parse_mode=explanation_parse_mode,
+            open_period=open_period,
+            close_date=close_date,
+            is_closed=is_closed,
+            disable_notification=disable_notification,
+            reply_to_message_id=reply_to_message_id,
+            reply_markup=reply_markup,
+            protect_content=protect_content
         )
 
     def send_dice(self,
@@ -758,19 +789,21 @@ class OrigamiBot:
                   emoji: Optional[str] = None,
                   disable_notification: Optional[bool] = None,
                   reply_to_message_id: Optional[int] = None,
-                  reply_markup: Optional[ReplyMarkup] = None
+                  reply_markup: Optional[ReplyMarkup] = None,
+                  protect_content: Optional[bool] = None
                   ) -> Message:
         """Use this method to send an animated emoji that will display a random value.
 
         On success, the sent Message is returned.
         """
         return send_dice(
-            self.token,
-            chat_id,
-            emoji,
-            disable_notification,
-            reply_to_message_id,
-            reply_markup
+            token=self.token,
+            chat_id=chat_id,
+            emoji=emoji,
+            disable_notification=disable_notification,
+            reply_to_message_id=reply_to_message_id,
+            reply_markup=reply_markup,
+            protect_content=protect_content
         )
 
     def send_chat_action(self,
@@ -794,17 +827,19 @@ class OrigamiBot:
                          chat_id: Union[int, str],
                          media: List[InputMedia],
                          disable_notification: Optional[bool] = None,
-                         reply_to_message_id: Optional[bool] = None
+                         reply_to_message_id: Optional[bool] = None,
+                         protect_content: Optional[bool] = None
                          ) -> Message:
         """Use this method to send a group of photos or videos as an album.
         On success, an array of the sent Messages is returned
         """
         return send_media_group(
-            self.token,
-            chat_id,
-            media,
-            disable_notification,
-            reply_to_message_id
+            token=self.token,
+            chat_id=chat_id,
+            media=media,
+            disable_notification=disable_notification,
+            reply_to_message_id=reply_to_message_id,
+            protect_content=protect_content
         )
 
     def get_user_profile_photos(self,

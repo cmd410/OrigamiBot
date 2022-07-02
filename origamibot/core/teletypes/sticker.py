@@ -18,6 +18,8 @@ class Sticker(TelegramStructure):
     set_name = Field()
     mask_position = Field()
     file_size = Field()
+    is_video = Field()
+
 
     def __init__(self,
                  file_id: str,
@@ -25,6 +27,7 @@ class Sticker(TelegramStructure):
                  width: int,
                  height: int,
                  is_animated: bool,
+                 is_video: bool,
                  thumb: PhotoSize = None,
                  emoji: str = None,
                  set_name: str = None,
@@ -45,6 +48,9 @@ class Sticker(TelegramStructure):
 
         self.is_animated = \
             Field(is_animated, [bool])
+        
+        self.is_video = \
+            Field(is_video, [bool])
 
         self.thumb = \
             Field(thumb, [PhotoSize])

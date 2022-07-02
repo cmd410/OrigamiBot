@@ -37,6 +37,7 @@ from .shipping_address import ShippingAddress
 from .shipping_option import ShippingOption
 from .shipping_query import ShippingQuery
 from .sticker import Sticker
+from .sticker_set import StickerSet
 from .successful_payment import SuccessfulPayment
 from .update import Update
 from .user import User

@@ -112,7 +112,8 @@ def send_message(token: str,
                  disable_web_page_preview: Optional[bool] = None,
                  disable_notification: Optional[bool] = None,
                  reply_to_message_id: Optional[int] = None,
-                 reply_markup: Optional[ReplyMarkup] = None) -> Message:
+                 reply_markup: Optional[ReplyMarkup] = None,
+                 protect_content: Optional[bool] = None) -> Message:
     """Use this method to send text messages.
 
     On success, the sent Message is returned.
@@ -125,7 +126,8 @@ def send_message(token: str,
             'disable_notification': disable_notification,
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': (reply_markup.unfold()
-                             if reply_markup is not None else None)
+                             if reply_markup is not None else None),
+            'protect_content': protect_content
         }
     return request(
         token,
@@ -139,7 +141,9 @@ def forward_message(token: str,
                     chat_id: Union[int, str],
                     from_chat_id: Union[int, str],
                     message_id: int,
-                    disable_notification: Optional[bool] = None) -> Message:
+                    disable_notification: Optional[bool] = None,
+                    protect_content: Optional[bool] = None
+                    ) -> Message:
     """Use this method to forward messages of any kind.
 
     On success, the sent Message is returned.
@@ -148,7 +152,8 @@ def forward_message(token: str,
         'chat_id': chat_id,
         'from_chat_id': from_chat_id,
         'message_id': message_id,
-        'disable_notification': disable_notification
+        'disable_notification': disable_notification,
+        'protect_content': protect_content
     }
 
     return request(
@@ -166,7 +171,8 @@ def send_photo(token: str,
                parse_mode: Optional[str] = None,
                disable_notification: Optional[bool] = None,
                reply_to_message_id: Optional[int] = None,
-               reply_markup: Optional[ReplyMarkup] = None
+               reply_markup: Optional[ReplyMarkup] = None,
+               protect_content: Optional[bool] = None
                ) -> Message:
     """Use this method to send photos.
 
@@ -179,7 +185,8 @@ def send_photo(token: str,
             'disable_notification': disable_notification,
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': (reply_markup.unfold()
-                             if reply_markup is not None else None)
+                             if reply_markup is not None else None),
+            'protect_content': protect_content
         }
     if not isinstance(photo, str):
         return request(token,
@@ -208,7 +215,8 @@ def send_audio(token: str,
                thumb: Optional[Union[str, IO]] = None,
                disable_notification: Optional[bool] = None,
                reply_to_message_id: Optional[int] = None,
-               reply_markup: Optional[ReplyMarkup] = None
+               reply_markup: Optional[ReplyMarkup] = None,
+               protect_content: Optional[bool] = None
                ) -> Message:
     """Use this method to send audio files.
 
@@ -224,7 +232,8 @@ def send_audio(token: str,
             'title': title,
             'performer': performer,
             'reply_markup': (reply_markup.unfold()
-                             if reply_markup is not None else None)
+                             if reply_markup is not None else None),
+            'protect_content': protect_content
         }
     files = dict()
     if isinstance(audio, str):
@@ -253,7 +262,8 @@ def send_document(token: str,
                   parse_mode: Optional[str] = None,
                   disable_notification: Optional[bool] = None,
                   reply_to_message_id: Optional[int] = None,
-                  reply_markup: Optional[ReplyMarkup] = None
+                  reply_markup: Optional[ReplyMarkup] = None,
+                  protect_content: Optional[bool] = None
                   ) -> Message:
     """Use this method to send general files.
 
@@ -266,7 +276,8 @@ def send_document(token: str,
             'disable_notification': disable_notification,
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': (reply_markup.unfold()
-                             if reply_markup is not None else None)
+                             if reply_markup is not None else None),
+            'protect_content': protect_content
         }
 
     files = dict()
@@ -300,7 +311,8 @@ def send_video(token: str,
                supports_streaming: Optional[bool] = None,
                disable_notification: Optional[bool] = None,
                reply_to_message_id: Optional[int] = None,
-               reply_markup: Optional[ReplyMarkup] = None
+               reply_markup: Optional[ReplyMarkup] = None,
+               protect_content: Optional[bool] = None
                ) -> Message:
     """Use this method to send video files.
 
@@ -318,7 +330,8 @@ def send_video(token: str,
             'disable_notification': disable_notification,
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': (reply_markup.unfold()
-                             if reply_markup is not None else None)
+                             if reply_markup is not None else None),
+            'protect_content': protect_content
         }
 
     files = dict()
@@ -351,7 +364,8 @@ def send_animation(token: str,
                    parse_mode: Optional[str] = None,
                    disable_notification: Optional[bool] = None,
                    reply_to_message_id: Optional[int] = None,
-                   reply_markup: Optional[ReplyMarkup] = None
+                   reply_markup: Optional[ReplyMarkup] = None,
+                   protect_content: Optional[bool] = None
                    ) -> Message:
     """Use this method to send animation files (GIF or video without sound).
 
@@ -366,9 +380,10 @@ def send_animation(token: str,
         'caption': caption,
         'parse_mode': parse_mode,
         'disable_notification': disable_notification,
-        'reply_to_message_id': disable_notification,
+        'reply_to_message_id': reply_to_message_id,
         'reply_markup': (reply_markup.unfold()
-                         if reply_markup is not None else None)
+                         if reply_markup is not None else None),
+        'protect_content': protect_content
     }
 
     files = dict()
@@ -398,7 +413,8 @@ def send_voice(token: str,
                duration: Optional[int] = None,
                disable_notification: Optional[bool] = None,
                reply_to_message_id: Optional[int] = None,
-               reply_markup: Optional[ReplyMarkup] = None
+               reply_markup: Optional[ReplyMarkup] = None,
+               protect_content: Optional[bool] = None
                ) -> Message:
     """Use this method to send audio files to display the file as a voice message.
 
@@ -411,9 +427,10 @@ def send_voice(token: str,
         'caption': caption,
         'parse_mode': parse_mode,
         'disable_notification': disable_notification,
-        'reply_to_message_id': disable_notification,
+        'reply_to_message_id': reply_to_message_id,
         'reply_markup': (reply_markup.unfold()
-                         if reply_markup is not None else None)
+                         if reply_markup is not None else None),
+        'protect_content': protect_content
     }
 
     files = dict()
@@ -439,7 +456,8 @@ def send_video_note(token: str,
                     thumb: Optional[Union[str, IO]] = None,
                     disable_notification: Optional[bool] = None,
                     reply_to_message_id: Optional[int] = None,
-                    reply_markup: Optional[ReplyMarkup] = None
+                    reply_markup: Optional[ReplyMarkup] = None,
+                    protect_content: Optional[bool] = None
                     ) -> Message:
     """Use this method to send rounded square mp4 videos of up to 1 minute long.
 
@@ -451,7 +469,8 @@ def send_video_note(token: str,
             'disable_notification': disable_notification,
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': (reply_markup.unfold()
-                             if reply_markup is not None else None)
+                             if reply_markup is not None else None),
+            'protect_content': protect_content
         }
 
     files = dict()
@@ -481,7 +500,8 @@ def send_location(token: str,
                   live_period: Optional[int] = None,
                   disable_notification: Optional[bool] = None,
                   reply_to_message_id: Optional[int] = None,
-                  reply_markup: Optional[ReplyMarkup] = None
+                  reply_markup: Optional[ReplyMarkup] = None,
+                  protect_content: Optional[bool] = None
                   ) -> Message:
     """Use this method to send point on the map.
 
@@ -495,7 +515,8 @@ def send_location(token: str,
         'live_period': live_period,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': reply_markup.unfold()
+        'reply_markup': reply_markup.unfold(),
+        'protect_content': protect_content
     }
 
     return request(
@@ -582,7 +603,8 @@ def send_venue(token: str,
                foursquare_type: Optional[str] = None,
                disable_notification: Optional[bool] = None,
                reply_to_message_id: Optional[int] = None,
-               reply_markup: Optional[ReplyMarkup] = None
+               reply_markup: Optional[ReplyMarkup] = None,
+               protect_content: Optional[bool] = None
                ) -> Message:
     """Use this method to send information about a venue.
 
@@ -599,7 +621,8 @@ def send_venue(token: str,
         'foursquare_type': foursquare_type,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': reply_markup.unfold()
+        'reply_markup': reply_markup.unfold(),
+        'protect_content': protect_content
     }
 
     return request(
@@ -618,7 +641,8 @@ def send_contact(token: str,
                  vcard: Optional[str] = None,
                  disable_notification: Optional[bool] = None,
                  reply_to_message_id: Optional[int] = None,
-                 reply_markup: Optional[ReplyMarkup] = None
+                 reply_markup: Optional[ReplyMarkup] = None,
+                 protect_content: Optional[bool] = None
                  ) -> Message:
     """Use this method to send phone contacts.
 
@@ -632,7 +656,8 @@ def send_contact(token: str,
         'vcard': vcard,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': reply_markup.unfold()
+        'reply_markup': reply_markup.unfold(),
+        'protect_content': protect_content
     }
 
     return request(
@@ -658,7 +683,8 @@ def send_poll(token: str,
               is_closed: Optional[bool] = None,
               disable_notification: Optional[bool] = None,
               reply_to_message_id: Optional[int] = None,
-              reply_markup: Optional[ReplyMarkup] = None
+              reply_markup: Optional[ReplyMarkup] = None,
+              protect_content: Optional[bool] = None
               ) -> Message:
     """Use this method to send a native poll.
 
@@ -680,7 +706,8 @@ def send_poll(token: str,
         'is_closed': is_closed,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': reply_markup.unfold()
+        'reply_markup': reply_markup.unfold(),
+        'protect_content': protect_content
     }
 
     return request(
@@ -696,7 +723,8 @@ def send_dice(token: str,
               emoji: Optional[str] = None,
               disable_notification: Optional[bool] = None,
               reply_to_message_id: Optional[int] = None,
-              reply_markup: Optional[ReplyMarkup] = None
+              reply_markup: Optional[ReplyMarkup] = None,
+              protect_content: Optional[bool] = None
               ) -> Message:
     """Use this method to send an animated emoji that will display a random value.
 
@@ -708,7 +736,8 @@ def send_dice(token: str,
         'emoji': emoji,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': reply_markup.unfold()
+        'reply_markup': reply_markup.unfold(),
+        'protect_content': protect_content
     }
 
     return request(
@@ -1480,7 +1509,8 @@ def send_media_group(token: str,
                      chat_id: Union[int, str],
                      media: List[InputMedia],
                      disable_notification: Optional[bool] = None,
-                     reply_to_message_id: Optional[bool] = None
+                     reply_to_message_id: Optional[bool] = None,
+                     protect_content: Optional[bool] = None
                      ) -> Message:
     """Use this method to send a group of photos or videos as an album.
     On success, an array of the sent Messages is returned
@@ -1491,7 +1521,8 @@ def send_media_group(token: str,
         'chat_id': chat_id,
         'media': [m.unfold() for m in media],
         'disable_notification': disable_notification,
-        'reply_to_message_id': reply_to_message_id
+        'reply_to_message_id': reply_to_message_id,
+        'protect_content': protect_content
     }
 
     files = dict()

@@ -14,6 +14,7 @@ class User(TelegramStructure):
     can_join_groups = Field()
     can_read_all_group_messages = Field()
     supports_inline_queries = Field()
+    is_premium = Field()
 
     def __init__(self,
                  id: int,
@@ -24,7 +25,9 @@ class User(TelegramStructure):
                  language_code: str = None,
                  can_join_groups: bool = None,
                  can_read_all_group_messages: bool = None,
-                 supports_inline_queries: bool = None):
+                 supports_inline_queries: bool = None,
+                 is_premium: bool = False
+                 ):
         self.id = \
             Field(id, [int])
 
@@ -51,3 +54,6 @@ class User(TelegramStructure):
 
         self.supports_inline_queries = \
             Field(supports_inline_queries, [bool])
+        
+        self.is_premium = \
+            Field(is_premium, [bool])
