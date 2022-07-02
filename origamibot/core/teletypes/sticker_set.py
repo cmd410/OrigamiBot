@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from .sticker import Sticker
 from .photo_size import PhotoSize
 from .base import TelegramStructure, Field, ListField
@@ -19,7 +19,7 @@ class StickerSet(TelegramStructure):
               is_animated: bool,
               is_video: bool,
               contains_masks: bool,
-              stickers: list[Sticker],
+              stickers: List[Sticker],
               thumb: Optional[PhotoSize]
               ):
     self.name = Field(name, [str])
