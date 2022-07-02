@@ -90,10 +90,10 @@ class TelegramStructure:
                 classes.append((cls, cls.fields_names()))
 
             valid_params = {
-                            key: value
-                            for c in classes
-                            for key, value in d.items()
-                            if key in c[1]
+                key: value
+                for c in classes
+                for key, value in d.items()
+                if key in c[1]
             }
 
         if cls != TelegramStructure:

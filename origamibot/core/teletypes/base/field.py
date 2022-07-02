@@ -131,12 +131,12 @@ class ListField(Field):
                         break
                     except TypeError:
                         pass
-                if type(value[i]) == dict:
-                    raise FieldTypeError(
-                        f'''Can\'t map dict {
-                            item} to any stucture in {
-                                self.structures}'''
-                        )
+                if type(item) == dict:
+                    try:
+                        value[i] = struct.from_dict(item, None)
+                    except TypeError as err:
+                        logger.debug(
+                            f'Error in Field, unpacking {struct}:\n\t{err}')
             elif item_type == list:
                 # Convert nested lists
                 value[i] = self.validate_value(item)
