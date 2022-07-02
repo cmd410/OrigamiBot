@@ -1,7 +1,6 @@
 from origamibot.core.teletypes.command_scope import BotCommandScope
 import shlex
 import logging
-from tests import bot, token
 
 from typing import List, Optional, Union, IO, Callable
 from collections import deque
