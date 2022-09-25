@@ -2,7 +2,6 @@ from typing import Optional
 from ._base import TelegramObject
 
 
-
 class User(TelegramObject):
     """This object represents a Telegram user or bot.
     """
@@ -16,4 +15,3 @@ class User(TelegramObject):
     can_join_groups: Optional[bool]
     can_read_all_group_messages: Optional[bool]
     supports_inline_queries: Optional[bool]
-    

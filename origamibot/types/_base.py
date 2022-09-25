@@ -8,7 +8,7 @@ class TelegramObject(BaseModel, MutableMapping[str, Any]):
     """
     class Config:
         extra = 'allow'
-    
+
     def __getitem__(self, key: str):
         if key in self.__fields_set__:
             return getattr(self, key)

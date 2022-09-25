@@ -10,18 +10,18 @@ from ..types import Update, WebhookInfo
 class UpdateAPI(APIBase):
     """An API for handling updates and setting webhooks
     """
-    
+
     def __init__(self, token: str, **params) -> None:
         super().__init__(token, **params)
-        
+
         self.__offset: Optional[int] = 0
 
         self.__limit: Optional[int] = \
             params.get('update_limit', None)
-        
+
         self.__timeout: Optional[int] = \
             params.get('update_timeout', None)
-        
+
         self.__allowed_updates: Optional[List[UpdateTypeStr]] = \
             params.get('allowed_updates', None)
 
@@ -32,9 +32,9 @@ class UpdateAPI(APIBase):
                           allowed_updates: Optional[List[UpdateTypeStr]] = None
                           ) -> AsyncGenerator[Update]:
         """Get incoming updates from the server.
-        
+
         Returns list of Update objects.
-        
+
         :param offset: Identifier of the first update to be returned.
             Must be greater by one than the highest among the identifiers
             of previously received updates.
@@ -47,21 +47,21 @@ class UpdateAPI(APIBase):
             types you want your bot to receive.
         """
         data = dict(
-            offset = offset or self.__offset,
-            limit = limit or self.__limit,
-            timeout = timeout or self.__timeout,
-            allowed_updates = allowed_updates or self.__allowed_updates
+            offset=offset or self.__offset,
+            limit=limit or self.__limit,
+            timeout=timeout or self.__timeout,
+            allowed_updates=allowed_updates or self.__allowed_updates
         )
-        
+
         response = await self._send_request('getUpdates', data=data)
         assert isinstance(response, dict)
-        
+
         result = self._extract_request_result(response)
         assert isinstance(result, list)
-        
+
         for i in result:
             yield Update(**i)
-    
+
     async def set_webhook(self,
                           url: URLTypes,
                           certificate: Optional[Union[IOBase, str]] = None,
@@ -72,11 +72,11 @@ class UpdateAPI(APIBase):
                           ) -> Literal[True]:
         """Use this method to specify a url and receive incoming
         updates via an outgoing webhook.
-        
+
         Whenever there is an update
         for the bot, we will send an HTTPS POST request to the specified
         url, containing a JSON-serialized Update.
- 
+
         :param url: HTTPS url to send updates to. Use an empty string to
             remove webhook integration
         :param certificate: Upload your public key certificate so that
@@ -92,11 +92,11 @@ class UpdateAPI(APIBase):
         :param drop_pending_updates: Pass True to drop all pending updates
         """
         data = dict(
-            url = url,
-            ip_address = ip_address,
-            max_connections = max_connections,
-            allowed_updates = allowed_updates,
-            drop_pending_updates = drop_pending_updates
+            url=url,
+            ip_address=ip_address,
+            max_connections=max_connections,
+            allowed_updates=allowed_updates,
+            drop_pending_updates=drop_pending_updates
         )
 
         if isinstance(certificate, IOBase):
@@ -110,16 +110,16 @@ class UpdateAPI(APIBase):
                 'setWebhook',
                 data=data,
                 files=files
-                )
             )
-    
+        )
+
     async def delete_webhook(self,
                              drop_pending_updates: Optional[bool] = None
                              ) -> Literal[True]:
         """Use this method to remove webhook integration.
-        
+
         Returns True on success.
-        
+
         :param drop_pending_updates: Pass True to drop all pending updates
         """
         return self._extract_request_result(
@@ -131,11 +131,11 @@ class UpdateAPI(APIBase):
 
     async def get_webhook_info(self) -> WebhookInfo:
         """Use this method to get current webhook status.
-        
+
         Requires no parameters.
-        
+
         On success, returns a WebhookInfo object.
-        
+
         If the bot is using getUpdates, will return
         an object with the url field empty.
         """
@@ -144,4 +144,3 @@ class UpdateAPI(APIBase):
                 await self._send_request('getWebhookInfo')
             )
         )
-    

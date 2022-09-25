@@ -11,7 +11,8 @@ load_dotenv()
 def webhook():
     wh = getenv('TEST_WEBHOOK')
     if not wh:
-        pytest.skip('test webhook required for this test, yet no found in ENV (TEST_WEBHOOK)')
+        pytest.skip(
+            'test webhook required for this test, yet no found in ENV (TEST_WEBHOOK)')
     return wh
 
 
@@ -19,7 +20,8 @@ def webhook():
 def token():
     t = getenv('TEST_BOT_TOKEN', None)
     if not t:
-        pytest.skip('Token required for this test, yet no token found in ENV (TEST_BOT_TOKEN)')
+        pytest.skip(
+            'Token required for this test, yet no token found in ENV (TEST_BOT_TOKEN)')
     return t
 
 
@@ -27,7 +29,8 @@ def token():
 def private_cid():
     cid = getenv('TEST_PRIVATE_CID', None)
     if not cid:
-        pytest.skip('Private chat id required for this test, yet no found in ENV (TEST_PRIVATE_CID)')
+        pytest.skip(
+            'Private chat id required for this test, yet no found in ENV (TEST_PRIVATE_CID)')
     return cid
 
 
@@ -36,9 +39,10 @@ def image_file():
     path = Path(__file__).parent / '../imgs/logo.png'
     return open(path, 'rb')
 
+
 @pytest.fixture
 def audio_file():
-  path = getenv('TEST_AUDIO_FILE', None)
-  if not path:
-    pytest.skip("No audio file to send")
-  return open(path, 'rb')
+    path = getenv('TEST_AUDIO_FILE', None)
+    if not path:
+        pytest.skip("No audio file to send")
+    return open(path, 'rb')

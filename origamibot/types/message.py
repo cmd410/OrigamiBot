@@ -1,3 +1,4 @@
+from .chat import Chat
 from typing import List, Literal, Optional
 
 from pydantic.fields import Field
@@ -10,14 +11,14 @@ from .reply_markup import InlineKeyboardMarkup
 class Message(TelegramObject):
     """This object represents a message.
     """
-    
+
     message_id: int
     date: int
     chat: 'Chat'
-    
+
     from_user: Optional[User] = Field(alias='from')
     sender_chat: Optional['Chat']
-    
+
     forward_from: Optional[User]
     forward_from_chat: Optional['Chat']
     forward_from_message_id: Optional[int]
@@ -32,7 +33,7 @@ class Message(TelegramObject):
     author_signature: Optional[str]
     text: Optional[str]
     entities: Optional[List[dict]]
-    
+
     animation: Optional[dict]
     audio: Optional[dict]
     document: Optional[dict]
@@ -41,50 +42,48 @@ class Message(TelegramObject):
     video: Optional[dict]
     video_note: Optional[dict]
     voice: Optional[dict]
-    
+
     caption: Optional[str]
     caption_entities: Optional[List[dict]]
-    
+
     contact: Optional[dict]
     dice: Optional[dict]
     game: Optional[dict]
     poll: Optional[dict]
     venue: Optional[dict]
     location: Optional[dict]
-    
+
     new_chat_members: Optional[List[User]]
     left_chat_member: Optional[User]
-    
+
     new_chat_title: Optional[str]
     new_chat_photo: Optional[List[dict]]
     delete_chat_photo: Optional[Literal[True]]
     group_chat_created: Optional[Literal[True]]
     supergroup_chat_created: Optional[Literal[True]]
     channel_chat_created: Optional[Literal[True]]
-    
+
     message_auto_delete_timer_changed: Optional[dict]
-    
+
     migrate_to_chat_id: Optional[int]
     migrate_from_chat_id: Optional[int]
-    
+
     pinned_message: Optional['Message']
-    
+
     invoice: Optional[dict]
     successful_payment: Optional[dict]
-    
+
     connected_website: Optional[dict]
-    
+
     passport_data: Optional[dict]
     proximity_alert_triggered: Optional[dict]
-    
+
     voice_chat_scheduled: Optional[dict]
     voice_chat_started: Optional[dict]
     voice_chat_ended: Optional[dict]
     voice_chat_participants_invited: Optional[dict]
-    
+
     reply_markup: Optional[InlineKeyboardMarkup]
 
-
-from .chat import Chat
 
 Message.update_forward_refs()

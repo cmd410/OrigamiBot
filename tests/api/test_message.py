@@ -45,7 +45,7 @@ async def test_send_photo(api: MessageAPI, private_cid, image_file):
     )
     assert isinstance(m, Message)
     sent_messages.append(m)
-    
+
 
 @pytest.mark.asyncio
 @pytest.mark.order(after='test_update_message_text')
@@ -76,6 +76,7 @@ async def test_copy_message(api: MessageAPI):
     new_msg_id = await api.copy_message(m.chat.id, m.chat.id, m.message_id)
     assert isinstance(new_msg_id, MessageId)
 
+
 @pytest.mark.asyncio
 async def test_send_audio(api: MessageAPI, private_cid, audio_file):
     m = await api.send_audio(
@@ -85,6 +86,7 @@ async def test_send_audio(api: MessageAPI, private_cid, audio_file):
     )
     assert isinstance(m, Message)
     sent_messages.append(m)
+
 
 @pytest.mark.asyncio
 @pytest.mark.order('last')

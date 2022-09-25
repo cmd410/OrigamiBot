@@ -7,11 +7,11 @@ from ..types import User
 class APIBase:
     """Base class for all API classes
     """
-    
+
     def __init__(self, token: str, **params) -> None:
         host = params.get('host', 'https://api.telegram.org')
         proxies = params.get('proxies', None)
-        
+
         self._client = TelegramClient(
             host=host,
             proxies=proxies
@@ -39,7 +39,7 @@ class APIBase:
 
     async def get_me(self) -> User:
         """A simple method for testing your bot's auth token.
-        
+
         Requires no parameters.
         Returns basic information about the bot in
         form of a User object.
@@ -47,6 +47,5 @@ class APIBase:
         return User.construct(
             **self._extract_request_result(
                 await self._send_request('getMe')
-                )
             )
-    
+        )

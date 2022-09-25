@@ -6,7 +6,6 @@ from ._hints import URLTypes, UpdateTypeStr
 from .api import UpdateAPI, MessageAPI
 
 
-
 class Bot(UpdateAPI, MessageAPI):
     def __init__(self,
                  token: str,

@@ -16,7 +16,7 @@ class KeyboardButtonPollType(TelegramObject):
 
 class KeyboardButton(TelegramObject):
     """This object represents one button of the reply keyboard.
-    
+
     For simple text buttons String can be used instead of this
     object to specify text of the button.
     Optional fields request_contact, request_location,
@@ -31,7 +31,7 @@ class KeyboardButton(TelegramObject):
 class ReplyKeyboardMarkup(TelegramObject):
     """This object represents a custom keyboard with reply options
     """
-    
+
     keyboard: List[List[KeyboardButton]]
     resize_keyboard: Optional[bool]
     one_time_keyboard: Optional[bool]
@@ -44,7 +44,7 @@ class ReplyKeyboardRemove(TelegramObject):
     Telegram clients will remove the current custom
     keyboard and display the default letter-keyboard.
     """
-    
+
     remove_keyboard: Literal[True] = True
     selective: Optional[bool]
 
@@ -59,7 +59,7 @@ class LoginUrl(TelegramObject):
     the inline keyboard button used to automatically
     authorize a user. 
     """
-    
+
     url: str
     forward_text: Optional[str]
     bot_username: Optional[str]
@@ -71,7 +71,7 @@ class InlineKeyboardButton(TelegramObject):
     an inline keyboard. You must use exactly
     one of the optional fields.
     """
-    
+
     text: str
     url: Optional[str]
     login_url: Optional[LoginUrl]
@@ -86,7 +86,7 @@ class InlineKeyboardMarkup(TelegramObject):
     """This object represents an inline keyboard
     that appears right next to the message it belongs to.
     """
-    
+
     inline_keyboard: List[List[InlineKeyboardButton]]
 
 
@@ -99,7 +99,7 @@ class ForceReply(TelegramObject):
     create user-friendly step-by-step interfaces
     without having to sacrifice privacy mode.
     """
-    
+
     force_reply: Literal[True] = True
     input_field_placeholder: Optional[str]
     selective: Optional[bool]

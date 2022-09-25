@@ -1,3 +1,10 @@
+from .types import (
+    KeyboardButton,
+    InlineKeyboardMarkup,
+    ReplyKeyboardMarkup,
+    ReplyKeyboardRemove,
+    ForceReply,
+)
 from typing import Dict, List, Literal, Union
 
 from yarl import URL
@@ -17,14 +24,6 @@ UpdateTypeStr = Literal[
     "my_chat_member",
     "chat_member"
 ]
-
-from .types import (
-    KeyboardButton,
-    InlineKeyboardMarkup,
-    ReplyKeyboardMarkup,
-    ReplyKeyboardRemove,
-    ForceReply,
-)
 
 
 ChatID = Union[str, int]

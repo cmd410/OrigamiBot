@@ -290,7 +290,7 @@ class MessageAPI(APIBase):
         """
 
         return MessageId(
-                **self._extract_request_result(
+            **self._extract_request_result(
                 await self._send_request(
                     'copyMessage',
                     data={
@@ -382,16 +382,16 @@ class MessageAPI(APIBase):
         )
 
     async def send_audio(self,
-                       chat_id: ChatID,
-                       audio: Union[IOBase, str],
-                       caption: Optional[str] = None,
-                       parse_mode: Optional[ParseMode] = None,
-                       caption_entities: Optional[List[dict]] = None,
-                       duration: Optional[int] = None,
-                       performer: Optional[str] = None,
-                       title: Optional[str] = None,
-                       thumb: Union[IOBase, str, None] = None
-                       ) -> Message:
+                         chat_id: ChatID,
+                         audio: Union[IOBase, str],
+                         caption: Optional[str] = None,
+                         parse_mode: Optional[ParseMode] = None,
+                         caption_entities: Optional[List[dict]] = None,
+                         duration: Optional[int] = None,
+                         performer: Optional[str] = None,
+                         title: Optional[str] = None,
+                         thumb: Union[IOBase, str, None] = None
+                         ) -> Message:
         data = {
             "chat_id": chat_id,
             "caption": caption,
@@ -408,13 +408,13 @@ class MessageAPI(APIBase):
         else:
             data['audio'] = audio
             files = None
-  
+
         return Message(
-                **self._extract_request_result(
-                    await self._send_request(
-                        'sendAudio',
-                        data=data,
-                        files=files
-                    )
+            **self._extract_request_result(
+                await self._send_request(
+                    'sendAudio',
+                    data=data,
+                    files=files
                 )
             )
+        )

@@ -20,16 +20,15 @@ async def test_update_api(api: UpdateAPI):
         assert isinstance(upd, Update)
 
 
-
 @pytest.mark.asyncio
 async def test_webhooks(api: UpdateAPI, webhook: str):
     whi = await api.get_webhook_info()
     if whi.url:
         assert await api.delete_webhook()
-    
+
     assert await api.set_webhook(url=webhook)
-    
+
     whi = await api.get_webhook_info()
-    
+
     assert whi.url == webhook
     assert await api.delete_webhook()

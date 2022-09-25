@@ -8,7 +8,7 @@ class WebhookInfo(TelegramObject):
     """Contains information about the
     current status of a webhook.
     """
-    
+
     url: str
     has_custom_certificate: bool
     pending_update_count: int
