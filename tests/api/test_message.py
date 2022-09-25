@@ -4,7 +4,7 @@ import pytest
 from origamibot.api.message_api import MessageAPI
 from origamibot.types import Message, Chat, MessageId
 
-from .. import token, private_cid, image_file
+from .. import token, private_cid, image_file, audio_file
 
 
 sent_messages: List[Message] = []
@@ -76,6 +76,15 @@ async def test_copy_message(api: MessageAPI):
     new_msg_id = await api.copy_message(m.chat.id, m.chat.id, m.message_id)
     assert isinstance(new_msg_id, MessageId)
 
+@pytest.mark.asyncio
+async def test_send_audio(api: MessageAPI, private_cid, audio_file):
+    m = await api.send_audio(
+        chat_id=private_cid,
+        audio=audio_file,
+        caption='Test audio from MessageAPI'
+    )
+    assert isinstance(m, Message)
+    sent_messages.append(m)
 
 @pytest.mark.asyncio
 @pytest.mark.order('last')

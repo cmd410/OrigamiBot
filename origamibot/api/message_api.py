@@ -16,17 +16,19 @@ class MessageAPI(APIBase):
                            chat_id: ChatID,
                            text: str,
                            parse_mode: Optional[ParseMode] = None,
-                           entities: Optional[List[dict]] = None,  # TODO message entities
+                           # TODO message entities
+                           entities: Optional[List[dict]] = None,
                            disable_web_page_preview: Optional[bool] = None,
                            disable_notification: Optional[bool] = None,
                            reply_to_message_id: Optional[int] = None,
                            allow_sending_without_reply: Optional[bool] = None,
-                           reply_markup: Optional[ReplyMarkup] = None  # TODO reply markup
+                           # TODO reply markup
+                           reply_markup: Optional[ReplyMarkup] = None
                            ) -> Message:
         """Use this method to send text messages.
-        
+
         On success, the sent Message is returned.
-        
+
         :param chat_id: Unique identifier for the
             target chat or username of the target channel
             (in the format @channelusername)
@@ -47,7 +49,7 @@ class MessageAPI(APIBase):
             object for an inline keyboard, custom reply keyboard, instructions
             to remove reply keyboard or to force a reply from the user.
         """
-        
+
         return Message(
             **self._extract_request_result(
                 await self._send_request(
@@ -66,7 +68,7 @@ class MessageAPI(APIBase):
                 )
             )
         )
-    
+
     async def delete_message(self,
                              chat_id: ChatID,
                              message_id: int
@@ -74,7 +76,7 @@ class MessageAPI(APIBase):
         """Use this method to delete a message,
         including service messages, with the
         following limitations:
-        
+
         * A message can only be deleted if it
             was sent less than 48 hours ago.
         * A dice message in a private chat can
@@ -93,7 +95,7 @@ class MessageAPI(APIBase):
             it can delete any message there.
 
         Returns True on success.
-        
+
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format ``@channelusername``)
         :param message_id: Identifier of the message to delete
         """
@@ -118,11 +120,11 @@ class MessageAPI(APIBase):
                                 reply_markup: Optional[ReplyMarkup] = None
                                 ) -> Union[Message, Literal[True]]:
         """Use this method to edit text and game messages.
-        
+
         On success, if the edited message is not
         an inline message, the edited Message is returned,
         otherwise True is returned.
-        
+
         :param chat_id: Required if inline_message_id is
             not specified. Unique identifier for the target
             chat or username of the target channel(in the
@@ -156,7 +158,7 @@ class MessageAPI(APIBase):
                 }
             )
         )
-        
+
         if responce == True:
             return True
         else:
@@ -172,7 +174,7 @@ class MessageAPI(APIBase):
                                    reply_markup: Optional[ReplyMarkup] = None
                                    ) -> Union[Message, Literal[True]]:
         """Use this method to edit captions of messages.
-        
+
         On success, if the edited message is not an inline
         message, the edited Message is returned,
         otherwise True is returned.
@@ -192,7 +194,7 @@ class MessageAPI(APIBase):
                 }
             )
         )
-        
+
         if response == True:
             return True
         else:
@@ -205,11 +207,11 @@ class MessageAPI(APIBase):
                               disable_notification: Optional[bool] = None
                               ) -> Message:
         """Use this method to forward messages of any kind.
-        
+
         Service messages can't be forwarded.
-        
+
         On success, the sent Message is returned.
-        
+
         :param chat_id: Unique identifier for the target
             chat or username of the target channel
             (in the format @channelusername)
@@ -221,7 +223,7 @@ class MessageAPI(APIBase):
         :param disable_notification: Sends the message silently.
             Users will receive a notification with no sound.
         """
-        
+
         return Message(
             **self._extract_request_result(
                 await self._send_request(
@@ -249,15 +251,15 @@ class MessageAPI(APIBase):
                            reply_markup: Optional[ReplyMarkup] = None
                            ) -> MessageId:
         """Use this method to copy messages of any kind.
-        
+
         Service messages and invoice messages can't be copied.
-        
+
         The method is analogous to the method forward_message,
         but the copied message doesn't have a link to the
         original message.
-        
+
         Returns the MessageId of the sent message on success.
-        
+
         :param chat_id: Unique identifier for the target chat
             or username of the target channel (in the format
             @channelusername)
@@ -319,9 +321,9 @@ class MessageAPI(APIBase):
                          reply_markup: Optional[ReplyMarkup] = None
                          ) -> Message:
         """Use this method to send photos.
-        
+
         On success, the sent Message is returned.
-        
+
         :param chat_id: Unique identifier for the target
             chat or username of the target channel (in the
             format @channelusername)
@@ -351,7 +353,7 @@ class MessageAPI(APIBase):
             custom reply keyboard, instructions to remove reply
             keyboard or to force a reply from the user.
         """
-        
+
         data = {
             'chat_id': chat_id,
             'caption': caption,
@@ -362,7 +364,7 @@ class MessageAPI(APIBase):
             'allow_sending_without_reply': allow_sending_without_reply,
             'reply_markup': reply_markup,
         }
-        
+
         if isinstance(photo, IOBase):
             files = {'photo': photo}
         else:
@@ -378,3 +380,41 @@ class MessageAPI(APIBase):
                 )
             )
         )
+
+    async def send_audio(self,
+                       chat_id: ChatID,
+                       audio: Union[IOBase, str],
+                       caption: Optional[str] = None,
+                       parse_mode: Optional[ParseMode] = None,
+                       caption_entities: Optional[List[dict]] = None,
+                       duration: Optional[int] = None,
+                       performer: Optional[str] = None,
+                       title: Optional[str] = None,
+                       thumb: Union[IOBase, str, None] = None
+                       ) -> Message:
+        data = {
+            "chat_id": chat_id,
+            "caption": caption,
+            "parse_mode": parse_mode,
+            "caption_entities": caption_entities,
+            "duration": duration,
+            "performer": performer,
+            "title": title,
+            "thumb": thumb,
+        }
+
+        if isinstance(audio, IOBase):
+            files = {'audio': audio}
+        else:
+            data['audio'] = audio
+            files = None
+  
+        return Message(
+                **self._extract_request_result(
+                    await self._send_request(
+                        'sendAudio',
+                        data=data,
+                        files=files
+                    )
+                )
+            )

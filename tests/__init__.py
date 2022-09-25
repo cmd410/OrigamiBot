@@ -35,3 +35,10 @@ def private_cid():
 def image_file():
     path = Path(__file__).parent / '../imgs/logo.png'
     return open(path, 'rb')
+
+@pytest.fixture
+def audio_file():
+  path = getenv('TEST_AUDIO_FILE', None)
+  if not path:
+    pytest.skip("No audio file to send")
+  return open(path, 'rb')
