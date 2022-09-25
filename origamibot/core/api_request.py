@@ -1,7 +1,7 @@
 import requests
 import json
 
-from typing import List, Union, Optional, IO
+from typing import List, Union, Optional, IO, Literal
 
 from .exceptions import TelegramAPIError
 from .teletypes import (
@@ -24,6 +24,28 @@ from .teletypes import (
 
 from .teletypes.inline_query_result import InlineQueryResult
 
+try:
+  from telegram_text.bases import Element
+  
+  def convert_elements_to_str(data: dict):
+    """Convert telegram-text elements to jsonable text string
+    and add appropriate parse_mode parameter if not present.
+    """
+    parse_mode = data.get("parse_mode", "HTML")
+    for text_key in ("text", "caption"):
+      text = data.get(text_key)
+      if isinstance(text, Element):
+        data["parse_mode"] = parse_mode
+        if parse_mode == "HTML":
+          data[text_key] = text.to_html()
+        elif parse_mode in {"MarkdownV2", "Markdown"}:
+          data[text_key] = text.to_markdown()
+        break
+
+except ImportError:
+  class Element: ...  # fallback for type hints
+  def convert_elements_to_str(_): pass  # noop if telegram-text is not present
+
 
 api_url = 'https://api.telegram.org/bot{token}/{method}'
 
@@ -45,6 +67,8 @@ def request(token,
         for key, value in data.items()
         if value is not None
     }
+  
+    convert_elements_to_str(data)
 
     files = {
         key: value
@@ -107,8 +131,8 @@ def get_me(token: str) -> User:
 
 def send_message(token: str,
                  chat_id: Union[int, str],
-                 text: str,
-                 parse_mode: Optional[str] = None,
+                 text: Union[str, Element],
+                 parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                  disable_web_page_preview: Optional[bool] = None,
                  disable_notification: Optional[bool] = None,
                  reply_to_message_id: Optional[int] = None,
@@ -167,8 +191,8 @@ def forward_message(token: str,
 def send_photo(token: str,
                chat_id: Union[int, str],
                photo: Union[str, IO],
-               caption: Optional[str] = None,
-               parse_mode: Optional[str] = None,
+               caption: Union[str, Element, None] = None,
+               parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                disable_notification: Optional[bool] = None,
                reply_to_message_id: Optional[int] = None,
                reply_markup: Optional[ReplyMarkup] = None,
@@ -207,8 +231,8 @@ def send_photo(token: str,
 def send_audio(token: str,
                chat_id: Union[int, str],
                audio: Union[str, IO],
-               caption: Optional[str] = None,
-               parse_mode: Optional[str] = None,
+               caption: Union[str, Element, None] = None,
+               parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                duration: Optional[int] = None,
                performer: Optional[str] = None,
                title: Optional[str] = None,
@@ -258,8 +282,8 @@ def send_document(token: str,
                   chat_id: Union[int, str],
                   document: Union[str, IO],
                   thumb: Optional[Union[str, IO]] = None,
-                  caption: Optional[str] = None,
-                  parse_mode: Optional[str] = None,
+                  caption: Union[str, Element, None] = None,
+                  parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                   disable_notification: Optional[bool] = None,
                   reply_to_message_id: Optional[int] = None,
                   reply_markup: Optional[ReplyMarkup] = None,
@@ -306,8 +330,8 @@ def send_video(token: str,
                width: Optional[int] = None,
                height: Optional[int] = None,
                thumb: Optional[Union[str, IO]] = None,
-               caption: Optional[str] = None,
-               parse_mode: Optional[str] = None,
+               caption: Union[str, Element, None] = None,
+               parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                supports_streaming: Optional[bool] = None,
                disable_notification: Optional[bool] = None,
                reply_to_message_id: Optional[int] = None,
@@ -361,7 +385,7 @@ def send_animation(token: str,
                    height: Optional[int] = None,
                    thumb: Optional[Union[str, IO]] = None,
                    caption: Optional[Union[str, IO]] = None,
-                   parse_mode: Optional[str] = None,
+                   parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                    disable_notification: Optional[bool] = None,
                    reply_to_message_id: Optional[int] = None,
                    reply_markup: Optional[ReplyMarkup] = None,
@@ -408,8 +432,8 @@ def send_animation(token: str,
 def send_voice(token: str,
                chat_id: Union[int, str],
                voice: Union[str, IO],
-               caption: Optional[str] = None,
-               parse_mode: Optional[str] = None,
+               caption: Union[str, Element, None] = None,
+               parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                duration: Optional[int] = None,
                disable_notification: Optional[bool] = None,
                reply_to_message_id: Optional[int] = None,
@@ -677,7 +701,7 @@ def send_poll(token: str,
               allows_multiple_answers: Optional[bool] = None,
               correct_option_id: Optional[int] = None,
               explanation: Optional[str] = None,
-              explanation_parse_mode: Optional[str] = None,
+              explanation_parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
               open_period: Optional[int] = None,
               close_date: Optional[int] = None,
               is_closed: Optional[bool] = None,
@@ -1351,10 +1375,10 @@ def get_webhook_info(token: str) -> WebhookInfo:
 
 def edit_message_text(token: str,
                       chat_id: Union[int, str],
-                      text: str,
+                      text: Union[str, Element],
                       message_id: Optional[int] = None,
                       inline_message_id: Optional[str] = None,
-                      parse_mode: Optional[str] = None,
+                      parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                       disable_web_page_preview: Optional[bool] = None,
                       reply_markup: Optional[InlineKeyboardMarkup] = None
                       ) -> Union[Message, bool]:
@@ -1384,10 +1408,10 @@ def edit_message_text(token: str,
 
 def edit_message_caption(token: str,
                          chat_id: Union[int, str],
-                         caption: Optional[str] = None,
+                         caption: Union[str, Element, None] = None,
                          message_id: Optional[int] = None,
                          inline_message_id: Optional[str] = None,
-                         parse_mode: Optional[str] = None,
+                         parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                          reply_markup: Optional[InlineKeyboardMarkup] = None
                          ) -> Union[Message, bool]:
     """Use this method to edit captions of messages.

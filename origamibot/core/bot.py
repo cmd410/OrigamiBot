@@ -2,7 +2,7 @@ from origamibot.core.teletypes.command_scope import BotCommandScope
 import shlex
 import logging
 
-from typing import List, Optional, Union, IO, Callable
+from typing import List, Optional, Union, IO, Callable, Literal
 from collections import deque
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from threading import current_thread, Event
@@ -90,6 +90,11 @@ from .api_request import (
     )
 
 from ..listener import Listener
+
+try:
+  from telegram_text.bases import Element
+except ImportError:
+  class Element: ...  # fallback for type hints
 
 
 using_greenlets = False
@@ -323,8 +328,8 @@ class OrigamiBot:
 
     def send_message(self,
                      chat_id: Union[int, str],
-                     text: str,
-                     parse_mode: Optional[str] = None,
+                     text: Union[str, Element],
+                     parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                      disable_web_page_preview: Optional[bool] = None,
                      disable_notification: Optional[bool] = None,
                      reply_to_message_id: Optional[int] = None,
@@ -347,8 +352,8 @@ class OrigamiBot:
 
     def reply_to(self, 
                  msg: Message,
-                 text: str, 
-                 parse_mode: Optional[str] = None,
+                 text: Union[str, Element], 
+                 parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                  disable_web_page_preview: Optional[bool] = None,
                  disable_notification: Optional[bool] = None,
                  reply_markup: Optional[ReplyMarkup] = None,
@@ -389,8 +394,8 @@ class OrigamiBot:
     def send_photo(self,
                    chat_id: Union[int, str],
                    photo: Union[str, IO],
-                   caption: Optional[str] = None,
-                   parse_mode: Optional[str] = None,
+                   caption: Union[str, Element, None] = None,
+                   parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                    disable_notification: Optional[bool] = None,
                    reply_to_message_id: Optional[int] = None,
                    reply_markup: Optional[ReplyMarkup] = None,
@@ -415,8 +420,8 @@ class OrigamiBot:
     def send_audio(self,
                    chat_id: Union[int, str],
                    audio: Union[str, IO],
-                   caption: Optional[str] = None,
-                   parse_mode: Optional[str] = None,
+                   caption: Union[str, Element, None] = None,
+                   parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                    duration: Optional[int] = None,
                    performer: Optional[str] = None,
                    title: Optional[str] = None,
@@ -451,8 +456,8 @@ class OrigamiBot:
                       chat_id: Union[int, str],
                       document: Union[str, IO],
                       thumb: Optional[Union[str, IO]] = None,
-                      caption: Optional[str] = None,
-                      parse_mode: Optional[str] = None,
+                      caption: Union[str, Element, None] = None,
+                      parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                       disable_notification: Optional[bool] = None,
                       reply_to_message_id: Optional[int] = None,
                       reply_markup: Optional[ReplyMarkup] = None,
@@ -482,8 +487,8 @@ class OrigamiBot:
                    width: Optional[int] = None,
                    height: Optional[int] = None,
                    thumb: Optional[Union[str, IO]] = None,
-                   caption: Optional[str] = None,
-                   parse_mode: Optional[str] = None,
+                   caption: Union[str, Element, None] = None,
+                   parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                    supports_streaming: Optional[bool] = None,
                    disable_notification: Optional[bool] = None,
                    reply_to_message_id: Optional[int] = None,
@@ -521,7 +526,7 @@ class OrigamiBot:
                        height: Optional[int] = None,
                        thumb: Optional[Union[str, IO]] = None,
                        caption: Optional[Union[str, IO]] = None,
-                       parse_mode: Optional[str] = None,
+                       parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                        disable_notification: Optional[bool] = None,
                        reply_to_message_id: Optional[int] = None,
                        reply_markup: Optional[ReplyMarkup] = None,
@@ -550,8 +555,8 @@ class OrigamiBot:
     def send_voice(self,
                    chat_id: Union[int, str],
                    voice: Union[str, IO],
-                   caption: Optional[str] = None,
-                   parse_mode: Optional[str] = None,
+                   caption: Union[str, Element, None] = None,
+                   parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                    duration: Optional[int] = None,
                    disable_notification: Optional[bool] = None,
                    reply_to_message_id: Optional[int] = None,
@@ -750,7 +755,7 @@ class OrigamiBot:
                   allows_multiple_answers: Optional[bool] = None,
                   correct_option_id: Optional[int] = None,
                   explanation: Optional[str] = None,
-                  explanation_parse_mode: Optional[str] = None,
+                  explanation_parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                   open_period: Optional[int] = None,
                   close_date: Optional[int] = None,
                   is_closed: Optional[bool] = None,
@@ -1286,10 +1291,10 @@ class OrigamiBot:
 
     def edit_message_text(self,
                           chat_id: Union[int, str],
-                          text: str,
+                          text: Union[str, Element],
                           message_id: Optional[int] = None,
                           inline_message_id: Optional[str] = None,
-                          parse_mode: Optional[str] = None,
+                          parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                           disable_web_page_preview: Optional[bool] = None,
                           reply_markup: Optional[InlineKeyboardMarkup] = None
                           ) -> Union[Message, bool]:
@@ -1312,10 +1317,10 @@ class OrigamiBot:
 
     def edit_message_caption(self,
                              chat_id: Union[int, str],
-                             caption: Optional[str] = None,
+                             caption: Union[str, Element, None] = None,
                              message_id: Optional[int] = None,
                              inline_message_id: Optional[str] = None,
-                             parse_mode: Optional[str] = None,
+                             parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                              reply_markup: Optional[
                                  InlineKeyboardMarkup] = None
                              ) -> Union[Message, bool]:
