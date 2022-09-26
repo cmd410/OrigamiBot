@@ -440,3 +440,79 @@ class MessageAPI(APIBase):
                 )
             )
         )
+
+    async def send_document(self,
+                            chat_id: ChatID,
+                            document: Union[IOBase, str],
+                            thumb: Union[IOBase, str, None] = None,
+                            caption: Optional[str] = None,
+                            parse_mode: Optional[ParseMode] = None,
+                            caption_entities: Optional[List[dict]] = None,
+                            disable_content_type_detection: Optional[bool] = None,
+                            disable_notification: Optional[bool] = None,
+                            protect_content: Optional[bool] = None,
+                            reply_to_message_id: Optional[int] = None,
+                            allow_sending_without_reply: Optional[bool] = None,
+                            reply_markup: Optional[ReplyMarkup] = None
+                            ) -> Message:
+        """Use this method to send general files. On success, the sent Message is returned.
+        Bots can currently send files of any type of up to 50 MB in size, this limit may be
+        changed in the future.
+
+        :param chat_id: Unique identifier for the target chat
+            or username of the target channel (in the format @channelusername)
+        :param document: File to send. Pass a file_id as String to send a file
+            that exists on the Telegram servers (recommended), pass an HTTP URL
+            as a String for Telegram to get a file from the Internet, or upload
+            a new one using multipart/form-data.
+        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail
+            generation for the file is supported server-side. The thumbnail
+            should be in JPEG format and less than 200 kB in size. A thumbnail's
+            width and height should not exceed 320. 
+        :param caption: Document caption (may also be used when resending
+            documents by file_id), 0-1024 characters after entities parsing
+        :param parse_mode: Mode for parsing entities in the document caption.
+        :param caption_entities: A JSON-serialized list of special entities
+            that appear in the caption, which can be specified instead of parse_mode
+        :param disable_content_type_detection: Disables automatic server-side content
+            type detection for files uploaded using multipart/form-data
+        :param disable_notification: Sends the message silently. Users will receive
+            a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from
+            forwarding and saving
+        :param reply_to_message_id: If the message is a reply, ID of the original message
+        :param allow_sending_without_reply: Pass True if the message should be sent even
+            if the specified replied-to message is not found
+        :param reply_markup: Additional interface options. A JSON-serialized object for
+            an inline keyboard, custom reply keyboard, instructions to remove reply keyboard
+            or to force a reply from the user.
+        """
+        data = {
+            "chat_id": chat_id,
+            "caption": caption,
+            "parse_mode": parse_mode,
+            "caption_entities": caption_entities,
+            "thumb": thumb,
+            "disable_content_type_detection": disable_content_type_detection,
+            "disable_notification": disable_notification,
+            "protect_content": protect_content,
+            "reply_to_message_id": reply_to_message_id,
+            "allow_sending_without_reply": allow_sending_without_reply,
+            "reply_markup": reply_markup,
+        }
+
+        if isinstance(document, IOBase):
+            files = {'document': document}
+        else:
+            data['document'] = document
+            files = None
+
+        return Message(
+            **self._extract_request_result(
+                await self._send_request(
+                    'sendDocument',
+                    data=data,
+                    files=files
+                )
+            )
+        )

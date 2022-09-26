@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-from . import UpdateTypeStr
+from .._hints import UpdateTypeStr
 from ._base import TelegramObject
 
 

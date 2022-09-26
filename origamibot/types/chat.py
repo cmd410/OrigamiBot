@@ -1,4 +1,3 @@
-from .message import Message
 from typing import Optional
 from ._base import TelegramObject
 
@@ -24,5 +23,5 @@ class Chat(TelegramObject):
     linked_chat_id: Optional[int]
     location: Optional[dict]
 
-
+from .message import Message
 Chat.update_forward_refs()

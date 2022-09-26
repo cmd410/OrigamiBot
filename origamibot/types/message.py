@@ -1,4 +1,3 @@
-from .chat import Chat
 from typing import List, Literal, Optional
 
 from pydantic.fields import Field
@@ -85,5 +84,6 @@ class Message(TelegramObject):
 
     reply_markup: Optional[InlineKeyboardMarkup]
 
+from .chat import Chat
 
 Message.update_forward_refs()

@@ -46,6 +46,15 @@ async def test_send_photo(api: MessageAPI, private_cid, image_file):
     assert isinstance(m, Message)
     sent_messages.append(m)
 
+@pytest.mark.asyncio
+async def test_send_document(api: MessageAPI, private_cid, image_file):
+    m = await api.send_document(
+        chat_id=private_cid,
+        document=image_file,
+        caption='Test document from MessageAPI'
+    )
+    assert isinstance(m, Message)
+    sent_messages.append(m)
 
 @pytest.mark.asyncio
 @pytest.mark.order(after='test_update_message_text')
