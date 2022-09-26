@@ -32,10 +32,13 @@ try:
     and add appropriate parse_mode parameter if not present.
     """
     parse_mode = data.get("parse_mode", "HTML")
-    for text_key in ("text", "caption"):
+    for text_key in ("text", "caption", "explanation"):
       text = data.get(text_key)
       if isinstance(text, Element):
-        data["parse_mode"] = parse_mode
+        if text_key == "explanation":
+            data["explanation_parse_mode"] = parse_mode
+        else:
+            data["parse_mode"] = parse_mode
         if parse_mode == "HTML":
           data[text_key] = text.to_html()
         elif parse_mode in {"MarkdownV2", "Markdown"}:
@@ -700,7 +703,7 @@ def send_poll(token: str,
               type: Optional[str] = None,
               allows_multiple_answers: Optional[bool] = None,
               correct_option_id: Optional[int] = None,
-              explanation: Optional[str] = None,
+              explanation: Union[str, Element, None] = None,
               explanation_parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
               open_period: Optional[int] = None,
               close_date: Optional[int] = None,

@@ -754,7 +754,7 @@ class OrigamiBot:
                   type: Optional[str] = None,
                   allows_multiple_answers: Optional[bool] = None,
                   correct_option_id: Optional[int] = None,
-                  explanation: Optional[str] = None,
+                  explanation: Union[str, Element, None] = None,
                   explanation_parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                   open_period: Optional[int] = None,
                   close_date: Optional[int] = None,
