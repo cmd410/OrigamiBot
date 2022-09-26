@@ -525,7 +525,7 @@ class OrigamiBot:
                        width: Optional[int] = None,
                        height: Optional[int] = None,
                        thumb: Optional[Union[str, IO]] = None,
-                       caption: Optional[Union[str, IO]] = None,
+                       caption: Union[str, Element, None] = None,
                        parse_mode: Optional[Literal["HTML", "MarkdownV2", "Markdown"]] = None,
                        disable_notification: Optional[bool] = None,
                        reply_to_message_id: Optional[int] = None,
