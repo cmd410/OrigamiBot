@@ -392,6 +392,28 @@ class MessageAPI(APIBase):
                          title: Optional[str] = None,
                          thumb: Union[IOBase, str, None] = None
                          ) -> Message:
+        """Use this method to send audio files, if you want Telegram clients to display
+        them in the music player. Your audio must be in the .MP3 or .M4A format. On success,
+        the sent Message is returned. Bots can currently send audio files of up to 50 MB in size,
+        this limit may be changed in the future.
+
+        :param chat_id: Unique identifier for the target chat or username of the
+            target channel (in the format @channelusername)
+        :param audio: Audio file to send. Pass a file_id as String to send an audio
+            file that exists on the Telegram servers (recommended), pass an HTTP URL
+            as a String for Telegram to get an audio file from the Internet, or upload
+            a new one.
+        :param caption: Audio caption, 0-1024 characters after entities parsing
+        :param parse_mode: Mode for parsing entities in the audio caption.
+        :param caption_entities: A JSON-serialized list of special entities that appear
+            in the caption, which can be specified instead of parse_mode
+        :param duration: Duration of the audio in seconds
+        :param performer: Performer
+        :param title: Track name
+        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation
+            for the file is supported server-side. The thumbnail should be in JPEG format
+            and less than 200 kB in size. A thumbnail's width and height should not exceed 320. 
+        """
         data = {
             "chat_id": chat_id,
             "caption": caption,
