@@ -542,7 +542,8 @@ def send_location(token: str,
         'live_period': live_period,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': reply_markup.unfold(),
+        'reply_markup': (reply_markup.unfold()
+                         if reply_markup is not None else None),
         'protect_content': protect_content
     }
 
@@ -577,7 +578,8 @@ def edit_message_live_location(token: str,
         'longitude': longitude,
         'message_id': message_id,
         'inline_message_id': inline_message_id,
-        'reply_markup': reply_markup.unfold()
+        'reply_markup': (reply_markup.unfold()
+                         if reply_markup is not None else None)
     }
 
     return request(
@@ -609,7 +611,8 @@ def stop_message_live_location(token: str,
         'chat_id': chat_id,
         'message_id': message_id,
         'inline_message_id': inline_message_id,
-        'reply_markup': reply_markup.unfold()
+        'reply_markup': (reply_markup.unfold()
+                         if reply_markup is not None else None)
     }
 
     return request(
@@ -648,7 +651,8 @@ def send_venue(token: str,
         'foursquare_type': foursquare_type,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': reply_markup.unfold(),
+        'reply_markup': (reply_markup.unfold()
+                         if reply_markup is not None else None),
         'protect_content': protect_content
     }
 
@@ -683,7 +687,8 @@ def send_contact(token: str,
         'vcard': vcard,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': reply_markup.unfold(),
+        'reply_markup': (reply_markup.unfold()
+                         if reply_markup is not None else None),
         'protect_content': protect_content
     }
 
@@ -733,7 +738,8 @@ def send_poll(token: str,
         'is_closed': is_closed,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': reply_markup.unfold(),
+        'reply_markup': (reply_markup.unfold()
+                         if reply_markup is not None else None),
         'protect_content': protect_content
     }
 
@@ -763,7 +769,8 @@ def send_dice(token: str,
         'emoji': emoji,
         'disable_notification': disable_notification,
         'reply_to_message_id': reply_to_message_id,
-        'reply_markup': reply_markup.unfold(),
+        'reply_markup': (reply_markup.unfold()
+                         if reply_markup is not None else None),
         'protect_content': protect_content
     }
 
@@ -1432,7 +1439,8 @@ def edit_message_caption(token: str,
             'message_id': message_id,
             'inline_message_id': inline_message_id,
             'parse_mode': parse_mode,
-            'reply_markup': reply_markup.unfold()
+            'reply_markup': (reply_markup.unfold()
+                             if reply_markup is not None else None)
         }
     )
 
@@ -1458,7 +1466,8 @@ def edit_message_media(token: str,
         'media': media_data,
         'message_id': message_id,
         'inline_message_id': inline_message_id,
-        'reply_markup': reply_markup.unfold()
+        'reply_markup': (reply_markup.unfold()
+                         if reply_markup is not None else None)
     }
 
     return request(
@@ -1489,7 +1498,8 @@ def edit_message_reply_markup(token: str,
             'chat_id': chat_id,
             'message_id': message_id,
             'inline_message_id': inline_message_id,
-            'reply_markup': reply_markup.unfold()
+            'reply_markup': (reply_markup.unfold()
+                             if reply_markup is not None else None)
         }
     )
 
@@ -1509,7 +1519,8 @@ def stop_poll(token: str,
         {
             'chat_id': chat_id,
             'message_id': message_id,
-            'reply_markup': reply_markup.unfold()
+            'reply_markup': (reply_markup.unfold()
+                             if reply_markup is not None else None)
         }
     )
 
