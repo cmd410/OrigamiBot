@@ -9,6 +9,7 @@ from threading import current_thread, Event
 from time import sleep
 
 from .sthread import StoppableThread
+from .exceptions import TelegramAPIError
 from .teletypes import (
     Update,
     Message,
@@ -1438,10 +1439,10 @@ class OrigamiBot:
             if self.safe_poll:
                 try:
                     updates = self.get_updates()
-                except (IOError, ConnectionError) as err:
+                except (IOError, ConnectionError, TelegramAPIError) as err:
                     logger.exception('Exception while polling')
                     self._call_listeners('on_poll_error', err)
-                    sleep(2)
+                    sleep(5)
                     continue
             else:
                 updates = self.get_updates()

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "origamibot"
-version = "2.3.2"
+version = "2.3.3"
 description = "Library for creating bots for telegram with Python."
 authors = ["Crystal Melting Dot <stresspassing@gmail.com>"]
 license = "MIT"
