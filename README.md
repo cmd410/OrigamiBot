@@ -78,7 +78,7 @@ class MessageListener(Listener):  # Event listener must inherit Listener
                                   'Command failed to bind arguments!')
         else:
             self.bot.send_message(message.chat.id,
-                                  'Error in command:\n{err}')
+                                  f'Error in command:\n{err}')
 
 
 if __name__ == '__main__':
