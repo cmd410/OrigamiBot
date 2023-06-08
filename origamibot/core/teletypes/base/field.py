@@ -144,7 +144,7 @@ class ListField(Field):
                 raise FieldTypeError(
                     f'''Wrong type in list {
                         item}, excpected one of {
-                            self.datatypes}'''
+                            self.data_types}'''
                     )
 
         return value
