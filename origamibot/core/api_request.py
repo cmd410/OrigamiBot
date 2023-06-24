@@ -71,8 +71,9 @@ def request(token,
         if value is not None
     }
     timeout_connect = 5
-    timeout_read = timeout_read + timeout_connect \
-        if (timeout_read := data.get('timeout', 0)) > 0 else None
+    timeout_read = data.get('timeout', 0)
+    if timeout_read is not None:
+        timeout_read += timeout_connect
     timeout = (timeout_connect, timeout_read)
 
     convert_elements_to_str(data)
@@ -83,8 +84,7 @@ def request(token,
         if value is not None
     }
     if files:
-        response = requests.post(
-            url, params=data, files=files, timeout=timeout)
+        response = requests.post(url, params=data, files=files)
     else:
         json_data = json.dumps(data, ensure_ascii=True)
         headers = {'Content-type': 'application/json'}
