@@ -70,7 +70,12 @@ def request(token,
         for key, value in data.items()
         if value is not None
     }
-  
+    timeout_connect = 5
+    timeout_read = data.get('timeout', 0)
+    if timeout_read is not None:
+        timeout_read += timeout_connect
+    timeout = (timeout_connect, timeout_read)
+
     convert_elements_to_str(data)
 
     files = {
@@ -83,7 +88,8 @@ def request(token,
     else:
         json_data = json.dumps(data, ensure_ascii=True)
         headers = {'Content-type': 'application/json'}
-        response = requests.post(url, data=json_data, headers=headers)
+        response = requests.post(
+            url, data=json_data, headers=headers, timeout=timeout)
 
     if response.status_code != 200:
         description = \
