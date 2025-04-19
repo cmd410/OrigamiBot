@@ -1571,10 +1571,11 @@ def send_media_group(token: str,
 
     files = dict()
     for media_item in media:
-        attach_name, file_path = media_item.file
-        if not all([attach_name, file_path]):
-            continue
-        files[attach_name] = file_path
+        if hasattr(media_item, 'file') and media_item.file and isinstance(media_item.file.value, tuple):
+            attach_name, file_path = media_item.file
+            if not all([attach_name, file_path]):
+                continue
+            files[attach_name] = file_path
 
     return request(
         token,
